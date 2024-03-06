@@ -2,6 +2,7 @@ import anvil.server
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #
@@ -16,6 +17,11 @@ import seaborn as sns
 #
 @anvil.server.callable
 def prepPlots():
+
+  fig1 = plt.figure()
+  fig2 = plt.figure()
+  fig2 = plt.figure()
+  
   x = np.array(range(-50,50))
   y1 = x
   y2 = x*x
@@ -26,4 +32,5 @@ def prepPlots():
   fig1 = sns.lineplot(data=df, x='x', y='y1')
   fig2 = sns.lineplot(data=df, x='x', y='y2')
   fig3 = sns.lineplot(data=df, x='x', y='y3')
+  
   return fig1, fig2, fig3
