@@ -17,8 +17,8 @@ import seaborn as sns
 def prepPlots():
   x = np.array(range(-50,50))
   y1 = x
-  y2 = [x*x for x in x]
-  y3 = [x*x for x in x]
+  y2 = x*x
+  y3 = x*x*x
   sns.set_theme()
   fig1 = sns.lineplot(x=x, y=y1)
   fig2 = sns.lineplot(x=x, y=y2)
