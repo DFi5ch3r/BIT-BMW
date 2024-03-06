@@ -1,4 +1,5 @@
 import anvil.server
+import numpy as np
 import seaborn as sns
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -14,7 +15,7 @@ import seaborn as sns
 #
 @anvil.server.callable
 def prepPlots():
-  x = range(-50,50)
+  x = np.array(range(-50,50))
   y1 = x
   y2 = [x*x for x in x]
   y3 = [x*x for x in x]
