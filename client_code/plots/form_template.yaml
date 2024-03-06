@@ -1,0 +1,29 @@
+container: {type: ColumnPanel}
+components:
+- name: grid_panel_1
+  properties: {}
+  type: GridPanel
+  layout_properties: {grid_position: 'NHTWRV,UOVRCP'}
+  components:
+  - name: button_plot1
+    properties: {text: plot 1, role: outlined-button, align: center}
+    type: Button
+    layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 0}
+  - name: button_plot2
+    properties: {text: plot 2, role: outlined-button, align: center}
+    type: Button
+    layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 1}
+  - name: button_plot3
+    properties: {text: plot 3, role: outlined-button, align: center}
+    type: Button
+    layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 4}
+  - name: plot_2
+    properties: {}
+    type: Plot
+    layout_properties: {row: CQNZKC, width_xs: 12, col_xs: 0}
+- name: button_plotPrep
+  properties: {text: prep plots, role: outlined-button}
+  type: Button
+  layout_properties: {grid_position: 'HMUWPJ,YJPNVW'}
+  event_bindings: {click: button_plotPrep_click}
+is_package: true
