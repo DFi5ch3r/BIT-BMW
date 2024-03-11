@@ -9,14 +9,17 @@ components:
     properties: {text: plot 1, role: outlined-button, align: center}
     type: Button
     layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 0}
+    event_bindings: {click: button_plot1_click}
   - name: button_plot2
     properties: {text: plot 2, role: outlined-button, align: center}
     type: Button
     layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 1}
+    event_bindings: {click: button_plot2_click}
   - name: button_plot3
     properties: {text: plot 3, role: outlined-button, align: center}
     type: Button
     layout_properties: {row: GPBEOW, width_xs: 2, col_xs: 4}
+    event_bindings: {click: button_plot3_click}
   - name: plot_2
     properties: {}
     type: Plot
