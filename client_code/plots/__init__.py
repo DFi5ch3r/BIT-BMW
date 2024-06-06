@@ -22,7 +22,6 @@ class plots(plotsTemplate):
     """This method is called when the button is clicked"""
     self.plot_2.figure = self.fig2
 
-  
   def button_plot3_click(self, **event_args):
     """This method is called when the button is clicked"""
     self.plot_2.figure = self.fig3
