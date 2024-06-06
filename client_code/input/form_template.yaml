@@ -29,8 +29,4 @@ components:
     properties: {text: load, visible: true, role: outlined-button, align: left, icon: 'fa:download'}
     type: Button
     layout_properties: {row: ZVPSHD, width_xs: 2, col_xs: 0}
-  - name: file_loader_1
-    properties: {}
-    type: FileLoader
-    layout_properties: {row: ZVPSHD, width_xs: 3, col_xs: 3}
 is_package: true
