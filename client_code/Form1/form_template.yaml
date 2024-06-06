@@ -1,0 +1,38 @@
+is_package: true
+container:
+  type: HtmlTemplate
+  properties: {html: '@theme:standard-page.html'}
+components:
+- type: ColumnPanel
+  properties: {col_widths: '{}'}
+  name: content_panel
+  layout_properties: {slot: default}
+  components: []
+- type: FlowPanel
+  properties: {}
+  name: navbar_links
+  layout_properties: {slot: nav-right}
+- name: column_panel_1
+  properties: {}
+  type: ColumnPanel
+  layout_properties: {slot: left-nav}
+  components:
+  - name: link_input
+    properties: {text: Input, icon: 'fa:file-text-o'}
+    type: Link
+    layout_properties: {grid_position: 'TVGKDP,NOSYOS'}
+    event_bindings: {click: link_input_click}
+  - name: link_settings
+    properties: {text: Settings, icon: 'fa:cogs'}
+    type: Link
+    layout_properties: {grid_position: 'VBPNGN,ZTZGZW'}
+    event_bindings: {click: link_settings_click}
+  - name: link_analysis
+    properties: {text: Analysis, icon: 'fa:picture-o'}
+    type: Link
+    layout_properties: {grid_position: 'YYPJMU,ZBMERP'}
+    event_bindings: {click: link_analysis_click}
+  - name: link_reset
+    properties: {text: Reset, icon: 'fa:times-circle'}
+    type: Link
+    layout_properties: {grid_position: 'BBSVUN,VYIURL'}
