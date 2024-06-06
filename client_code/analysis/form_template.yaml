@@ -1,0 +1,7 @@
+container: {type: ColumnPanel}
+components:
+- name: outlined_1
+  properties: {role: outlined, text: analysis}
+  type: TextBox
+  layout_properties: {grid_position: 'BNAUYM,ELDLNJ'}
+is_package: true
