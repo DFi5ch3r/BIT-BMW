@@ -1,13 +1,12 @@
-from ._anvil_designer import analysisTemplate
+from ._anvil_designer import ItemTemplate1Template
 from anvil import *
 import anvil.server
 from .. import globals
 
-
-class analysis(analysisTemplate):
+class ItemTemplate1(ItemTemplate1Template):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
-    self.repeating_panel_1.items =  globals.baureihe_years
+    self.check_box_1.text = self.item['Baureihe']
+    self.repeating_panel_1.items = self.item['Years']
     # Any code you write here will run before the form opens.

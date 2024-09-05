@@ -1,32 +1,47 @@
-container: {type: ColumnPanel}
 components:
-- name: label_1
-  properties: {text: Input, align: center, bold: true}
+- layout_properties: {grid_position: 'PTSHEW,HIUDBD'}
+  name: label_1
+  properties: {align: center, bold: true, text: Input}
   type: Label
-  layout_properties: {grid_position: 'PTSHEW,HIUDBD'}
-- name: grid_panel_1
-  properties: {}
-  type: GridPanel
-  layout_properties: {grid_position: 'MYUXJE,RVGKRV'}
-  components:
-  - name: label_2
-    properties: {text: Path}
+- components:
+  - layout_properties: {col_xs: 1, row: XSMUUM, width_xs: 3}
+    name: label_2
+    properties: {text: Input method}
     type: Label
-    layout_properties: {row: VODIMO, width_xs: 3, col_xs: 0}
-  - name: text_box_1
+  - event_bindings: {change: dropDown_inputMethod_change}
+    layout_properties: {col_xs: 4, row: XSMUUM, width_xs: 4}
+    name: dropDown_inputMethod
+    properties:
+      items: [directory, previously generated database, external database]
+    type: DropDown
+  - data_bindings: []
+    event_bindings: {show: label_3_show}
+    layout_properties: {col_xs: 1, row: FIDIPW, width_xs: 3}
+    name: label_3
+    properties: {text: Custom path}
+    type: Label
+  - layout_properties: {col_xs: 3, row: FIDIPW, width_xs: 8}
+    name: text_box_1
     properties: {}
     type: TextBox
-    layout_properties: {row: VODIMO, width_xs: 8, col_xs: 3}
-  - name: label_3
-    properties: {text: File}
+  - layout_properties: {col_xs: 1, row: CVGNAS, width_xs: 2}
+    name: label_4
+    properties: {text: File name, visible: false}
     type: Label
-    layout_properties: {row: ASRFOG, width_xs: 3, col_xs: 0}
-  - name: drop_down_1
-    properties: {}
-    type: DropDown
-    layout_properties: {row: ASRFOG, width_xs: 8, col_xs: 3}
-  - name: button_load
-    properties: {text: load, visible: true, role: outlined-button, align: left, icon: 'fa:download'}
+  - layout_properties: {col_xs: 4, row: CVGNAS, width_xs: 8}
+    name: text_box_2
+    properties: {visible: false}
+    type: TextBox
+  - event_bindings: {click: button_loadDB_click}
+    layout_properties: {col_xs: 1, row: DMMGHH, width_xs: 3}
+    name: button_loadDB
+    properties: {role: outlined-button, text: load database}
     type: Button
-    layout_properties: {row: ZVPSHD, width_xs: 2, col_xs: 0}
+  layout_properties: {grid_position: 'MYUXJE,RVGKRV'}
+  name: grid_panel_1
+  properties: {}
+  type: GridPanel
+container:
+  properties: {col_widths: '{}'}
+  type: ColumnPanel
 is_package: true
