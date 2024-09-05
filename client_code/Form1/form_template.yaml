@@ -1,38 +1,46 @@
-is_package: true
-container:
-  type: HtmlTemplate
-  properties: {html: '@theme:standard-page.html'}
 components:
-- type: ColumnPanel
-  properties: {col_widths: '{}'}
-  name: content_panel
+- components: []
   layout_properties: {slot: default}
-  components: []
-- type: FlowPanel
-  properties: {}
+  name: content_panel
+  properties: {col_widths: '{}'}
+  type: ColumnPanel
+- layout_properties: {slot: nav-right}
   name: navbar_links
-  layout_properties: {slot: nav-right}
-- name: column_panel_1
+  properties: {}
+  type: FlowPanel
+- components:
+  - components: []
+    event_bindings: {click: button_loadData_click}
+    layout_properties: {grid_position: 'WXGLXR,UUSEYI'}
+    name: button_loadData
+    properties: {foreground: 'theme:Error', icon: 'fa:download', text: load data}
+    type: Link
+  - layout_properties: {grid_position: 'BBSVUN,VYIURL'}
+    name: link_reset
+    properties: {icon: 'fa:times-circle', text: Reset}
+    type: Link
+  layout_properties: {slot: left-nav}
+  name: column_panel_1
   properties: {}
   type: ColumnPanel
-  layout_properties: {slot: left-nav}
-  components:
-  - name: link_input
-    properties: {text: Input, icon: 'fa:file-text-o'}
+- components:
+  - event_bindings: {click: link_input_click}
+    name: link_input
+    properties: {icon: 'fa:file-text-o', text: Input}
     type: Link
-    layout_properties: {grid_position: 'TVGKDP,NOSYOS'}
-    event_bindings: {click: link_input_click}
-  - name: link_settings
-    properties: {text: Settings, icon: 'fa:cogs'}
+  - event_bindings: {click: link_settings_click}
+    name: link_settings
+    properties: {icon: 'fa:cogs', text: Settings}
     type: Link
-    layout_properties: {grid_position: 'VBPNGN,ZTZGZW'}
-    event_bindings: {click: link_settings_click}
-  - name: link_analysis
-    properties: {text: Analysis, icon: 'fa:picture-o'}
+  - event_bindings: {click: link_analysis_click}
+    name: link_analysis
+    properties: {icon: 'fa:picture-o', text: Analysis}
     type: Link
-    layout_properties: {grid_position: 'YYPJMU,ZBMERP'}
-    event_bindings: {click: link_analysis_click}
-  - name: link_reset
-    properties: {text: Reset, icon: 'fa:times-circle'}
-    type: Link
-    layout_properties: {grid_position: 'BBSVUN,VYIURL'}
+  layout_properties: {slot: title}
+  name: flow_panel_1
+  properties: {}
+  type: FlowPanel
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true

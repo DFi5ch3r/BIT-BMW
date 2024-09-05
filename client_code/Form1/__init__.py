@@ -5,14 +5,18 @@ import anvil.server
 from ..input import input
 from ..settings import settings
 from ..analysis import analysis
-
+from .. import globals
 
 class Form1(Form1Template):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
-# Sidebar links
+    
+    self.content_panel.clear()
+    self.content_panel.add_component(analysis())
+    self.deselect_all_links()
+    self.link_analysis.role = 'selected'
+# Topbar links
   def deselect_all_links(self):
     """Reset all the roles on the navbar links."""
     for link in self.link_input, self.link_settings, self.link_analysis:
@@ -38,4 +42,11 @@ class Form1(Form1Template):
     self.content_panel.add_component(analysis())
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
+
+  def button_loadData_click(self, **event_args):
+    """This method is called when the link is clicked"""
+    globals.DB = anvil.server.call('create_database','dummy')
+    globals.baureihe_years= anvil.server.call('get_baureihe_and_years',globals.DB)
+    self.button_loadData.foreground = '#1EB980'
+    self.link_analysis_click()
 
