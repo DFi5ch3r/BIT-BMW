@@ -10,7 +10,7 @@ components:
     name: button_1
     properties: {icon: 'fa:arrow-circle-right', spacing_above: none, spacing_below: none, text: ''}
     type: Button
-  - layout_properties: {col_xs: 1, row: YIGGLP, width_xs: 6}
+  - layout_properties: {col_xs: 1, row: YIGGLP, width_xs: 10}
     name: repeating_panel_1
     properties: {item_template: analysis.ItemTemplate1.ItemTemplate2, spacing_above: none, spacing_below: none, visible: false}
     type: RepeatingPanel
