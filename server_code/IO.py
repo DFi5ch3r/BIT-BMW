@@ -106,3 +106,4 @@ def get_baureihe_and_years(database):
     baureihe_years_list = [{'Baureihe': baureihe, 'Years': list(years)} for baureihe, years in baureihe_to_years.items()]
 
     return baureihe_years_list
+
