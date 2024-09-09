@@ -77,6 +77,11 @@ def create_database(read_path):
 
   return testDB
 
+def addActiveFlag(database):
+    for entry in database:
+        entry['Active'] = False
+    return database
+
 @anvil.server.callable
 def get_baureihe_and_years(database):
     """

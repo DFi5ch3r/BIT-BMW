@@ -10,3 +10,10 @@ class ItemTemplate1(ItemTemplate1Template):
     self.check_box_1.text = self.item['Baureihe']
     self.repeating_panel_1.items = self.item['Years']
     # Any code you write here will run before the form opens.
+
+  def button_1_click(self, **event_args):
+    self.repeating_panel_1.visible = not(self.repeating_panel_1.visible)
+
+  def check_box_1_change(self, **event_args):
+    """This method is called when this checkbox is checked or unchecked"""
+    pass

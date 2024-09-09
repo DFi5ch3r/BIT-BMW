@@ -1,4 +1,5 @@
 allow_embedding: false
+db_schema: {}
 dependencies: []
 metadata: {logo_img: 'asset:Icon.png'}
 name: BMW
