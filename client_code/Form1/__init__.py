@@ -46,6 +46,7 @@ class Form1(Form1Template):
   def button_loadData_click(self, **event_args):
     """This method is called when the link is clicked"""
     globals.DB = anvil.server.call('create_database','dummy')
+    globals.DB = anvil.server.call('addActiveFlags',globals.DB)
     globals.baureihe_years= anvil.server.call('get_baureihe_and_years',globals.DB)
     self.button_loadData.foreground = '#1EB980'
     self.link_analysis_click()

@@ -77,9 +77,17 @@ def create_database(read_path):
 
   return testDB
 
-def addActiveFlag(database):
+@anvil.server.callable
+def addActiveFlags(database):
     for entry in database:
         entry['Active'] = False
+    return database
+  
+@anvil.server.callable
+def set_active_flag(database, baureihe, years):
+    for entry in database:
+        if entry['Baureihe'] == baureihe and entry['Jahr'] in years:
+            entry['Active'] = True
     return database
 
 @anvil.server.callable

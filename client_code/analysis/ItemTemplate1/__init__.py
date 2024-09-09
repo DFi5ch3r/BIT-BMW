@@ -15,5 +15,4 @@ class ItemTemplate1(ItemTemplate1Template):
     self.repeating_panel_1.visible = not(self.repeating_panel_1.visible)
 
   def check_box_1_change(self, **event_args):
-    """This method is called when this checkbox is checked or unchecked"""
-    pass
+    self.repeating_panel_1.raise_event_on_children('x-toggleBox')

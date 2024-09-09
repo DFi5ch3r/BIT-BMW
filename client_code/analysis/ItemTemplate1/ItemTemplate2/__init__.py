@@ -5,7 +5,11 @@ import anvil.server
 
 class ItemTemplate2(ItemTemplate2Template):
   def __init__(self, **properties):
-    # Set Form properties and Data Bindings.
+
     self.init_components(**properties)
     self.check_box_1.text = self.item
-    # Any code you write here will run before the form opens.
+    self.set_event_handler('x-toggleBox', self.toggleBox)
+
+  def toggleBox(self, **event_args):
+    self.check_box_1.checked=not(self.check_box_1.checked)
+

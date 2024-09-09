@@ -1,6 +1,7 @@
 components:
 - components:
-  - layout_properties: {col_xs: 0, row: VEMGOZ, width_xs: 1}
+  - event_bindings: {change: check_box_1_change}
+    layout_properties: {col_xs: 0, row: VEMGOZ, width_xs: 1}
     name: check_box_1
     properties: {spacing_above: none, spacing_below: none, text: check_box_1}
     type: CheckBox
@@ -9,7 +10,7 @@ components:
     name: button_1
     properties: {icon: 'fa:arrow-circle-right', spacing_above: none, spacing_below: none, text: ''}
     type: Button
-  - layout_properties: {col_xs: 1, row: YIGGLP, width_xs: 3}
+  - layout_properties: {col_xs: 1, row: YIGGLP, width_xs: 6}
     name: repeating_panel_1
     properties: {item_template: analysis.ItemTemplate1.ItemTemplate2, spacing_above: none, spacing_below: none, visible: false}
     type: RepeatingPanel
