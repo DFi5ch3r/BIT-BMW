@@ -1,5 +1,5 @@
 components:
-- layout_properties: {full_width_row: false, grid_position: 'NWTRSG,ATQOGN'}
+- layout_properties: {full_width_row: true, grid_position: 'NWTRSG,ATQOGN'}
   name: label_1
   properties: {align: center, bold: true, text: Analysis}
   type: Label
@@ -11,7 +11,7 @@ components:
   - name: repeating_panel_1
     properties: {item_template: analysis.ItemTemplate1, spacing_below: none}
     type: RepeatingPanel
-  layout_properties: {grid_position: 'GQJQMK,IQKESJ'}
+  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,IQKESJ'}
   name: linear_panel_1
   properties: {background: '', role: elevated-card}
   type: LinearPanel
@@ -136,7 +136,7 @@ components:
         type: Label
       - layout_properties: {grid_position: 'NNETGG,ECUIZP'}
         name: text_box_freq_min
-        properties: {align: center, bold: false, font_size: 13, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
+        properties: {align: center, bold: false, font_size: null, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
         type: TextBox
       - layout_properties: {grid_position: 'NNETGG,YVPPGA'}
         name: label_12
@@ -144,7 +144,7 @@ components:
         type: Label
       - layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
         name: text_box_frequ_max
-        properties: {align: center, bold: false, enabled: true, font_size: 13, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}
+        properties: {align: center, bold: false, enabled: true, font_size: null, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}
         type: TextBox
       - layout_properties: {grid_position: 'SPNRPN,AOTYXS'}
         name: label_13
@@ -155,31 +155,31 @@ components:
       properties: {col_spacing: tiny, col_widths: '{"ECUIZP":41,"YVPPGA":19,"ZVIKXA":41,"AOTYXS":19}', role: null, spacing_above: none}
       type: ColumnPanel
     - components:
-      - layout_properties: {grid_position: 'AHBNHQ,EVEOLT'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG AHBNHQ,EVEOLT'}
         name: label_6
         properties: {bold: true, spacing_below: none, text: 'Clustering:'}
         type: Label
-      - layout_properties: {grid_position: 'IMDLXM,LJMMMN'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG IMDLXM,LJMMMN'}
         name: label_15
         properties: {}
         type: Label
-      - layout_properties: {grid_position: 'IMDLXM,MVIPOQ'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG IMDLXM,MVIPOQ'}
         name: check_box_cluster_frequ
         properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: frequency}
         type: CheckBox
-      - layout_properties: {grid_position: 'KNAJXM,JBLBVG'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG KNAJXM,JBLBVG'}
         name: label_16
         properties: {}
         type: Label
-      - layout_properties: {grid_position: 'KNAJXM,NLEIHX'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG KNAJXM,NLEIHX'}
         name: check_box_cluster_pos
         properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: position}
         type: CheckBox
-      - layout_properties: {grid_position: 'VKROJR,JCVRUC'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG VKROJR,JCVRUC'}
         name: label_17
         properties: {}
         type: Label
-      - layout_properties: {grid_position: 'VKROJR,ERDLKO'}
+      - layout_properties: {grid_position: 'FGBFBC,LTIPJG VKROJR,ERDLKO'}
         name: check_box_cluster_comp
         properties: {align: left, bold: false, checked: true, font_size: -2, spacing_above: none, spacing_below: none, text: component, underline: false}
         type: CheckBox
@@ -277,7 +277,7 @@ components:
     name: link_link
     properties: {align: center, role: null, text: linkage}
     type: Link
-  layout_properties: {grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
+  layout_properties: {full_width_row: false, grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
   name: outlined_card_11
   properties: {background: '', col_spacing: none, col_widths: '{"KSYQUA":10,"ZWISKL":12,"ZZDMFG":13,"FXPZGO":10,"IVDWLJ":10,"BATDMI":5}', role: tonal-card}
   type: ColumnPanel
@@ -286,7 +286,7 @@ components:
     name: plot_1
     properties: {}
     type: Plot
-  layout_properties: {grid_position: 'GQJQMK,MCCAXK IHUSIU,UAVFYU'}
+  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK IHUSIU,UAVFYU'}
   name: outlined_card_10
   properties: {col_spacing: tiny, col_widths: '{}', role: elevated-card}
   type: ColumnPanel
