@@ -24,39 +24,39 @@ components:
           properties: {bold: true, role: null, spacing_below: small, text: 'Buildstages:'}
           type: Label
         - layout_properties: {grid_position: 'BPXTCV,CUDNAU'}
-          name: check_box_4_copy_2_copy_6
+          name: check_box_BS_BS0
           properties: {font_size: null, spacing_above: none, spacing_below: none, text: BS0}
           type: CheckBox
         - layout_properties: {grid_position: 'BPXTCV,XLQOGV'}
-          name: check_box_4_copy_2_copy_4
+          name: check_box_BS_VS1
           properties: {spacing_above: none, spacing_below: none, text: VS1}
           type: CheckBox
         - layout_properties: {grid_position: 'BPXTCV,EILMDW'}
-          name: check_box_4_copy_2_copy_5
+          name: check_box_4_BS_FB
           properties: {spacing_above: none, spacing_below: none, text: FB}
           type: CheckBox
         - layout_properties: {grid_position: 'BPXTCV,IJDEPL'}
-          name: check_box_4_copy_2_copy_3
+          name: check_box_4_BS_AS
           properties: {spacing_above: none, spacing_below: none, text: AS}
           type: CheckBox
         - layout_properties: {grid_position: 'BPXTCV,XBXYWG'}
-          name: check_box_4
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: Not found}
+          name: check_box_BS_notFound
+          properties: {checked: true, spacing_above: none, spacing_below: none, text: not found}
           type: CheckBox
         - layout_properties: {grid_position: 'CJFKDB,QQUYTW'}
-          name: check_box_4_copy_2_copy_2
+          name: check_box_BS_BS1
           properties: {spacing_above: none, spacing_below: none, text: BS1}
           type: CheckBox
         - layout_properties: {grid_position: 'CJFKDB,XPDIFR'}
-          name: check_box_4_copy_2_copy
+          name: check_box_BS_VS2
           properties: {spacing_above: none, spacing_below: none, text: VS2}
           type: CheckBox
         - layout_properties: {grid_position: 'CJFKDB,EMVCRJ'}
-          name: check_box_4_copy_2
+          name: check_box_BS_KEX
           properties: {spacing_above: none, spacing_below: none, text: KEX}
           type: CheckBox
         - layout_properties: {grid_position: 'CJFKDB,KFLKBK'}
-          name: check_box_4_copy
+          name: check_box_BS_SERIE
           properties: {allow_indeterminate: false, spacing_above: none, spacing_below: none, text: SERIE}
           type: CheckBox
         - layout_properties: {grid_position: 'CJFKDB,APJPZT'}
@@ -73,27 +73,27 @@ components:
           properties: {bold: true, text: 'Directions:'}
           type: Label
         - layout_properties: {grid_position: 'ZTYYOD,QGNFLY'}
-          name: check_box_4_copy_2_copy_6_copy
+          name: check_box_dir_xNeg
           properties: {checked: true, spacing_above: none, spacing_below: none, text: -X}
           type: CheckBox
         - layout_properties: {grid_position: 'ZTYYOD,DHXARC'}
-          name: check_box_4_copy_2_copy_copy
+          name: check_box_dir_yNeg
           properties: {checked: true, spacing_above: none, spacing_below: none, text: -Y}
           type: CheckBox
         - layout_properties: {grid_position: 'ZTYYOD,DEFXNV'}
-          name: check_box_4_copy_2_copy_2_copy
+          name: check_box_dir_zNeg
           properties: {checked: true, spacing_above: none, spacing_below: none, text: -Z}
           type: CheckBox
         - layout_properties: {grid_position: 'RYMWTM,AFAPPK'}
-          name: check_box_4_copy_2_copy_4_copy
+          name: check_box_dir_xPos
           properties: {checked: true, spacing_above: none, spacing_below: none, text: +X}
           type: CheckBox
         - layout_properties: {grid_position: 'RYMWTM,AENVSA'}
-          name: check_box_4_copy_2_copy_7
+          name: check_box_dir_yPos
           properties: {checked: true, spacing_above: none, spacing_below: none, text: +Y}
           type: CheckBox
         - layout_properties: {grid_position: 'RYMWTM,KZUBWY'}
-          name: check_box_4_copy_2_copy_5_copy
+          name: check_box_dir_zPos
           properties: {checked: true, spacing_above: none, spacing_below: none, text: +Z}
           type: CheckBox
         layout_properties: {grid_position: 'KDGMVM,SILOEU'}
@@ -248,9 +248,47 @@ components:
     name: card_compFile
     properties: {col_spacing: tiny, col_widths: '{"NNLDYL":25,"WKVSBI":45,"IISSFA":10}', role: null, visible: false}
     type: ColumnPanel
-  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK', row_background: ''}
+  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK MVEGBW,PEAHKF', row_background: ''}
   name: outlined_card_5
   properties: {col_spacing: small, col_widths: '{"HNVJIY":35,"REKNVA":25}', role: elevated-card}
+  type: ColumnPanel
+- components:
+  - layout_properties: {grid_position: 'OTKQIJ,KSYQUA XFNMJG,JBBLAL'}
+    name: link_1
+    properties: {align: center, background: '', bold: false, role: null, text: Overview}
+    type: Link
+  - layout_properties: {grid_position: 'OTKQIJ,ZWISKL'}
+    name: link_2
+    properties: {align: center, text: frequency clusters}
+    type: Link
+  - layout_properties: {grid_position: 'OTKQIJ,ZZDMFG'}
+    name: link_3
+    properties: {align: center, text: component clusters}
+    type: Link
+  - layout_properties: {grid_position: 'OTKQIJ,FXPZGO'}
+    name: link_4
+    properties: {align: center, text: position clusters}
+    type: Link
+  - layout_properties: {grid_position: 'OTKQIJ,IVDWLJ'}
+    name: link_5
+    properties: {align: center, role: null, spacing_below: small, text: COG positions}
+    type: Link
+  - layout_properties: {grid_position: 'OTKQIJ,BATDMI'}
+    name: link_6
+    properties: {align: center, role: null, text: Linkage}
+    type: Link
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
+  name: outlined_card_11
+  properties: {background: '', col_spacing: none, col_widths: '{"KSYQUA":10,"ZWISKL":12,"ZZDMFG":13,"FXPZGO":10,"IVDWLJ":10,"BATDMI":5}', role: tonal-card}
+  type: ColumnPanel
+- components:
+  - layout_properties: {grid_position: 'LGEUYC,TYHFNU'}
+    name: plot_1
+    properties: {}
+    type: Plot
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK IHUSIU,UAVFYU'}
+  name: outlined_card_10
+  properties: {col_spacing: tiny, col_widths: '{}', role: elevated-card}
   type: ColumnPanel
 container:
   properties: {col_spacing: tiny, col_widths: '{"IQKESJ":10,"MCCAXK":50}'}
