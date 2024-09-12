@@ -1,5 +1,5 @@
 components:
-- layout_properties: {full_width_row: false, grid_position: 'NWTRSG,ATQOGN'}
+- layout_properties: {full_width_row: true, grid_position: 'NWTRSG,ATQOGN'}
   name: label_1
   properties: {align: center, bold: true, text: Analysis}
   type: Label
@@ -11,7 +11,7 @@ components:
   - name: repeating_panel_1
     properties: {item_template: analysis.ItemTemplate1, spacing_below: none}
     type: RepeatingPanel
-  layout_properties: {grid_position: 'GQJQMK,IQKESJ'}
+  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,IQKESJ'}
   name: linear_panel_1
   properties: {background: '', role: elevated-card}
   type: LinearPanel
@@ -277,7 +277,7 @@ components:
     name: link_link
     properties: {align: center, role: null, text: linkage}
     type: Link
-  layout_properties: {grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
+  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
   name: outlined_card_11
   properties: {background: '', col_spacing: none, col_widths: '{"KSYQUA":10,"ZWISKL":12,"ZZDMFG":13,"FXPZGO":10,"IVDWLJ":10,"BATDMI":5}', role: tonal-card}
   type: ColumnPanel
