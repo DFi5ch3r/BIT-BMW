@@ -15,11 +15,11 @@ class analysis(analysisTemplate):
 
   def radio_button_function_predict_change(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
-    pass
+    
 
   def radio_button_function_compare_clicked(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
-    pass
+    
 
   
 
