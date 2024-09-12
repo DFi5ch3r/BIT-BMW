@@ -11,5 +11,5 @@ class ItemTemplate2(ItemTemplate2Template):
     self.set_event_handler('x-toggleBox', self.toggleBox)
 
   def toggleBox(self, **event_args):
-    self.check_box_1.checked=not(self.check_box_1.checked)
-
+    self.check_box_years.checked=event_args['check']
+ 
