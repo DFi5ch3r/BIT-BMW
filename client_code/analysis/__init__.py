@@ -8,9 +8,17 @@ class analysis(analysisTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
+    
     self.repeating_panel_1.items =  globals.baureihe_years
     # Any code you write here will run before the form opens.
 
-  def outlined_button_1_click(self, **event_args):
-   pass
+  def radio_button_1_change(self, **event_args):
+    self.card_compFile.visible = not(self.card_compFile.visible)
+    pass
+
+  def radio_button_2_clicked(self, **event_args):
+    self.card_compFile.visible = not(self.card_compFile.visible)
+    pass
+
+  
+

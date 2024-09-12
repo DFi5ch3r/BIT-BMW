@@ -1,5 +1,5 @@
 import anvil.server
-
+import random
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #
@@ -74,7 +74,28 @@ def create_database(read_path):
     }
     
   ]
+  baureihen = ['K12345', 'M67890', 'A11111', 'R22222']
+  bauteile = ['Bauteil1', 'Bauteil2', 'Bauteil3', 'Bauteil4']
+  richtungen = ['+X', '-Y', '+Z', '-X']
+  lasten = ['GL', 'VL', 'GS']
+  baustufen = ['KEX', 'BS1', 'FB', 'VS1']
+  years = ['2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014']
 
+  for i in range(5, 15):
+      testDB.append({
+          'ID': i,
+          'Dateiname': f'{random.choice(baureihen)}_{random.randint(1, 31):02d}.{random.randint(1, 12):02d}.{random.choice(years)}_{random.choice(bauteile)}_{random.choice(richtungen)}_{random.choice(lasten)}-HL_{random.randint(1, 5)}',
+          'Pfad': f'/path/to/folder{i}',
+          'Unterpfad': f'subfolder{i}',
+          'Jahr': random.choice(years),
+          'Baureihe': random.choice(baureihen),
+          'Nummer': f'{random.randint(100000, 999999)}',
+          'Bauteil': random.choice(bauteile),
+          'Baustufe': random.choice(baustufen),
+          'Richtung': random.choice(richtungen),
+          'Last': random.choice(lasten),
+          'Gang': f'{random.randint(1, 5)}'
+      })
   return testDB
 
 @anvil.server.callable
