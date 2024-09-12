@@ -29,8 +29,9 @@ components:
     properties: {icon: 'fa:file-text-o', text: Input}
     type: Link
   - event_bindings: {click: link_settings_click}
+    layout_properties: {}
     name: link_settings
-    properties: {icon: 'fa:cogs', text: Settings}
+    properties: {icon: 'fa:cogs', role: null, text: Settings}
     type: Link
   - event_bindings: {click: link_analysis_click}
     name: link_analysis
