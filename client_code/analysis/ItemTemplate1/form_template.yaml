@@ -1,13 +1,13 @@
 components:
 - components:
-  - event_bindings: {change: check_box_1_change}
+  - event_bindings: {change: check_box_type_change}
     layout_properties: {col_xs: 0, row: VEMGOZ, width_xs: 4}
-    name: check_box_1
-    properties: {spacing_above: none, spacing_below: none, text: check_box_1}
+    name: check_box_type
+    properties: {spacing_above: none, spacing_below: none, text: type}
     type: CheckBox
-  - event_bindings: {click: button_1_click}
+  - event_bindings: {click: button_expandYears_click}
     layout_properties: {col_xs: 2, row: VEMGOZ, width_xs: 1}
-    name: button_1
+    name: button_expandYears
     properties: {icon: 'fa:arrow-circle-right', spacing_above: none, spacing_below: none, text: ''}
     type: Button
   - layout_properties: {col_xs: 1, row: YIGGLP, width_xs: 10}
