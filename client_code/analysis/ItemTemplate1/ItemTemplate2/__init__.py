@@ -7,7 +7,7 @@ class ItemTemplate2(ItemTemplate2Template):
   def __init__(self, **properties):
 
     self.init_components(**properties)
-    self.check_box_1.text = self.item
+    self.check_box_years.text = self.item
     self.set_event_handler('x-toggleBox', self.toggleBox)
 
   def toggleBox(self, **event_args):
