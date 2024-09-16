@@ -31,12 +31,12 @@ components:
           type: CheckBox
         - event_bindings: {change: check_box_4_BS_FB_change}
           layout_properties: {grid_position: 'BPXTCV,EILMDW'}
-          name: check_box_4_BS_FB
+          name: check_box_BS_FB
           properties: {spacing_above: none, spacing_below: none, text: FB}
           type: CheckBox
         - event_bindings: {change: check_box_4_BS_AS_change}
           layout_properties: {grid_position: 'BPXTCV,IJDEPL'}
-          name: check_box_4_BS_AS
+          name: check_box_BS_AS
           properties: {spacing_above: none, spacing_below: none, text: AS}
           type: CheckBox
         - event_bindings: {change: check_box_BS_notFound_change}

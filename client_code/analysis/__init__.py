@@ -91,27 +91,11 @@ class analysis(analysisTemplate):
       else:
           globals.selected_buildstage.discard(self.check_box_BS_SERIE.text)
   
-  def check_box_BS_Not_found_change(self, **event_args):
-      if self.check_box_BS_Not_found.checked:
-          globals.selected_buildstage.add(self.check_box_BS_Not_found.text)
-      else:
-          globals.selected_buildstage.discard(self.check_box_BS_Not_found.text)    
-
-  def check_box_4_BS_FB_change(self, **event_args):
-      if self.check_box_FB_Not_found.checked:
-          globals.selected_buildstage.add(self.check_box_FB_Not_found.text)
-      else:
-          globals.selected_buildstage.discard(self.check_box_FB_Not_found.text)   
-
   def check_box_BS_notFound_change(self, **event_args):
-    """This method is called when this checkbox is checked or unchecked"""
-    pass
-
-  def check_box_4_BS_AS_change(self, **event_args):
-      if self.check_box_FB_Not_found.checked:
-          globals.selected_buildstage.add(self.check_box_FB_Not_found.text)
+      if self.check_box_BS_notFoundchecked:
+          globals.selected_buildstage.add(self.check_box_BS_notFound.text)
       else:
-          globals.selected_buildstage.discard(self.check_box_FB_Not_found.text)   
+          globals.selected_buildstage.discard(self.check_box_BS_notFound.text)    
 
-  
+
 
