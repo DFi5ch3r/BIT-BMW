@@ -48,7 +48,70 @@ class analysis(analysisTemplate):
       globals.selected_buildstage.add(self.check_box_BS_BS0.text)
     else:
       globals.selected_buildstage.discard(self.check_box_BS_BS0.text)
-    
+
+  def check_box_BS_BS1_change(self, **event_args):
+      if self.check_box_BS_BS1.checked:
+          globals.selected_buildstage.add(self.check_box_BS_BS1.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_BS1.text)
+  
+  def check_box_BS_VS1_change(self, **event_args):
+      if self.check_box_BS_VS1.checked:
+          globals.selected_buildstage.add(self.check_box_BS_VS1.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_VS1.text)
+  
+  def check_box_BS_VS2_change(self, **event_args):
+      if self.check_box_BS_VS2.checked:
+          globals.selected_buildstage.add(self.check_box_BS_VS2.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_VS2.text)
+  
+  def check_box_BS_FB_change(self, **event_args):
+      if self.check_box_BS_FB.checked:
+          globals.selected_buildstage.add(self.check_box_BS_FB.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_FB.text)
+  
+  def check_box_BS_KEX_change(self, **event_args):
+      if self.check_box_BS_KEX.checked:
+          globals.selected_buildstage.add(self.check_box_BS_KEX.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_KEX.text)
+  
+  def check_box_BS_AS_change(self, **event_args):
+      if self.check_box_BS_AS.checked:
+          globals.selected_buildstage.add(self.check_box_BS_AS.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_AS.text)
+  
+  def check_box_BS_SERIE_change(self, **event_args):
+      if self.check_box_BS_SERIE.checked:
+          globals.selected_buildstage.add(self.check_box_BS_SERIE.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_SERIE.text)
+  
+  def check_box_BS_Not_found_change(self, **event_args):
+      if self.check_box_BS_Not_found.checked:
+          globals.selected_buildstage.add(self.check_box_BS_Not_found.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_Not_found.text)    
+
+  def check_box_4_BS_FB_change(self, **event_args):
+      if self.check_box_FB_Not_found.checked:
+          globals.selected_buildstage.add(self.check_box_FB_Not_found.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_FB_Not_found.text)   
+
+  def check_box_BS_notFound_change(self, **event_args):
+    """This method is called when this checkbox is checked or unchecked"""
+    pass
+
+  def check_box_4_BS_AS_change(self, **event_args):
+      if self.check_box_FB_Not_found.checked:
+          globals.selected_buildstage.add(self.check_box_FB_Not_found.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_FB_Not_found.text)   
 
   
 
