@@ -17,11 +17,11 @@ class ItemTemplate2(ItemTemplate2Template):
     self.check_box_years_change()
 
   def check_box_years_change(self, **event_args):
-    print(self.item['baureihe'], self.item['year'], self.check_box_years.checked)
+    baureiheYear = self.item['baureihe'] + '-.-' + self.item['year']
     if self.check_box_years.checked:
-      globals.selected_BaureiheYears.add(self.item['baureihe'] + '-.-' self.item['year'])
+      globals.selected_BaureiheYears.add(baureiheYear)
     else:
-      globals.selected_BaureiheYears.remove(self.item['baureihe'] + '-.-' self.item['year'])
+      globals.selected_BaureiheYears.discard(baureiheYear)
 
     
 
