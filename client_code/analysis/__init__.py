@@ -92,7 +92,7 @@ class analysis(analysisTemplate):
           globals.selected_buildstage.discard(self.check_box_BS_SERIE.text)
   
   def check_box_BS_notFound_change(self, **event_args):
-      if self.check_box_BS_notFoundchecked:
+      if self.check_box_BS_notFound.checked:
           globals.selected_buildstage.add(self.check_box_BS_notFound.text)
       else:
           globals.selected_buildstage.discard(self.check_box_BS_notFound.text)    
