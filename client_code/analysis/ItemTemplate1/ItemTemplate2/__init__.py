@@ -13,8 +13,9 @@ class ItemTemplate2(ItemTemplate2Template):
 
   def toggleBox(self, **event_args):
     self.check_box_years.checked=event_args['check']
+    self.check_box_years_change()
 
   def check_box_years_change(self, **event_args):
-    """This method is called when this checkbox is checked or unchecked"""
-    pass
- 
+    print(self.item['baureihe'], self.item['year'], self.check_box_years.checked)
+    
+
