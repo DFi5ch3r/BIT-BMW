@@ -13,7 +13,7 @@ class Form1(Form1Template):
     self.init_components(**properties)
     
     self.content_panel.clear()
-    self.content_panel.add_component(analysis())
+    self.content_panel.add_component(analysis(), full_width_row=True)
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
 # Topbar links
@@ -25,21 +25,21 @@ class Form1(Form1Template):
   def link_input_click(self, **event_args):
     """This method is called when the link is clicked"""
     self.content_panel.clear()
-    self.content_panel.add_component(input())
+    self.content_panel.add_component(input(), full_width_row=True)
     self.deselect_all_links()
     self.link_input.role = 'selected'
 
   def link_settings_click(self, **event_args):
     """This method is called when the link is clicked"""
     self.content_panel.clear()
-    self.content_panel.add_component(settings())
+    self.content_panel.add_component(settings(), full_width_row=True)
     self.deselect_all_links()
     self.link_settings.role = 'selected'
 
   def link_analysis_click(self, **event_args):
     """This method is called when the link is clicked"""
     self.content_panel.clear()
-    self.content_panel.add_component(analysis())
+    self.content_panel.add_component(analysis(), full_width_row=True)
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
 

@@ -136,3 +136,22 @@ def get_baureihe_and_years(database):
 
     return baureihe_years_list
 
+@anvil.server.callable
+def get_unique_values(database, key):
+    """
+    Returns the unique values for a specified key in the database.
+
+    Args:
+        database (list): A list of dictionaries, each representing a file with extracted information.
+        key (str): The key for which unique values are to be found.
+
+    Returns:
+        list: A list of unique values for the specified key.
+    """
+    unique_values = set()
+
+    for entry in database:
+        if key in entry:
+            unique_values.add(entry[key])
+
+    return sorted(list(unique_values))
