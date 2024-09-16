@@ -1,5 +1,5 @@
 components:
-- layout_properties: {full_width_row: true, grid_position: 'NWTRSG,ATQOGN'}
+- layout_properties: {full_width_row: false, grid_position: 'NWTRSG,ATQOGN'}
   name: label_1
   properties: {align: center, bold: true, text: Analysis}
   type: Label
@@ -63,7 +63,7 @@ components:
           name: check_box_1
           properties: {text: '-', visible: false}
           type: CheckBox
-        layout_properties: {grid_position: 'KDGMVM,JUWZIS'}
+        layout_properties: {full_width_row: false, grid_position: 'KDGMVM,JUWZIS'}
         name: outlined_card_1
         properties: {background: '', border: '', col_spacing: none, col_widths: '{"QQUYTW":10,"XPDIFR":10,"EMVCRJ":10,"KFLKBK":15,"CUDNAU":10,"XLQOGV":10,"EILMDW":10,"IJDEPL":10,"XBXYWG":20,"APJPZT":15}', role: null, spacing_below: none}
         type: ColumnPanel
@@ -100,9 +100,26 @@ components:
         name: outlined_card_2
         properties: {col_spacing: tiny, col_widths: '{"QGNFLY":20,"DHXARC":20,"DEFXNV":20,"AFAPPK":20,"AENVSA":20,"KZUBWY":20}', role: null}
         type: ColumnPanel
-      layout_properties: {grid_position: 'NMQGIE,NLKTQK RKIXWB,BMJGCS'}
+      - components:
+        - layout_properties: {grid_position: 'FMAWNF,CZQYYJ'}
+          name: label_4_copy
+          properties: {bold: true, spacing_above: small, text: 'Frequency [Hz]'}
+          type: Label
+        - layout_properties: {grid_position: 'NNETGG,ECUIZP'}
+          name: text_box_freq_min
+          properties: {align: center, bold: false, font_size: 14, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
+          type: TextBox
+        - layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
+          name: text_box_frequ_max
+          properties: {align: center, bold: false, enabled: true, font_size: 14, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}
+          type: TextBox
+        layout_properties: {grid_position: 'KDGMVM,WIFOHF'}
+        name: outlined_card_3
+        properties: {col_spacing: tiny, col_widths: '{"ECUIZP":41,"YVPPGA":19,"ZVIKXA":41}', role: null, spacing_above: none}
+        type: ColumnPanel
+      layout_properties: {full_width_row: true, grid_position: 'NMQGIE,NLKTQK RKIXWB,BMJGCS'}
       name: outlined_card_6
-      properties: {col_widths: '{"JUWZIS":35,"SILOEU":18}', role: null}
+      properties: {col_widths: '{"JUWZIS":35,"SILOEU":25,"WIFOHF":13}', role: null}
       type: ColumnPanel
     - components:
       - layout_properties: {grid_position: 'IYUOYU,HZQFND'}
@@ -113,9 +130,11 @@ components:
         name: label_10
         properties: {text: 'Cluster:'}
         type: Label
-      - layout_properties: {grid_position: 'IYUOYU,RYXMGS'}
+      - data_bindings: []
+        layout_properties: {grid_position: 'IYUOYU,RYXMGS'}
         name: drop_down_envelope_cluster
-        properties: {}
+        properties:
+          items: []
         type: DropDown
       - layout_properties: {grid_position: 'IYUOYU,SOVGNH'}
         name: label_11
@@ -125,34 +144,9 @@ components:
         name: drop_down_envelope_predict
         properties: {}
         type: DropDown
-      layout_properties: {grid_position: 'NMQGIE,NLKTQK HJBCBM,LQIQOT'}
+      layout_properties: {full_width_row: false, grid_position: 'NMQGIE,NLKTQK HJBCBM,LQIQOT'}
       name: column_panel_1
-      properties: {col_spacing: tiny, col_widths: '{"HZQFND":20,"LYWWBT":10,"RYXMGS":10,"SOVGNH":10,"VGPDRL":10}'}
-      type: ColumnPanel
-    - components:
-      - layout_properties: {grid_position: 'FMAWNF,CZQYYJ'}
-        name: label_4_copy
-        properties: {bold: true, spacing_above: small, text: Frequency}
-        type: Label
-      - layout_properties: {grid_position: 'NNETGG,ECUIZP'}
-        name: text_box_freq_min
-        properties: {align: center, bold: false, font_size: null, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
-        type: TextBox
-      - layout_properties: {grid_position: 'NNETGG,YVPPGA'}
-        name: label_12
-        properties: {text: Hz}
-        type: Label
-      - layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
-        name: text_box_frequ_max
-        properties: {align: center, bold: false, enabled: true, font_size: null, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}
-        type: TextBox
-      - layout_properties: {grid_position: 'SPNRPN,AOTYXS'}
-        name: label_13
-        properties: {text: Hz}
-        type: Label
-      layout_properties: {grid_position: 'NMQGIE,ILMIZY'}
-      name: outlined_card_3
-      properties: {col_spacing: tiny, col_widths: '{"ECUIZP":41,"YVPPGA":19,"ZVIKXA":41,"AOTYXS":19}', role: null, spacing_above: none}
+      properties: {col_spacing: tiny, col_widths: '{"HZQFND":15,"LYWWBT":5,"RYXMGS":15,"SOVGNH":10,"VGPDRL":15}', spacing_above: large, spacing_below: small}
       type: ColumnPanel
     - components:
       - layout_properties: {grid_position: 'FGBFBC,LTIPJG AHBNHQ,EVEOLT'}
@@ -183,104 +177,128 @@ components:
         name: check_box_cluster_comp
         properties: {align: left, bold: false, checked: true, font_size: -2, spacing_above: none, spacing_below: none, text: component, underline: false}
         type: CheckBox
-      layout_properties: {grid_position: 'NMQGIE,OOISSL'}
+      layout_properties: {full_width_row: false, grid_position: 'NMQGIE,OOISSL'}
       name: outlined_card_4
       properties: {col_spacing: tiny, col_widths: '{"LJMMMN":12,"MVIPOQ":48,"JBLBVG":12,"NLEIHX":48,"JCVRUC":12,"ERDLKO":48}', role: null}
       type: ColumnPanel
-    layout_properties: {full_width_row: true, grid_position: 'EVWOIY,KWQFIW'}
+    layout_properties: {width: 1125.25}
     name: outlined_card_9
-    properties: {col_widths: '{"NLKTQK":45,"ILMIZY":10,"OOISSL":15}', role: outlined-card}
+    properties: {col_spacing: tiny, col_widths: '{"NLKTQK":45,"OOISSL":15}', role: elevated-card}
     type: ColumnPanel
-  - components:
-    - layout_properties: {grid_position: 'JCZCCU,DUHWKE'}
-      name: label_5
-      properties: {bold: true, text: 'Function:'}
-      type: Label
-    - event_bindings: {change: radio_button_function_predict_change}
-      layout_properties: {grid_position: 'JCZCCU,UUVXYB'}
-      name: radio_button_function_predict
-      properties: {selected: true, text: predict}
-      type: RadioButton
-    - event_bindings: {clicked: radio_button_function_compare_clicked}
-      layout_properties: {grid_position: 'JCZCCU,SOPDZR'}
-      name: radio_button_function_compare
-      properties: {align: left, text: compare}
-      type: RadioButton
-    - layout_properties: {grid_position: 'JCZCCU,OCHNYJ'}
-      name: label_7
-      properties: {bold: true, text: 'Year:'}
-      type: Label
-    - layout_properties: {grid_position: 'JCZCCU,MMCMHD'}
-      name: drop_down_year
-      properties: {}
-      type: DropDown
-    layout_properties: {grid_position: 'QMPZLI,HNVJIY'}
-    name: outlined_card_7
-    properties: {col_spacing: tiny, col_widths: '{"DUHWKE":15,"UUVXYB":20,"SOPDZR":20,"OCHNYJ":10,"MMCMHD":21,"MYAXKO":4}', role: outlined-card}
-    type: ColumnPanel
-  - components:
-    - layout_properties: {grid_position: 'TETWZQ,EQDPDE'}
-      name: label_9
-      properties: {bold: true, text: 'Component:'}
-      type: Label
-    - layout_properties: {grid_position: 'TETWZQ,PADIIS'}
-      name: drop_down_component
-      properties: {}
-      type: DropDown
-    layout_properties: {grid_position: 'QMPZLI,REKNVA'}
-    name: outlined_card_8
-    properties: {col_widths: '{"EQDPDE":20,"PADIIS":40}', role: outlined-card}
-    type: ColumnPanel
-  - components:
-    - layout_properties: {grid_position: 'BQFESN,NNLDYL'}
-      name: label_14
-      properties: {bold: true, text: 'Measurement file for comparison:'}
-      type: Label
-    - layout_properties: {grid_position: 'BQFESN,WKVSBI'}
-      name: drop_down_compFile
-      properties: {}
-      type: DropDown
-    - layout_properties: {grid_position: 'BQFESN,IISSFA'}
-      name: check_box_compFile_show
-      properties: {text: show}
-      type: CheckBox
-    layout_properties: {grid_position: 'UZHKUS,LVLOFX'}
-    name: card_compFile
-    properties: {col_spacing: tiny, col_widths: '{"NNLDYL":25,"WKVSBI":45,"IISSFA":10}', role: null, visible: false}
-    type: ColumnPanel
-  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK MVEGBW,PEAHKF', row_background: ''}
-  name: outlined_card_5
-  properties: {col_spacing: small, col_widths: '{"HNVJIY":35,"REKNVA":25}', role: elevated-card}
-  type: ColumnPanel
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK MBDIHO,LRVTXW'}
+  name: flow_panel_1
+  properties: {}
+  type: FlowPanel
 - components:
-  - layout_properties: {grid_position: 'OTKQIJ,KSYQUA XFNMJG,JBBLAL'}
-    name: link_plot_overview
-    properties: {align: center, background: '', bold: false, role: null, text: Overview}
-    type: Link
-  - layout_properties: {grid_position: 'OTKQIJ,ZWISKL'}
-    name: link_plot_freq
-    properties: {align: center, text: frequency clusters}
-    type: Link
-  - layout_properties: {grid_position: 'OTKQIJ,ZZDMFG'}
-    name: link_plot_comp
-    properties: {align: center, text: component clusters}
-    type: Link
-  - layout_properties: {grid_position: 'OTKQIJ,FXPZGO'}
-    name: link_plot_pos
-    properties: {align: center, text: position clusters}
-    type: Link
-  - layout_properties: {grid_position: 'OTKQIJ,IVDWLJ'}
-    name: link_plot_cog
-    properties: {align: center, role: null, spacing_below: small, text: COG positions}
-    type: Link
-  - layout_properties: {grid_position: 'OTKQIJ,BATDMI'}
-    name: link_link
-    properties: {align: center, role: null, text: linkage}
-    type: Link
-  layout_properties: {full_width_row: false, grid_position: 'GQJQMK,MCCAXK FMSLVU,YHKGYJ'}
-  name: outlined_card_11
-  properties: {background: '', col_spacing: none, col_widths: '{"KSYQUA":10,"ZWISKL":12,"ZZDMFG":13,"FXPZGO":10,"IVDWLJ":10,"BATDMI":5}', role: tonal-card}
-  type: ColumnPanel
+  - components:
+    - components:
+      - layout_properties: {grid_position: 'JCZCCU,DUHWKE'}
+        name: label_5
+        properties: {bold: true, text: 'Function:'}
+        type: Label
+      - event_bindings: {change: radio_button_function_predict_change}
+        layout_properties: {grid_position: 'JCZCCU,UUVXYB'}
+        name: radio_button_function_predict
+        properties: {enabled: true, selected: true, text: predict}
+        type: RadioButton
+      - event_bindings: {clicked: radio_button_function_compare_clicked}
+        layout_properties: {grid_position: 'JCZCCU,SOPDZR'}
+        name: radio_button_function_compare
+        properties: {align: left, enabled: true, text: compare}
+        type: RadioButton
+      - layout_properties: {grid_position: 'JCZCCU,OCHNYJ'}
+        name: label_7
+        properties: {bold: true, text: 'Year:'}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'JCZCCU,MMCMHD'}
+        name: drop_down_year
+        properties: {}
+        type: DropDown
+      layout_properties: {grid_position: 'TRCLDX,VYTBYB'}
+      name: outlined_card_7
+      properties: {col_spacing: tiny, col_widths: '{"DUHWKE":15,"UUVXYB":20,"SOPDZR":20,"OCHNYJ":10,"MMCMHD":21,"MYAXKO":4}', role: null}
+      type: ColumnPanel
+    - layout_properties: {grid_position: 'TRCLDX,EGWACU'}
+      name: column_panel_2
+      properties: {}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'TETWZQ,EQDPDE'}
+        name: label_9
+        properties: {bold: true, text: 'Component:'}
+        type: Label
+      - layout_properties: {grid_position: 'TETWZQ,PADIIS'}
+        name: drop_down_component
+        properties: {}
+        type: DropDown
+      layout_properties: {grid_position: 'TRCLDX,MTTUOE'}
+      name: outlined_card_8
+      properties: {col_widths: '{"EQDPDE":20,"PADIIS":40}', role: null}
+      type: ColumnPanel
+    - layout_properties: {grid_position: 'TRCLDX,IVHSGK'}
+      name: column_panel_3
+      properties: {}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'BQFESN,NNLDYL'}
+        name: label_14
+        properties: {bold: true, text: 'Measurement file for comparison:'}
+        type: Label
+      - layout_properties: {grid_position: 'BQFESN,WKVSBI'}
+        name: drop_down_compFile
+        properties: {}
+        type: DropDown
+      - layout_properties: {grid_position: 'BQFESN,IISSFA'}
+        name: check_box_compFile_show
+        properties: {text: show}
+        type: CheckBox
+      layout_properties: {grid_position: 'WFQONZ,UQIGZA'}
+      name: card_compFile
+      properties: {col_spacing: tiny, col_widths: '{"NNLDYL":25,"WKVSBI":45,"IISSFA":10}', role: null, visible: false}
+      type: ColumnPanel
+    layout_properties: {width: 1124.733}
+    name: outlined_card_12
+    properties: {col_spacing: large, col_widths: '{"VYTBYB":35,"EGWACU":5,"MTTUOE":25,"IVHSGK":10}', role: elevated-card}
+    type: ColumnPanel
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK CBOVBR,UHHHOP'}
+  name: flow_panel_4
+  properties: {align: left}
+  type: FlowPanel
+- components:
+  - components:
+    - layout_properties: {grid_position: 'OTKQIJ,KSYQUA'}
+      name: link_plot_overview
+      properties: {align: center, background: '', bold: false, role: null, text: Overview}
+      type: Link
+    - layout_properties: {grid_position: 'OTKQIJ,ZWISKL'}
+      name: link_plot_freq
+      properties: {align: center, text: frequency clusters}
+      type: Link
+    - layout_properties: {grid_position: 'OTKQIJ,ZZDMFG'}
+      name: link_plot_comp
+      properties: {align: center, text: component clusters}
+      type: Link
+    - layout_properties: {grid_position: 'OTKQIJ,FXPZGO'}
+      name: link_plot_pos
+      properties: {align: center, text: position clusters}
+      type: Link
+    - layout_properties: {grid_position: 'OTKQIJ,IVDWLJ'}
+      name: link_plot_cog
+      properties: {align: center, role: null, spacing_below: small, text: COG positions}
+      type: Link
+    - layout_properties: {grid_position: 'OTKQIJ,BATDMI'}
+      name: link_link
+      properties: {align: center, role: null, text: linkage}
+      type: Link
+    layout_properties: {width: 706.05}
+    name: outlined_card_11
+    properties: {background: '', col_spacing: tiny, col_widths: '{"KSYQUA":6,"ZWISKL":11,"ZZDMFG":11,"FXPZGO":12,"IVDWLJ":10,"BATDMI":6}', role: tonal-card, spacing_below: small}
+    type: ColumnPanel
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK TVPBLK,AEUYAQ'}
+  name: flow_panel_2
+  properties: {}
+  type: FlowPanel
 - components:
   - layout_properties: {grid_position: 'LGEUYC,TYHFNU'}
     name: plot_1
@@ -291,6 +309,6 @@ components:
   properties: {col_spacing: tiny, col_widths: '{}', role: elevated-card}
   type: ColumnPanel
 container:
-  properties: {col_spacing: tiny, col_widths: '{"IQKESJ":10,"MCCAXK":50}'}
+  properties: {col_spacing: tiny, col_widths: '{"IQKESJ":5,"MCCAXK":55}'}
   type: ColumnPanel
 is_package: true
