@@ -12,12 +12,28 @@ class analysis(analysisTemplate):
     self.init_components(**properties) 
     self.repeating_panel_1.items =  globals.baureihe_years
     
+    #initialise dropdowns
     self.drop_down_year.items = anvil.server.call('get_unique_values',globals.DB,'Jahr')
     if self.drop_down_year.items: self.drop_down_year.selected_value = self.drop_down_year.items[-1]
     self.drop_down_component.items = anvil.server.call('get_unique_values',globals.DB,'Bauteil')
     self.drop_down_envelope_cluster.items = globals.envelopGenerationMethods
     self.drop_down_envelope_predict.items = globals.envelopGenerationMethods
 
+    #initialise checkbox globals
+    if not globals.selected_buildstage:
+      globals.selected_buildstage.add('Not found')
+    if not globals.selected_direction:
+      globals.selected_direction.add('-X')
+      globals.selected_direction.add('-Y')
+      globals.selected_direction.add('-Z')
+      globals.selected_direction.add('+X')
+      globals.selected_direction.add('+Y')
+      globals.selected_direction.add('+Z')
+    if not globals.selected_clustering:
+      globals.selected_clustering.add('frequency')
+      globals.selected_clustering.add('position')
+      globals.selected_clustering.add('component')
+   
 
   
   def radio_button_function_predict_change(self, **event_args):
@@ -26,6 +42,12 @@ class analysis(analysisTemplate):
 
   def radio_button_function_compare_clicked(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
+
+  def check_box_BS_BS0_change(self, **event_args):
+    if self.check_box_BS_BS0.checked:
+      globals.selected_buildstage.add(self.check_box_BS_BS0.text)
+    else:
+      globals.selected_buildstage.discard(self.check_box_BS_BS0.text)
     
 
   

@@ -6,13 +6,18 @@ components:
 - components:
   - components: []
     event_bindings: {click: button_loadData_click}
-    layout_properties: {grid_position: 'FMPKKF,NYKXWW WXGLXR,UUSEYI'}
+    layout_properties: {grid_position: 'WXGLXR,UUSEYI'}
     name: button_loadData
     properties: {foreground: 'theme:Error', icon: 'fa:download', role: null, text: load data}
     type: Link
-  - layout_properties: {grid_position: 'FMPKKF,NYKXWW BBSVUN,VYIURL'}
+  - event_bindings: {click: button_test_click}
+    layout_properties: {grid_position: 'AQMKUE,XPHBZG'}
+    name: button_test
+    properties: {role: outlined-button, text: test}
+    type: Button
+  - layout_properties: {grid_position: 'BBSVUN,VYIURL'}
     name: link_reset
-    properties: {icon: 'fa:times-circle', text: Reset}
+    properties: {align: left, icon: 'fa:times-circle', text: Reset}
     type: Link
   layout_properties: {slot: left-nav}
   name: column_panel_1

@@ -1,5 +1,6 @@
 components:
-- layout_properties: {grid_position: 'UFZKAJ,CWIKOJ'}
+- event_bindings: {change: check_box_years_change}
+  layout_properties: {grid_position: 'UFZKAJ,CWIKOJ'}
   name: check_box_years
   properties: {spacing_above: none, spacing_below: none, text: year}
   type: CheckBox
