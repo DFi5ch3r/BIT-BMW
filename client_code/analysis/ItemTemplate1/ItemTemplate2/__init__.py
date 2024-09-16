@@ -1,6 +1,7 @@
 from ._anvil_designer import ItemTemplate2Template
 from anvil import *
 import anvil.server
+from .. import globals
 
 
 class ItemTemplate2(ItemTemplate2Template):
@@ -16,6 +17,11 @@ class ItemTemplate2(ItemTemplate2Template):
     self.check_box_years_change()
 
   def check_box_years_change(self, **event_args):
-    print(self.item['baureihe'], self.item['year'], self.check_box_years.checked)
+    baureiheYear = self.item['baureihe'] + '-.-' + self.item['year']
+    if self.check_box_years.checked:
+      globals.selected_BaureiheYears.add(baureiheYear)
+    else:
+      globals.selected_BaureiheYears.discard(baureiheYear)
+
     
 
