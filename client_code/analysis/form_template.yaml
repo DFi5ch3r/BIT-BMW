@@ -1,8 +1,4 @@
 components:
-- layout_properties: {full_width_row: false, grid_position: 'NWTRSG,ATQOGN'}
-  name: label_1
-  properties: {align: center, bold: true, text: Analysis}
-  type: Label
 - components:
   - layout_properties: {}
     name: label_2
@@ -119,7 +115,7 @@ components:
         type: ColumnPanel
       layout_properties: {full_width_row: true, grid_position: 'NMQGIE,NLKTQK RKIXWB,BMJGCS'}
       name: outlined_card_6
-      properties: {col_widths: '{"JUWZIS":35,"SILOEU":25,"WIFOHF":13}', role: null}
+      properties: {col_widths: '{"JUWZIS":35,"SILOEU":20,"WIFOHF":18}', role: null}
       type: ColumnPanel
     - components:
       - layout_properties: {grid_position: 'IYUOYU,HZQFND'}
@@ -300,14 +296,14 @@ components:
   properties: {}
   type: FlowPanel
 - components:
-  - layout_properties: {grid_position: 'LGEUYC,TYHFNU'}
-    name: plot_1
+  - layout_properties: {width: 1319}
+    name: plot_2
     properties: {}
     type: Plot
-  layout_properties: {full_width_row: true, grid_position: 'GQJQMK,MCCAXK IHUSIU,UAVFYU'}
-  name: outlined_card_10
-  properties: {col_spacing: tiny, col_widths: '{}', role: elevated-card}
-  type: ColumnPanel
+  layout_properties: {grid_position: 'GQJQMK,MCCAXK XXTKRD,NYLNUN'}
+  name: flow_panel_3
+  properties: {}
+  type: FlowPanel
 container:
   properties: {col_spacing: tiny, col_widths: '{"IQKESJ":5,"MCCAXK":55}'}
   type: ColumnPanel
