@@ -34,11 +34,8 @@ class analysis(analysisTemplate):
       globals.selected_clustering.add('position')
       globals.selected_clustering.add('component')
    
-
-  
   def radio_button_function_predict_change(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
-    
 
   def radio_button_function_compare_clicked(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
@@ -67,23 +64,11 @@ class analysis(analysisTemplate):
       else:
           globals.selected_buildstage.discard(self.check_box_BS_VS2.text)
   
-  def check_box_BS_FB_change(self, **event_args):
-      if self.check_box_BS_FB.checked:
-          globals.selected_buildstage.add(self.check_box_BS_FB.text)
-      else:
-          globals.selected_buildstage.discard(self.check_box_BS_FB.text)
-  
   def check_box_BS_KEX_change(self, **event_args):
       if self.check_box_BS_KEX.checked:
           globals.selected_buildstage.add(self.check_box_BS_KEX.text)
       else:
           globals.selected_buildstage.discard(self.check_box_BS_KEX.text)
-  
-  def check_box_BS_AS_change(self, **event_args):
-      if self.check_box_BS_AS.checked:
-          globals.selected_buildstage.add(self.check_box_BS_AS.text)
-      else:
-          globals.selected_buildstage.discard(self.check_box_BS_AS.text)
   
   def check_box_BS_SERIE_change(self, **event_args):
       if self.check_box_BS_SERIE.checked:
@@ -96,6 +81,19 @@ class analysis(analysisTemplate):
           globals.selected_buildstage.add(self.check_box_BS_notFound.text)
       else:
           globals.selected_buildstage.discard(self.check_box_BS_notFound.text)    
+
+  def check_box_4_BS_FB_change(self, **event_args):
+      if self.check_box_BS_FB.checked:
+          globals.selected_buildstage.add(self.check_box_BS_FB.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_FB.text)
+
+  def check_box_4_BS_AS_change(self, **event_args):
+      if self.check_box_BS_AS.checked:
+          globals.selected_buildstage.add(self.check_box_BS_AS.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_AS.text)
+  
 
 
 
