@@ -43,63 +43,60 @@ class analysis(analysisTemplate):
         globalSet.discard(box.text)
         
 # Buildstage checkboxes        
-  def readGui(self, ):
+  def check_box_BS_BS0_change(self, **event_args):
+    # if self.check_box_BS_BS0.checked:
+    #   globals.selected_buildstage.add(self.check_box_BS_BS0.text)
+    # else:
+    #   globals.selected_buildstage.discard(self.check_box_BS_BS0.text)
+    self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
     
+  def check_box_BS_BS1_change(self, **event_args):
+      if self.check_box_BS_BS1.checked:
+          globals.selected_buildstage.add(self.check_box_BS_BS1.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_BS1.text)
   
-  # def check_box_BS_BS0_change(self, **event_args):
-  #   # if self.check_box_BS_BS0.checked:
-  #   #   globals.selected_buildstage.add(self.check_box_BS_BS0.text)
-  #   # else:
-  #   #   globals.selected_buildstage.discard(self.check_box_BS_BS0.text)
-  #   self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
-    
-  # def check_box_BS_BS1_change(self, **event_args):
-  #     if self.check_box_BS_BS1.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_BS1.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_BS1.text)
+  def check_box_BS_VS1_change(self, **event_args):
+      if self.check_box_BS_VS1.checked:
+          globals.selected_buildstage.add(self.check_box_BS_VS1.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_VS1.text)
   
-  # def check_box_BS_VS1_change(self, **event_args):
-  #     if self.check_box_BS_VS1.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_VS1.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_VS1.text)
+  def check_box_BS_VS2_change(self, **event_args):
+      if self.check_box_BS_VS2.checked:
+          globals.selected_buildstage.add(self.check_box_BS_VS2.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_VS2.text)
   
-  # def check_box_BS_VS2_change(self, **event_args):
-  #     if self.check_box_BS_VS2.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_VS2.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_VS2.text)
+  def check_box_BS_KEX_change(self, **event_args):
+      if self.check_box_BS_KEX.checked:
+          globals.selected_buildstage.add(self.check_box_BS_KEX.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_KEX.text)
   
-  # def check_box_BS_KEX_change(self, **event_args):
-  #     if self.check_box_BS_KEX.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_KEX.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_KEX.text)
+  def check_box_BS_SERIE_change(self, **event_args):
+      if self.check_box_BS_SERIE.checked:
+          globals.selected_buildstage.add(self.check_box_BS_SERIE.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_SERIE.text)
   
-  # def check_box_BS_SERIE_change(self, **event_args):
-  #     if self.check_box_BS_SERIE.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_SERIE.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_SERIE.text)
-  
-  # def check_box_BS_notFound_change(self, **event_args):
-  #     if self.check_box_BS_notFound.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_notFound.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_notFound.text)    
+  def check_box_BS_notFound_change(self, **event_args):
+      if self.check_box_BS_notFound.checked:
+          globals.selected_buildstage.add(self.check_box_BS_notFound.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_notFound.text)    
 
-  # def check_box_4_BS_FB_change(self, **event_args):
-  #     if self.check_box_BS_FB.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_FB.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_FB.text)
+  def check_box_4_BS_FB_change(self, **event_args):
+      if self.check_box_BS_FB.checked:
+          globals.selected_buildstage.add(self.check_box_BS_FB.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_FB.text)
 
-  # def check_box_4_BS_AS_change(self, **event_args):
-  #     if self.check_box_BS_AS.checked:
-  #         globals.selected_buildstage.add(self.check_box_BS_AS.text)
-  #     else:
-  #         globals.selected_buildstage.discard(self.check_box_BS_AS.text)
+  def check_box_4_BS_AS_change(self, **event_args):
+      if self.check_box_BS_AS.checked:
+          globals.selected_buildstage.add(self.check_box_BS_AS.text)
+      else:
+          globals.selected_buildstage.discard(self.check_box_BS_AS.text)
 
 # plot selection links
   def deselect_all_links(self):

@@ -52,7 +52,6 @@ class Form1(Form1Template):
     self.link_analysis_click()
 
   def button_test_click(self, **event_args):
-
     print(globals.selected_BaureiheYears)
     print(globals.selected_buildstage)
     print(globals.selected_direction)
