@@ -78,45 +78,58 @@ components:
           name: label_4
           properties: {bold: true, text: 'Directions:'}
           type: Label
-        - layout_properties: {grid_position: 'ZTYYOD,QGNFLY'}
-          name: check_box_dir_xNeg
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: -X}
-          type: CheckBox
-        - layout_properties: {grid_position: 'ZTYYOD,DHXARC'}
-          name: check_box_dir_yNeg
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: -Y}
-          type: CheckBox
-        - layout_properties: {grid_position: 'ZTYYOD,DEFXNV'}
-          name: check_box_dir_zNeg
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: -Z}
-          type: CheckBox
-        - layout_properties: {grid_position: 'RYMWTM,AFAPPK'}
-          name: check_box_dir_xPos
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: +X}
-          type: CheckBox
-        - layout_properties: {grid_position: 'RYMWTM,AENVSA'}
-          name: check_box_dir_yPos
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: +Y}
-          type: CheckBox
-        - layout_properties: {grid_position: 'RYMWTM,KZUBWY'}
-          name: check_box_dir_zPos
-          properties: {checked: true, spacing_above: none, spacing_below: none, text: +Z}
-          type: CheckBox
+        - components:
+          - event_bindings: {change: check_box_dir_xNeg_change}
+            layout_properties: {grid_position: 'TMOJVK,FCFGYH'}
+            name: check_box_dir_xNeg
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: -X}
+            type: CheckBox
+          - event_bindings: {change: check_box_dir_yNeg_change}
+            layout_properties: {grid_position: 'TMOJVK,KLEUTT'}
+            name: check_box_dir_yNeg
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: -Y}
+            type: CheckBox
+          - event_bindings: {change: check_box_dir_zNeg_change}
+            layout_properties: {grid_position: 'TMOJVK,LLMCUW'}
+            name: check_box_dir_zNeg
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: -Z}
+            type: CheckBox
+          - event_bindings: {change: check_box_dir_xPos_change}
+            layout_properties: {grid_position: 'CZEDYJ,DHPADU'}
+            name: check_box_dir_xPos
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: +X}
+            type: CheckBox
+          - event_bindings: {change: check_box_dir_yPos_change}
+            layout_properties: {grid_position: 'CZEDYJ,RFOHSG'}
+            name: check_box_dir_yPos
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: +Y}
+            type: CheckBox
+          - event_bindings: {change: check_box_dir_zPos_change}
+            layout_properties: {grid_position: 'CZEDYJ,ZTGUTA'}
+            name: check_box_dir_zPos
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: +Z}
+            type: CheckBox
+          layout_properties: {grid_position: 'ESKNMH,JYJXSL'}
+          name: card_directions
+          properties: {}
+          type: ColumnPanel
         layout_properties: {grid_position: 'KDGMVM,SILOEU'}
         name: outlined_card_2
-        properties: {col_spacing: tiny, col_widths: '{"QGNFLY":20,"DHXARC":20,"DEFXNV":20,"AFAPPK":20,"AENVSA":20,"KZUBWY":20}', role: null}
+        properties: {col_spacing: tiny, col_widths: '{}', role: null}
         type: ColumnPanel
       - components:
         - layout_properties: {grid_position: 'FMAWNF,CZQYYJ'}
           name: label_4_copy
           properties: {bold: true, spacing_above: small, text: 'Frequency [Hz]'}
           type: Label
-        - layout_properties: {grid_position: 'NNETGG,ECUIZP'}
+        - event_bindings: {change: text_box_freq_min_change}
+          layout_properties: {grid_position: 'NNETGG,ECUIZP'}
           name: text_box_freq_min
           properties: {align: center, bold: false, font_size: 14, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
           type: TextBox
-        - layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
-          name: text_box_frequ_max
+        - event_bindings: {change: text_box_freq_max_change, pressed_enter: text_box_freq_max_pressed_enter}
+          layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
+          name: text_box_freq_max
           properties: {align: center, bold: false, enabled: true, font_size: 14, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}
           type: TextBox
         layout_properties: {grid_position: 'KDGMVM,WIFOHF'}
@@ -136,7 +149,8 @@ components:
         name: label_10
         properties: {text: 'Cluster:'}
         type: Label
-      - layout_properties: {grid_position: 'IYUOYU,RYXMGS'}
+      - event_bindings: {change: drop_down_envelope_cluster_change}
+        layout_properties: {grid_position: 'IYUOYU,RYXMGS'}
         name: drop_down_envelope_cluster
         properties:
           items: []
@@ -145,7 +159,8 @@ components:
         name: label_11
         properties: {text: 'Prediction:'}
         type: Label
-      - layout_properties: {grid_position: 'IYUOYU,VGPDRL'}
+      - event_bindings: {change: drop_down_envelope_predict_change}
+        layout_properties: {grid_position: 'IYUOYU,VGPDRL'}
         name: drop_down_envelope_predict
         properties: {}
         type: DropDown
@@ -172,7 +187,8 @@ components:
         name: label_7
         properties: {bold: true, text: 'Year:'}
         type: Label
-      - layout_properties: {grid_position: 'JCZCCU,MMCMHD'}
+      - event_bindings: {change: drop_down_year_change}
+        layout_properties: {grid_position: 'JCZCCU,MMCMHD'}
         name: drop_down_year
         properties: {}
         type: DropDown
@@ -202,50 +218,52 @@ components:
         name: label_14
         properties: {bold: true, text: 'Measurement file for comparison:'}
         type: Label
-      - layout_properties: {grid_position: 'BQFESN,WKVSBI'}
+      - event_bindings: {change: drop_down_compFile_change}
+        layout_properties: {grid_position: 'BQFESN,WKVSBI'}
         name: drop_down_compFile
         properties: {}
         type: DropDown
-      - layout_properties: {grid_position: 'BQFESN,IISSFA'}
+      - event_bindings: {change: check_box_compFile_show_change}
+        layout_properties: {grid_position: 'BQFESN,IISSFA'}
         name: check_box_compFile_show
-        properties: {text: show}
+        properties: {checked: false, text: show}
         type: CheckBox
       layout_properties: {grid_position: 'NMQGIE,NLKTQK SCYEEL,VXUECZ'}
       name: card_compFile
       properties: {col_spacing: tiny, col_widths: '{"NNLDYL":25,"WKVSBI":45,"IISSFA":10}', role: null, visible: false}
       type: ColumnPanel
     - components:
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG AHBNHQ,EVEOLT'}
+      - layout_properties: {grid_position: 'AHBNHQ,EVEOLT'}
         name: label_6
         properties: {bold: true, spacing_below: none, text: 'Clustering:'}
         type: Label
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG IMDLXM,LJMMMN'}
-        name: label_15
+      - layout_properties: {grid_position: 'QKJKQT,YJHDLK'}
+        name: column_panel_2
         properties: {}
-        type: Label
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG IMDLXM,MVIPOQ'}
-        name: check_box_cluster_frequ
-        properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: frequency}
-        type: CheckBox
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG KNAJXM,JBLBVG'}
-        name: label_16
-        properties: {}
-        type: Label
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG KNAJXM,NLEIHX'}
-        name: check_box_cluster_pos
-        properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: position}
-        type: CheckBox
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG VKROJR,JCVRUC'}
-        name: label_17
-        properties: {}
-        type: Label
-      - layout_properties: {grid_position: 'FGBFBC,LTIPJG VKROJR,ERDLKO'}
-        name: check_box_cluster_comp
-        properties: {align: left, bold: false, checked: true, font_size: -2, spacing_above: none, spacing_below: none, text: component, underline: false}
-        type: CheckBox
+        type: ColumnPanel
+      - components:
+        - event_bindings: {change: check_box_cluster_frequ_change}
+          layout_properties: {grid_position: 'SKPRNP,HDEQXS'}
+          name: check_box_cluster_frequ
+          properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: frequency}
+          type: CheckBox
+        - event_bindings: {change: check_box_cluster_pos_change}
+          layout_properties: {grid_position: 'EFFVDY,MSBROQ'}
+          name: check_box_cluster_pos
+          properties: {align: left, checked: true, spacing_above: none, spacing_below: none, text: position}
+          type: CheckBox
+        - event_bindings: {change: check_box_cluster_comp_change}
+          layout_properties: {grid_position: 'GZRPTW,LETWEP'}
+          name: check_box_cluster_comp
+          properties: {align: left, bold: false, checked: true, font_size: -2, spacing_above: none, spacing_below: none, text: component, underline: false}
+          type: CheckBox
+        layout_properties: {grid_position: 'QKJKQT,ZSGWRO'}
+        name: card_clustering
+        properties: {col_spacing: tiny}
+        type: ColumnPanel
       layout_properties: {full_width_row: false, grid_position: 'NMQGIE,OOISSL'}
       name: outlined_card_4
-      properties: {col_spacing: tiny, col_widths: '{"LJMMMN":12,"MVIPOQ":48,"JBLBVG":12,"NLEIHX":48,"JCVRUC":12,"ERDLKO":48}', role: null}
+      properties: {col_spacing: tiny, col_widths: '{"YJHDLK":7,"ZSGWRO":53}', role: null}
       type: ColumnPanel
     layout_properties: {width: 1125.25}
     name: outlined_card_9
