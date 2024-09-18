@@ -26,14 +26,13 @@ class analysis(analysisTemplate):
     #if not globals.selected_directions:  
     self.saveBoxes(self.card_directions, globals.selected_directions)
     #if not globals.selected_clustering:
-    self.saveBoxes(self.card_clustering, globals.selected_clustering)
-    
+    self.saveBoxes(self.card_clustering, globals.selected_clustering)  
     globals.selected_frequencyRange[0] = self.text_box_freq_min.text
     globals.selected_frequencyRange[1] = self.text_box_freq_max.text
-
     globals.selected_envelopeMethods[0] = self.drop_down_envelope_cluster.selected_value
     globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
     globals.selected_year = self.drop_down_year.selected_value
+    globals.selected_component = self.drop_down_component.selected_value
 
   def saveBoxes(self, card, globalSet):
     for box in card.get_components():
@@ -134,11 +133,8 @@ class analysis(analysisTemplate):
     for link in self.card_plotSelection.get_components():
       link.bold=False
 
-# legacy handlers
-  def text_box_freq_max_pressed_enter(self, **event_args):
-    """This method is called when the user presses Enter in this text box"""
-    pass
 
+# dorpdowns
   def drop_down_compFile_change(self, **event_args):
     globals.selected_comparisonFilePath = self.drop_down_compFile.selected_value
 
@@ -147,8 +143,14 @@ class analysis(analysisTemplate):
 
   def drop_down_year_change(self, **event_args):
     globals.selected_year = self.drop_down_year.selected_value
-    
 
+  def drop_down_component_change(self, **event_args):
+   globals.selected_component = self.drop_down_component.selected_value
+    
+# legacy handlers
+  def text_box_freq_max_pressed_enter(self, **event_args):
+    """This method is called when the user presses Enter in this text box"""
+    pass
 
 
       

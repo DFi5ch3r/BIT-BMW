@@ -205,7 +205,8 @@ components:
         name: label_9
         properties: {bold: true, text: 'Component:'}
         type: Label
-      - layout_properties: {grid_position: 'TETWZQ,PADIIS'}
+      - event_bindings: {change: drop_down_component_change}
+        layout_properties: {grid_position: 'TETWZQ,PADIIS'}
         name: drop_down_component
         properties: {}
         type: DropDown
