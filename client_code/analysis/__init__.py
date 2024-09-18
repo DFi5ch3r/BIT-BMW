@@ -93,7 +93,13 @@ class analysis(analysisTemplate):
           globals.selected_buildstage.add(self.check_box_BS_AS.text)
       else:
           globals.selected_buildstage.discard(self.check_box_BS_AS.text)
+
+  def deselect_all_links():
+    linkList = [self.]
   
+  def link_plot_overview_click(self, **event_args):
+    self.link_plot_overview.bold = True
+
 
 
 
