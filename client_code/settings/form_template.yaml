@@ -23,7 +23,8 @@ components:
       name: label_3
       properties: {align: right, text: 'Number of clusters:'}
       type: Label
-    - layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
+    - event_bindings: {change: text_box_pos_clusters_change}
+      layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
       name: text_box_pos_clusters
       properties: {align: right, hide_text: false, placeholder: '6', type: text}
       type: TextBox
@@ -58,9 +59,10 @@ components:
       name: label_3_copy
       properties: {align: right, text: 'Number of super-clusters:'}
       type: Label
-    - layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
+    - event_bindings: {change: text_box_freq_superClusters_change}
+      layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
       name: text_box_freq_superClusters
-      properties: {align: right, enabled: false, hide_text: true, placeholder: '30', type: number}
+      properties: {align: right, enabled: false, hide_text: false, placeholder: '30', type: text}
       type: TextBox
     - event_bindings: {change: check_box_superClusters_change}
       layout_properties: {grid_position: 'MJNPFO,TWDQEE'}
@@ -113,7 +115,8 @@ components:
     name: label_8
     properties: {}
     type: Label
-  - layout_properties: {grid_position: 'IKENPX,UBSTIG'}
+  - event_bindings: {change: check_box_excludeMotor_change}
+    layout_properties: {grid_position: 'IKENPX,UBSTIG'}
     name: check_box_excludeMotor
     properties: {text: exclude component 'Motor' from clustering}
     type: CheckBox

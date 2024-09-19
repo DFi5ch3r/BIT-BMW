@@ -13,14 +13,15 @@ class settings(settingsTemplate):
 
     self.radio_button_pos_hierachical.selected = globals.settings_posClusterIsHierarchical
     self.radio_button_pos_kMeans.selected = not globals.settings_posClusterIsHierarchical
-    self.text_box_pos_clusters.text = int(globals.settings_posClusterNumber)
+    self.text_box_pos_clusters.text = globals.settings_posClusterNumber
 
     self.radio_button_freq_hierachical.selected = globals.settings_freqClusterIsHierarchical
     self.radio_button_freq_kMeans.selected = not globals.settings_freqClusterIsHierarchical
     self.text_box_freq_superClusters.text = globals.settings_freqSuperClusterNumber
-    self.check_box_superClusters.checked = int(globals.settings_freqSuperClusterNumberCustom)
-    self.text_box_freq_superClusters.enable = self.check_box_superClusters.checked
-
+    self.check_box_superClusters.checked = globals.settings_freqSuperClusterNumberCustom
+    self.text_box_freq_superClusters.enable = globals.settings_freqSuperClusterNumberCustom
+self.text_box_freq_superClusters.enable = globals.settings_freqSuperClusterNumberCustom
+    
     self.drop_down_distance_hierarchical.selected_value = globals.settings_freqDistanceMetricHierarchical
     self.drop_down_distance_kMeans.selected_value = globals.settings_freqDistanceMetricKMeans
 
@@ -28,7 +29,8 @@ class settings(settingsTemplate):
 
   def check_box_superClusters_change(self, **event_args):
     self.text_box_freq_superClusters.enabled = self.check_box_superClusters.checked
-
+    globals.settings_freqSuperClusterNumberCustom = self.check_box_superClusters.checked
+    
   def radio_button_pos_hierachical_clicked(self, **event_args):
     globals.settings_posClusterIsHierarchical = self.radio_button_pos_hierachical.selected
 
@@ -40,3 +42,12 @@ class settings(settingsTemplate):
 
   def radio_button_freq_kMeans_clicked(self, **event_args):
     globals.settings_freqClusterIsHierarchical = not self.radio_button_freq_kMeans.selected
+
+  def text_box_pos_clusters_change(self, **event_args):
+     globals.settings_posClusterNumber = int(self.text_box_pos_clusters.text)
+
+  def text_box_freq_superClusters_change(self, **event_args):
+    globals.settings_freqClusterNumber = int(self.text_box_freq_superClusters.text)
+
+  def check_box_excludeMotor_change(self, **event_args):
+    globals.settings_excludeMotor = self.check_box_excludeMotor.checked
