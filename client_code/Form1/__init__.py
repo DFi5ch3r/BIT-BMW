@@ -60,4 +60,5 @@ class Form1(Form1Template):
     print(globals.selected_envelopeMethods)
     print(globals.selected_predictCompare)
     print(globals.selected_year)
-    self.content_panel.raise_event_on_children('x-updateResults')
+    #self.content_panel.raise_event_on_children('x-updateResults')
+    print(globals.settings_freqClusterIsHierarchical)

@@ -1,7 +1,127 @@
 components:
-- layout_properties: {grid_position: 'BNAUYM,ELDLNJ'}
-  name: outlined_1
-  properties: {role: outlined, text: settings}
-  type: TextBox
-container: {type: ColumnPanel}
+- components:
+  - components:
+    - layout_properties: {grid_position: 'XHOFMF,RJHRGH'}
+      name: label_1
+      properties: {bold: true, text: 'Position based clustering:'}
+      type: Label
+    - layout_properties: {grid_position: 'MJNPFO,YPLLSM'}
+      name: label_2
+      properties: {text: 'Cluster method:'}
+      type: Label
+    - event_bindings: {clicked: radio_button_pos_hierachical_clicked}
+      layout_properties: {grid_position: 'MJNPFO,AFULDA'}
+      name: radio_button_pos_hierachical
+      properties: {selected: true, text: hierarchical}
+      type: RadioButton
+    - event_bindings: {clicked: radio_button_pos_kMeans_clicked}
+      layout_properties: {grid_position: 'MJNPFO,RLFEDS'}
+      name: radio_button_pos_kMeans
+      properties: {text: kMeans}
+      type: RadioButton
+    - layout_properties: {grid_position: 'MJNPFO,EHAJKH'}
+      name: label_3
+      properties: {align: right, text: 'Number of clusters:'}
+      type: Label
+    - layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
+      name: text_box_pos_clusters
+      properties: {align: right, hide_text: false, placeholder: '6', type: text}
+      type: TextBox
+    - layout_properties: {grid_position: 'MJNPFO,BPYYKV'}
+      name: label_4
+      properties: {}
+      type: Label
+    layout_properties: {grid_position: 'THLSFD,RGQOHX'}
+    name: column_panel_1
+    properties: {col_widths: '{"YPLLSM":10,"AFULDA":10,"RLFEDS":15,"EHAJKH":15,"WJZAVJ":10,"BPYYKV":10}', role: elevated-card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'XHOFMF,RJHRGH'}
+      name: label_1_copy
+      properties: {bold: true, text: 'Frequency based clustering:'}
+      type: Label
+    - layout_properties: {grid_position: 'MJNPFO,YPLLSM'}
+      name: label_2_copy
+      properties: {text: 'Cluster method:'}
+      type: Label
+    - event_bindings: {clicked: radio_button_freq_hierachical_clicked}
+      layout_properties: {grid_position: 'MJNPFO,AFULDA'}
+      name: radio_button_freq_hierachical
+      properties: {group_name: radioGroup2, selected: true, text: hierarchical}
+      type: RadioButton
+    - event_bindings: {clicked: radio_button_freq_kMeans_clicked}
+      layout_properties: {grid_position: 'MJNPFO,RLFEDS'}
+      name: radio_button_freq_kMeans
+      properties: {group_name: radioGroup2, text: kMeans}
+      type: RadioButton
+    - layout_properties: {grid_position: 'MJNPFO,EHAJKH'}
+      name: label_3_copy
+      properties: {align: right, text: 'Number of super-clusters:'}
+      type: Label
+    - layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
+      name: text_box_freq_superClusters
+      properties: {align: right, enabled: false, hide_text: true, placeholder: '30', type: number}
+      type: TextBox
+    - event_bindings: {change: check_box_superClusters_change}
+      layout_properties: {grid_position: 'MJNPFO,TWDQEE'}
+      name: check_box_superClusters
+      properties: {text: 'custom '}
+      type: CheckBox
+    - components:
+      - layout_properties: {grid_position: 'XHOFMF,RJHRGH'}
+        name: label_1_copy_copy
+        properties: {bold: true, text: Distance Metrics}
+        type: Label
+      - layout_properties: {grid_position: 'MJNPFO,WTACSK'}
+        name: label_7
+        properties: {}
+        type: Label
+      - layout_properties: {grid_position: 'MJNPFO,YPLLSM'}
+        name: label_2_copy_copy
+        properties: {text: hierarchical}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'MJNPFO,DQVGDQ'}
+        name: drop_down_distance_hierarchical
+        properties: {}
+        type: DropDown
+      - layout_properties: {grid_position: 'MJNPFO,DJMXQK'}
+        name: label_6
+        properties: {}
+        type: Label
+      - layout_properties: {grid_position: 'MJNPFO,EHAJKH'}
+        name: label_3_copy_copy
+        properties: {text: kMeans}
+        type: Label
+      - layout_properties: {grid_position: 'MJNPFO,KKEWDF'}
+        name: drop_down_distance_kMeans
+        properties: {}
+        type: DropDown
+      - layout_properties: {grid_position: 'MJNPFO,NGPFTS'}
+        name: label_5
+        properties: {}
+        type: Label
+      layout_properties: {grid_position: 'RTUHQZ,JQIIUW'}
+      name: column_panel_1_copy_copy
+      properties: {col_widths: '{"YPLLSM":10,"EHAJKH":10,"DQVGDQ":20,"KKEWDF":20,"NGPFTS":15,"DJMXQK":5,"WTACSK":10}', role: elevated-card}
+      type: ColumnPanel
+    layout_properties: {grid_position: ''}
+    name: column_panel_1_copy
+    properties: {col_widths: '{"YPLLSM":10,"AFULDA":10,"RLFEDS":15,"EHAJKH":15,"WJZAVJ":10,"TWDQEE":10}', role: elevated-card}
+    type: ColumnPanel
+  - layout_properties: {grid_position: 'IKENPX,PNSEFN'}
+    name: label_8
+    properties: {}
+    type: Label
+  - layout_properties: {grid_position: 'IKENPX,UBSTIG'}
+    name: check_box_excludeMotor
+    properties: {text: exclude component 'Motor' from clustering}
+    type: CheckBox
+  layout_properties: {grid_position: 'URPUIK,CXXNIK'}
+  name: outlined_card_1
+  properties: {col_widths: '{"PNSEFN":2,"UBSTIG":58}', role: elevated-card}
+  type: ColumnPanel
+container:
+  properties: {col_widths: '{}'}
+  type: ColumnPanel
 is_package: true

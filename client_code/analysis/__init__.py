@@ -137,7 +137,26 @@ class analysis(analysisTemplate):
   def link_plot_overview_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_overview.bold = True
+  def link_plot_freq_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_freq.bold = True
 
+  def link_plot_comp_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_comp.bold = True
+
+  def link_plot_pos_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_pos.bold = True
+
+  def link_plot_cog_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_cog.bold = True
+
+  def link_link_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_link.bold = True
+    
 # dorpdowns
   def drop_down_compFile_change(self, **event_args):
     globals.selected_comparisonFilePath = self.drop_down_compFile.selected_value
@@ -156,21 +175,7 @@ class analysis(analysisTemplate):
     """This method is called when the user presses Enter in this text box"""
     pass
 
-  def link_plot_freq_click(self, **event_args):
-    self.deselect_all_links()
-    self.link_plot_freq.bold = True
 
-  def link_plot_comp_click(self, **event_args):
-    self.deselect_all_links()
-    self.link_plot_comp.bold = True
-
-  def link_plot_pos_click(self, **event_args):
-    self.deselect_all_links()
-    self.link_plot_pos.bold = True
-
-  def link_plot_cog_click(self, **event_args):
-    self.deselect_all_links()
-    self.link_plot_overview.bold = True
 
 
       

@@ -18,4 +18,15 @@ selected_showComparisonData = False
 selected_year = 0
 selected_component = ''
 
+settings_posClusterIsHierarchical = True
+settings_posClusterNumber = 6
+settings_freqClusterIsHierarchical = True
+settings_freqSuperClusterNumber = 30
+settings_freqSuperClusterNumberCustom = False
+settings_freqDistanceMetricsHierarchical = ["seuclidian","euclidian","squaredeuclidean","cityblock","minkowski","chebychev","cosine","correlation"]
+settings_freqDistanceMetricHierarchical = settings_freqDistanceMetricsHierarchical[0]
+settings_freqDistanceMetricsKMeans = ["correlation","squaredeuclidean","cityblock","cosine"]
+settings_freqDistanceMetricKMeans = settings_freqDistanceMetricsKMeans[0]
+settings_excludeMotor = False
+
 test = 42
