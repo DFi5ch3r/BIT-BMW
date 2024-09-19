@@ -62,7 +62,7 @@ components:
     - event_bindings: {change: text_box_freq_superClusters_change}
       layout_properties: {grid_position: 'MJNPFO,WJZAVJ'}
       name: text_box_freq_superClusters
-      properties: {align: right, enabled: false, hide_text: false, placeholder: '30', type: text}
+      properties: {align: right, enabled: true, hide_text: false, placeholder: '30', type: text}
       type: TextBox
     - event_bindings: {change: check_box_superClusters_change}
       layout_properties: {grid_position: 'MJNPFO,TWDQEE'}
@@ -83,6 +83,7 @@ components:
         properties: {text: hierarchical}
         type: Label
       - data_bindings: []
+        event_bindings: {change: drop_down_distance_hierarchical_change}
         layout_properties: {grid_position: 'MJNPFO,DQVGDQ'}
         name: drop_down_distance_hierarchical
         properties: {}
@@ -95,7 +96,8 @@ components:
         name: label_3_copy_copy
         properties: {text: kMeans}
         type: Label
-      - layout_properties: {grid_position: 'MJNPFO,KKEWDF'}
+      - event_bindings: {change: drop_down_distance_kMeans_change}
+        layout_properties: {grid_position: 'MJNPFO,KKEWDF'}
         name: drop_down_distance_kMeans
         properties: {}
         type: DropDown
