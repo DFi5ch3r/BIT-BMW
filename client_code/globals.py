@@ -17,3 +17,5 @@ selected_comparisonFilePath = ''
 selected_showComparisonData = False
 selected_year = 0
 selected_component = ''
+
+test = 42

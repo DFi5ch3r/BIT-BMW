@@ -12,6 +12,8 @@ class analysis(analysisTemplate):
     self.init_components(**properties) 
     self.repeating_panel_1.items =  globals.baureihe_years
     
+    self.set_event_handler('x-updateResults', self.updateResults)
+    
     #initialise dropdowns
     self.drop_down_year.items = anvil.server.call('get_unique_values',globals.DB,'Jahr')
     if self.drop_down_year.items: 
@@ -34,6 +36,9 @@ class analysis(analysisTemplate):
     globals.selected_year = self.drop_down_year.selected_value
     globals.selected_component = self.drop_down_component.selected_value
 
+  def updateResults(self, **event_args):
+    pass
+  
   def saveBoxes(self, card, globalSet):
     for box in card.get_components():
       if box.checked:
@@ -69,10 +74,6 @@ class analysis(analysisTemplate):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
 
 # direction checboxes
-  def link_plot_overview_click(self, **event_args):
-    self.deselect_all_links()
-    self.link_plot_overview.bold = True
-
   def check_box_dir_xNeg_change(self, **event_args):
     self.saveBoxes(self.card_directions, globals.selected_directions)
 
@@ -132,7 +133,10 @@ class analysis(analysisTemplate):
   def deselect_all_links(self):
     for link in self.card_plotSelection.get_components():
       link.bold=False
-
+      
+  def link_plot_overview_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_overview.bold = True
 
 # dorpdowns
   def drop_down_compFile_change(self, **event_args):
@@ -146,11 +150,27 @@ class analysis(analysisTemplate):
 
   def drop_down_component_change(self, **event_args):
    globals.selected_component = self.drop_down_component.selected_value
-    
+  
 # legacy handlers
   def text_box_freq_max_pressed_enter(self, **event_args):
     """This method is called when the user presses Enter in this text box"""
     pass
+
+  def link_plot_freq_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_freq.bold = True
+
+  def link_plot_comp_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_comp.bold = True
+
+  def link_plot_pos_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_pos.bold = True
+
+  def link_plot_cog_click(self, **event_args):
+    self.deselect_all_links()
+    self.link_plot_overview.bold = True
 
 
       

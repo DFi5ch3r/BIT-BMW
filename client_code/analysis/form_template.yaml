@@ -358,24 +358,29 @@ components:
       name: link_plot_overview
       properties: {align: center, background: '', bold: false, font_size: null, role: null, text: Overview, underline: false}
       type: Link
-    - layout_properties: {grid_position: 'OTKQIJ,ZWISKL'}
+    - event_bindings: {click: link_plot_freq_click}
+      layout_properties: {grid_position: 'OTKQIJ,ZWISKL'}
       name: link_plot_freq
       properties: {align: center, text: frequency clusters}
       type: Link
-    - layout_properties: {grid_position: 'OTKQIJ,ZZDMFG'}
+    - event_bindings: {click: link_plot_comp_click}
+      layout_properties: {grid_position: 'OTKQIJ,ZZDMFG'}
       name: link_plot_comp
       properties: {align: center, text: component clusters}
       type: Link
-    - layout_properties: {grid_position: 'OTKQIJ,FXPZGO'}
+    - event_bindings: {click: link_plot_pos_click}
+      layout_properties: {grid_position: 'OTKQIJ,FXPZGO'}
       name: link_plot_pos
       properties: {align: center, text: position clusters}
       type: Link
-    - layout_properties: {grid_position: 'OTKQIJ,IVDWLJ'}
+    - event_bindings: {click: link_plot_cog_click}
+      layout_properties: {grid_position: 'OTKQIJ,IVDWLJ'}
       name: link_plot_cog
       properties: {align: center, role: null, spacing_below: small, text: COG positions}
       type: Link
-    - layout_properties: {grid_position: 'OTKQIJ,BATDMI'}
-      name: link_link
+    - event_bindings: {click: link_link_click}
+      layout_properties: {grid_position: 'OTKQIJ,BATDMI'}
+      name: link_plot_link
       properties: {align: center, role: null, text: linkage}
       type: Link
     layout_properties: {width: 706.05}
