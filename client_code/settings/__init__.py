@@ -58,6 +58,5 @@ class settings(settingsTemplate):
   def drop_down_distance_hierarchical_change(self, **event_args):
     globals.settings_freqDistanceMetricHierarchical = self.drop_down_distance_hierarchical.selected_value 
     
-
   def drop_down_distance_kMeans_change(self, **event_args):
     globals.settings_freqDistanceMetricKMeans = self.drop_down_distance_kMeans.selected_value

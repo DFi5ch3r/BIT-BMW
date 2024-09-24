@@ -29,4 +29,8 @@ settings_freqDistanceMetricsKMeans = ["correlation","squaredeuclidean","citybloc
 settings_freqDistanceMetricKMeans = settings_freqDistanceMetricsKMeans[0]
 settings_excludeMotor = False
 
+input_inputMethod = 'directory'
+input_customPath = ''
+input_fileName =''
+
 test = 42
