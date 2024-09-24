@@ -33,4 +33,3 @@ input_inputMethod = 'directory'
 input_customPath = ''
 input_fileName =''
 
-test = 42
