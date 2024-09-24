@@ -54,6 +54,11 @@ class Form1(Form1Template):
   def button_test_click(self, **event_args):
     print(globals.selected_BaureiheYears)
     print(globals.selected_buildstage)
-    print(globals.selected_direction)
+    print(globals.selected_directions)
     print(globals.selected_clustering)
-
+    print(globals.selected_frequencyRange)
+    print(globals.selected_envelopeMethods)
+    print(globals.selected_predictCompare)
+    print(globals.selected_year)
+    #self.content_panel.raise_event_on_children('x-updateResults')
+    print(globals.settings_freqClusterIsHierarchical)
