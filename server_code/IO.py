@@ -2,6 +2,8 @@ import anvil.server
 import random
 import os
 import re
+from . import serverGlobals
+
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #
@@ -13,6 +15,10 @@ import re
 # def say_hello(name):
 #   print("Hello, " + name + "!")
 #   return 42
+
+@anvil.server.callable
+def test():
+  return serverGlobals.DB
 
 @anvil.server.callable
 def create_databaseTEST(read_path):
@@ -97,7 +103,9 @@ def create_databaseTEST(read_path):
           'Last': random.choice(lasten),
           'Gang': f'{random.randint(1, 5)}'
       })
-  return testDB
+  #return testDB
+  serverGlobals.DB = testDB
+  #print(serverGlobals.DB)
 
 @anvil.server.callable
 def create_database(read_path):
@@ -204,8 +212,9 @@ def create_database(read_path):
                 entry[key] = 'Not found'
 
     return database
+
 @anvil.server.callable
-def get_baureihe_and_years(database):
+def get_baureihe_and_years():
     """
     Creates a list of dictionaries, each containing the name of the Baureihe and the respective years as a list.
 
@@ -215,6 +224,7 @@ def get_baureihe_and_years(database):
     Returns:
         list: A list of dictionaries, each containing the name of the Baureihe and the respective years as a list.
     """
+    database = serverGlobals.DB
     baureihe_to_years = {}
 
     for entry in database:
