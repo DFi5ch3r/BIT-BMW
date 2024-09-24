@@ -50,9 +50,8 @@ class Form1(Form1Template):
     """This method is called when the link is clicked"""
     notificationString = "Generating Database..."
     with Notification(notificationString):
-      globals.DB = anvil.server.call('create_database','dummy')
-      globals.DB = anvil.server.call('addActiveFlags',globals.DB)
-      globals.baureihe_years= anvil.server.call('get_baureihe_and_years',globals.DB)
+      globals.DB = anvil.server.call('create_database',globals.input_customPath)
+      globals.baureihe_years = anvil.server.call('get_baureihe_and_years',globals.DB)
       self.button_loadData.foreground = '#1EB980'
       self.link_analysis_click()
 

@@ -1,7 +1,7 @@
 import anvil.server
 
 
-DB =   testDB = [{'Baureihe': 'load database',}]
+DB = [{'Baureihe': 'load database',}]
 baureihe_years = []
 
 envelopGenerationMethods = ['Maximum', 'Minimum', '+3*std.dev.(99%)', '+2*std.dev.(95%)', '+1*std.dev.(68%)', 'Mean', '99th-percentile (each freq.)', '95th-percentile (each freq.)', '75th-percentile (each freq.)', 'Median (each freq.)', '99th-percentile (total)', '95th-percentile (total)', '75th-percentile (total)', 'Median (total)']
@@ -30,6 +30,7 @@ settings_freqDistanceMetricKMeans = settings_freqDistanceMetricsKMeans[0]
 settings_excludeMotor = False
 
 input_inputMethod = 'directory'
-input_customPath = ''
+#input_customPath = ''
+input_customPath = '/home/dfischer/12-Projects/09-BMW-BIT/01-originalMatlabTool/BMW_BIT_TUB'
 input_fileName =''
 
