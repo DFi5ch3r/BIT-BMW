@@ -105,7 +105,6 @@ def create_databaseTEST(read_path):
       })
   #return testDB
   serverGlobals.DB = testDB
-  #print(serverGlobals.DB)
 
 @anvil.server.callable
 def create_database(read_path):
@@ -211,7 +210,8 @@ def create_database(read_path):
             if not entry[key]:
                 entry[key] = 'Not found'
 
-    return database
+    #return database
+    serverGlobals.DB = database
 
 @anvil.server.callable
 def get_baureihe_and_years():
