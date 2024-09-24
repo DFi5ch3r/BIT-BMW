@@ -50,8 +50,8 @@ class Form1(Form1Template):
     """This method is called when the link is clicked"""
     notificationString = "Generating Database..."
     with Notification(notificationString):
-      globals.DB = anvil.server.call('create_database',globals.input_customPath)
-      globals.baureihe_years = anvil.server.call('get_baureihe_and_years',globals.DB)
+      anvil.server.call('create_databaseTEST',globals.input_customPath)
+      globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
       self.button_loadData.foreground = '#1EB980'
       self.link_analysis_click()
 
@@ -62,7 +62,7 @@ class Form1(Form1Template):
     self.show_globals()
 
   def button_test_click(self, **event_args):
-    pass  
+    print(anvil.server.call('test')) 
     #self.show_globals()
     #self.content_panel.raise_event_on_children('x-updateResults')
     
