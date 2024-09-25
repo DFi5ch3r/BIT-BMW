@@ -117,6 +117,7 @@ def create_databaseTEST(read_path):
       })
   #return testDB
   serverGlobals.DB = testDB
+  #print(serverGlobals.DB)
 
 @anvil.server.callable
 def create_database(read_path):
@@ -234,6 +235,7 @@ def create_database(read_path):
             if not entry[key]:
                 entry[key] = 'Not found'
 
+
     database = sorted(database, key=lambda x: x['Baureihe'])
     #return database
     serverGlobals.DB = database
@@ -272,7 +274,7 @@ def get_baureihe_and_years():
     return baureihe_years_list
 
 @anvil.server.callable
-def get_unique_values(key):
+def get_unique_values(key, sourceSelctedData=False):
     """
     Returns the unique values for a specified key in the database.
 
@@ -285,7 +287,12 @@ def get_unique_values(key):
     """
     unique_values = set()
 
-    for entry in serverGlobals.DB:
+    if sourceSelctedData:
+      DB = serverGlobals.selectedData
+    else:
+      DB = serverGlobals.DB
+  
+    for entry in DB:
         if key in entry:
             unique_values.add(entry[key])
 

@@ -5,9 +5,10 @@ metadata: {logo_img: 'asset:Icon.png'}
 name: BMW
 package_name: BMW
 renamed: true
-runtime_options: {client_version: '3', server_spec: null, server_version: python3-sandbox, version: 2, server_persist: false}
+runtime_options: {client_version: '3', server_persist: false, server_spec: null, server_version: python3-sandbox, version: 2}
 services:
 - client_config: {}
   server_config: {}
   source: /runtime/services/tables.yml
-startup_form: Form1
+startup: {module: main, type: form}
+startup_form: null
