@@ -5,7 +5,7 @@ metadata: {logo_img: 'asset:Icon.png'}
 name: BMW
 package_name: BMW
 renamed: true
-runtime_options: {client_version: '3', server_spec: null, server_version: python3-sandbox, version: 2, server_persist: true}
+runtime_options: {client_version: '3', server_spec: null, server_version: python3-sandbox, version: 2, server_persist: false}
 services:
 - client_config: {}
   server_config: {}
