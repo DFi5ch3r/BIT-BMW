@@ -5,9 +5,15 @@ components:
   type: FlowPanel
 - components:
   - components: []
-    event_bindings: {click: button_loadData_click}
+    event_bindings: {click: button_loadDataBase_click}
     layout_properties: {grid_position: 'WXGLXR,UUSEYI'}
-    name: button_loadData
+    name: button_loadDataBase
+    properties: {foreground: 'theme:Error', icon: 'fa:cloud-download', role: null, text: load database}
+    type: Link
+  - data_bindings: []
+    event_bindings: {click: button_loadSelectedData_click}
+    layout_properties: {grid_position: 'ETQWGC,FVGTIP'}
+    name: button_loadSelectedData
     properties: {foreground: 'theme:Error', icon: 'fa:download', role: null, text: load data}
     type: Link
   - event_bindings: {click: button_clusterData_click}

@@ -127,7 +127,7 @@ components:
           name: text_box_freq_min
           properties: {align: center, bold: false, font_size: 14, placeholder: min, spacing_above: none, spacing_below: none, text: '72', type: text}
           type: TextBox
-        - event_bindings: {change: text_box_freq_max_change, pressed_enter: text_box_freq_max_pressed_enter}
+        - event_bindings: {change: text_box_freq_max_change}
           layout_properties: {grid_position: 'SPNRPN,ZVIKXA'}
           name: text_box_freq_max
           properties: {align: center, bold: false, enabled: true, font_size: 14, placeholder: max, spacing_above: none, spacing_below: none, text: '2000', type: text}

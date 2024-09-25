@@ -1,4 +1,4 @@
-from ._anvil_designer import Form1Template
+from ._anvil_designer import mainTemplate
 from anvil import *
 import anvil.server
 
@@ -6,13 +6,15 @@ import anvil.server
 from ..input import input
 from ..settings import settings
 from ..analysis import analysis
+
 from .. import globals
 
 
-class Form1(Form1Template):
+class main(mainTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
+    self.set_event_handler('x-dataNotUpToDate', self.dataNotUpToDate)
     
     self.content_panel.clear()
     self.content_panel.add_component(analysis(), full_width_row=True)
@@ -47,15 +49,21 @@ class Form1(Form1Template):
     self.link_analysis.role = 'selected'
     
 # side bar
-  def button_loadData_click(self, **event_args):
+  def button_loadDataBase_click(self, **event_args):
     """This method is called when the link is clicked"""
     notificationString = "Generating Database..."
     with Notification(notificationString):
-      anvil.server.call('create_database',globals.input_customPath)
+      #anvil.server.call('create_database',globals.input_customPath)
+      anvil.server.call('create_databaseTEST',globals.input_customPath)
       globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
-      self.button_loadData.foreground = '#1EB980'
+      self.button_loadDataBase.foreground = '#1EB980'
       self.link_analysis_click()
-
+   
+  def button_loadSelectedData_click(self, **event_args):
+    self.button_loadSelectedData.foreground = '#1EB980'
+    globals.dataLoaded = True
+    self.content_panel.raise_event_on_children('x-updateDropDowns')
+    
   def button_clusterData_click(self, **event_args):
     pass
 
@@ -84,6 +92,11 @@ class Form1(Form1Template):
         table_string += "{:<60} {:<200}\n".format(name, str(value))
     # Display the notification window
     anvil.Notification(table_string, title="Global Variables", style="info", timeout=None).show()
+
+  def dataNotUpToDate(self, **event_args):
+    self.button_loadSelectedData.foreground = '#D64D47'
+    globals.dataLoaded = False
+
 
 
 

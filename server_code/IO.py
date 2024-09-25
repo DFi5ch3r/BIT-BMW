@@ -272,7 +272,7 @@ def get_baureihe_and_years():
     return baureihe_years_list
 
 @anvil.server.callable
-def get_unique_values(key):
+def get_unique_values(key, sourceSelctedData=False):
     """
     Returns the unique values for a specified key in the database.
 
@@ -285,7 +285,12 @@ def get_unique_values(key):
     """
     unique_values = set()
 
-    for entry in serverGlobals.DB:
+    if sourceSelctedData:
+      DB = serverGlobals.selectedData
+    else:
+      DB = serverGlobals.DB
+  
+    for entry in DB:
         if key in entry:
             unique_values.add(entry[key])
 
