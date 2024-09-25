@@ -22,6 +22,18 @@ def test():
 
 @anvil.server.callable
 def create_databaseTEST(read_path):
+  """
+    Creates a test database with randomly generated entries and updates the global database.
+
+    Args:
+        read_path (str): The path to the directory containing the files to be processed.
+
+    This function performs the following steps:
+    1. Initializes a test database with predefined entries.
+    2. Defines lists of possible values for various fields.
+    3. Generates additional random entries and appends them to the test database.
+    4. Updates the global database variable with the test database.
+  """
   testDB = [
     {
         'ID': 1,
@@ -79,7 +91,7 @@ def create_databaseTEST(read_path):
         'Last': 'VL',
         'Gang': '2'
     }
-    
+
   ]
   baureihen = ['K12345', 'M67890', 'A11111', 'R22222']
   bauteile = ['Bauteil1', 'Bauteil2', 'Bauteil3', 'Bauteil4']
@@ -109,14 +121,26 @@ def create_databaseTEST(read_path):
 @anvil.server.callable
 def create_database(read_path):
     """
-     Creates a database from the files in the specified directory.
+    Creates a database by extracting information from files in the specified directory path.
 
-     Args:
-         read_path (str): The path to the directory containing the files.
+    Args:
+        read_path (str): The path to the directory containing the files to be processed.
 
-     Returns:
-         list: A list of dictionaries, each representing a file with extracted information.
-     """
+    This function performs the following steps:
+    1. Extracts the folder and name from the provided read_path.
+    2. Initializes a list to store all names and subfolders.
+    3. Initializes a dictionary to store names and subfolders for the current path.
+    4. Retrieves all files matching a specific pattern in the current directory.
+    5. Iterates through all files in the current directory, extracting relevant information.
+    6. Appends the current data to the names_all list.
+    7. Counts the number of empty folders.
+    8. Calculates the total number of valid files.
+    9. Initializes the database with the required fields.
+    10. Defines regular expressions for extracting information from filenames and paths.
+    11. Iterates through all data in names_all, extracting and storing information in the database.
+    12. Replaces empty entries with "Not found".
+    13. Updates the global database variable with the newly created database.
+    """
 
     # Extract folder and name from the read_path
     folder, name = os.path.split(read_path)
@@ -210,6 +234,7 @@ def create_database(read_path):
             if not entry[key]:
                 entry[key] = 'Not found'
 
+    database = sorted(database, key=lambda x: x['Baureihe'])
     #return database
     serverGlobals.DB = database
 
@@ -247,7 +272,7 @@ def get_baureihe_and_years():
     return baureihe_years_list
 
 @anvil.server.callable
-def get_unique_values(database, key):
+def get_unique_values(key):
     """
     Returns the unique values for a specified key in the database.
 
@@ -260,7 +285,7 @@ def get_unique_values(database, key):
     """
     unique_values = set()
 
-    for entry in database:
+    for entry in serverGlobals.DB:
         if key in entry:
             unique_values.add(entry[key])
 

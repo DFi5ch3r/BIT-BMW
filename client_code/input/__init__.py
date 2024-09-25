@@ -14,7 +14,6 @@ class input(inputTemplate):
     self.dropDown_inputMethod_change()
 
   def dropDown_inputMethod_change(self, **event_args):
-    """This method is called when an item is selected"""
     if self.dropDown_inputMethod.selected_value == 'directory':
       self.label_3.text = 'Custom path'
       self.text_box_fileName.visible = False

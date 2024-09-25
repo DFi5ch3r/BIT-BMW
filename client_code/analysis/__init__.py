@@ -15,10 +15,10 @@ class analysis(analysisTemplate):
     self.set_event_handler('x-updateResults', self.updateResults)
     
     #initialise dropdowns
-    self.drop_down_year.items = anvil.server.call('get_unique_values',globals.DB,'Jahr')
+    self.drop_down_year.items = anvil.server.call('get_unique_values','Jahr')
     if self.drop_down_year.items: 
       self.drop_down_year.selected_value = self.drop_down_year.items[-1]
-    self.drop_down_component.items = anvil.server.call('get_unique_values',globals.DB,'Bauteil')
+    self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil')
     self.drop_down_envelope_cluster.items = globals.envelopGenerationMethods
     self.drop_down_envelope_predict.items = globals.envelopGenerationMethods
 
@@ -36,17 +36,29 @@ class analysis(analysisTemplate):
     globals.selected_year = self.drop_down_year.selected_value
     globals.selected_component = self.drop_down_component.selected_value
 
+# other functions
   def updateResults(self, **event_args):
     pass
   
   def saveBoxes(self, card, globalSet):
+    """
+    Updates the given global set based on the checked state of checkboxes within the provided card.
+
+    Args:
+        card (anvil.Card): The card component containing checkboxes.
+        globalSet (set): The global set to be updated with the text of checked checkboxes.
+
+    This function iterates over all components within the provided card. If a component is a checkbox and it is checked,
+    the text of the checkbox is added to the global set. If the checkbox is not checked, the text is removed from the global set.
+    """
+
     for box in card.get_components():
       if box.checked:
         globalSet.add(box.text)
       else:
         globalSet.discard(box.text)
         
-# Buildstage checkboxes        
+# buildstage checkboxes
   def check_box_BS_BS0_change(self, **event_args):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
     
@@ -73,7 +85,7 @@ class analysis(analysisTemplate):
   def check_box_4_BS_AS_change(self, **event_args):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
 
-# direction checboxes
+# direction checkboxes
   def check_box_dir_xNeg_change(self, **event_args):
     self.saveBoxes(self.card_directions, globals.selected_directions)
 
@@ -92,7 +104,7 @@ class analysis(analysisTemplate):
   def check_box_dir_zPos_change(self, **event_args):
     self.saveBoxes(self.card_directions, globals.selected_directions)
 
-# frequency rang textboxes
+# frequency range textboxes
   def text_box_freq_min_change(self, **event_args):
     if (int(self.text_box_freq_min.text) >= int(self.text_box_freq_max.text)):
       self.text_box_freq_min.text = int(self.text_box_freq_max.text) - 10

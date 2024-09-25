@@ -18,6 +18,7 @@ class Form1(Form1Template):
     self.content_panel.add_component(analysis(), full_width_row=True)
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
+
 # Topbar links
   def deselect_all_links(self):
     """Reset all the roles on the navbar links."""
