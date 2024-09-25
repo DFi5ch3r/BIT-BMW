@@ -63,6 +63,7 @@ class main(mainTemplate):
     self.button_loadSelectedData.foreground = '#1EB980'
     globals.dataLoaded = True
     self.content_panel.raise_event_on_children('x-updateDropDowns')
+
     
   def button_clusterData_click(self, **event_args):
     pass
