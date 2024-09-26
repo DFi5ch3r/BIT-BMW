@@ -14,5 +14,7 @@ class ItemTemplate1(ItemTemplate1Template):
   def button_expandYears_click(self, **event_args):
     self.repeating_panel_1.visible = not(self.repeating_panel_1.visible)
 
+
   def check_box_type_change(self, **event_args):
     self.repeating_panel_1.raise_event_on_children('x-toggleBox',check = self.check_box_type.checked)
+    self.parent.parent.parent.parent.parent.raise_event('x-dataNotUpToDate')

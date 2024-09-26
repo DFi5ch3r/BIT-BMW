@@ -22,6 +22,7 @@ class ItemTemplate2(ItemTemplate2Template):
       globals.selected_BaureiheYears.add(baureiheYear)
     else:
       globals.selected_BaureiheYears.discard(baureiheYear)
+    self.parent.parent.parent.parent.parent.parent.parent.parent.raise_event('x-dataNotUpToDate')
 
     
 

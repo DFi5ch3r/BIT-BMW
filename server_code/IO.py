@@ -18,7 +18,7 @@ from . import serverGlobals
 
 @anvil.server.callable
 def test():
-  return serverGlobals.DB
+  print(serverGlobals.selectedData)
 
 @anvil.server.callable
 def create_databaseTEST(read_path):
@@ -122,27 +122,30 @@ def create_databaseTEST(read_path):
 @anvil.server.callable
 def create_database(read_path):
     """
-    Creates a database by extracting information from files in the specified directory path.
+    Creates a database by processing files in the specified directory and extracting relevant information.
 
     Args:
         read_path (str): The path to the directory containing the files to be processed.
 
-    This function performs the following steps:
-    1. Extracts the folder and name from the provided read_path.
-    2. Initializes a list to store all names and subfolders.
-    3. Initializes a dictionary to store names and subfolders for the current path.
-    4. Retrieves all files matching a specific pattern in the current directory.
-    5. Iterates through all files in the current directory, extracting relevant information.
-    6. Appends the current data to the names_all list.
-    7. Counts the number of empty folders.
-    8. Calculates the total number of valid files.
-    9. Initializes the database with the required fields.
-    10. Defines regular expressions for extracting information from filenames and paths.
-    11. Iterates through all data in names_all, extracting and storing information in the database.
-    12. Replaces empty entries with "Not found".
-    13. Updates the global database variable with the newly created database.
+    Database format:
+        [
+            {
+                'ID': int,
+                'Dateiname': str,
+                'Pfad': str,
+                'Unterpfad': str,
+                'Jahr': str,
+                'Baureihe': str,
+                'Nummer': str,
+                'Bauteil': str,
+                'Baustufe': str,
+                'Richtung': str,
+                'Last': str,
+                'Gang': str
+            },
+            ...
+        ]
     """
-
     # Extract folder and name from the read_path
     folder, name = os.path.split(read_path)
 
@@ -241,6 +244,41 @@ def create_database(read_path):
     serverGlobals.DB = database
 
 @anvil.server.callable
+def filter_database(key, values, sourceFullDB = True, secondKey = False):
+    """
+    Filters the global database based on the specified key and values.
+
+    Args:
+        key (str): The key to filter the database entries by.
+        values (list): A list of values to filter the entries.
+        sourceFullDB (bool, optional): If True, use the full database from serverGlobals.DB.
+                                       If False, use the selected data from serverGlobals.selectedData.
+                                       Defaults to True.
+    """
+    # Access the global database
+    if sourceFullDB:
+        global_database = serverGlobals.DB
+    else:
+        global_database = serverGlobals.selectedData
+
+    # Initialize an empty list to store the filtered entries
+    filtered_database = []
+
+    # Iterate through each entry in the global database
+    for entry in global_database:
+        if not secondKey:
+            if entry[key] in values:
+                # Append the entry to the filtered database
+                filtered_database.append(entry)
+        else:
+            if (entry[key] + '-.-'+entry[secondKey]) in values:
+                # Append the entry to the filtered database
+                filtered_database.append(entry)
+
+    # Update the global database variable with the filtered database
+    serverGlobals.selectedData = filtered_database
+
+@anvil.server.callable
 def get_baureihe_and_years():
     """
     Creates a list of dictionaries, each containing the name of the Baureihe and the respective years as a list.
@@ -262,8 +300,6 @@ def get_baureihe_and_years():
                 baureihe_to_years[baureihe] = set()
             baureihe_to_years[baureihe].add(year)
 
-    #baureihe_years_list = [{'Baureihe': baureihe, 'Years': list(years)} for baureihe, years in baureihe_to_years.items()]
-
     baureihe_years_list = [
       {
           'Baureihe': baureihe,
@@ -274,20 +310,21 @@ def get_baureihe_and_years():
     return baureihe_years_list
 
 @anvil.server.callable
-def get_unique_values(key, sourceSelctedData=False):
+def get_unique_values(key, sourceSelectedData=False):
     """
-    Returns the unique values for a specified key in the database.
+    Retrieves unique values for a specified key from the database.
 
     Args:
-        database (list): A list of dictionaries, each representing a file with extracted information.
         key (str): The key for which unique values are to be found.
+        sourceSelectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData.
+                                             If False, use the full database from serverGlobals.DB. Defaults to False.
 
     Returns:
-        list: A list of unique values for the specified key.
+        list: A sorted list of unique values for the specified key.
     """
     unique_values = set()
 
-    if sourceSelctedData:
+    if sourceSelectedData:
       DB = serverGlobals.selectedData
     else:
       DB = serverGlobals.DB

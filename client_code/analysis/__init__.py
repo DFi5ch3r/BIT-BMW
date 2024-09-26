@@ -35,11 +35,14 @@ class analysis(analysisTemplate):
 
 # other functions
   def updateDropDowns(self, **event_args):
-      self.drop_down_year.items = anvil.server.call('get_unique_values','Jahr')
-      if self.drop_down_year.items: 
-        self.drop_down_year.selected_value = self.drop_down_year.items[-1]
-      self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil')
-      print('NAK')
+    """
+    Updates the items in the dropdown menus for year and component.
+    """
+    self.drop_down_year.items = anvil.server.call('get_unique_values','Jahr', sourceSelectedData=True)
+    if self.drop_down_year.items:
+      self.drop_down_year.selected_value = self.drop_down_year.items[-1]
+    self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil', sourceSelectedData=True)
+
   def updateResults(self, **event_args):
     pass
   
