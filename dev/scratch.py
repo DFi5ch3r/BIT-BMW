@@ -1,100 +1,69 @@
 import os
-import re
-from collections import defaultdict
+import numpy as np
+import pandas as pd
+import chardet
 
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return result['encoding']
 
+# Load and process CoG-data
+path = '/home/dfischer/12-Projects/09-BMW-BIT/01-originalMatlabTool/BMW_BIT_TUB/BMW_Phase2_txtonly_BackUp/'
 
+CoGfiles = []
 
-def create_database(read_path):
-    # Extract folder and name from the read_path
-    folder, name = os.path.split(read_path)
+path = path + '/Schwerpunktdaten'
+cog_files = []
+for root, dirs, files in os.walk(path):
+    for file in files:
+        if file.endswith('.csv'):
+            cog_files.append(root + '/' + file)
 
-    # Initialize a list to store all names and subfolders
-    names_all = []
+cog_files = [file for file in cog_files if not os.path.isdir(file)]
 
-    # Initialize a dictionary to store names and subfolders for the current path
-    current_data = {
-        'names': [],
-        'folder': folder,
-        'subfolders': []
-    }
+for file in cog_files:
+    encoding = detect_encoding(file)
 
-    # Get all files matching the pattern in the current directory
-    current_dir = [os.path.join(dp, f) for dp, dn, filenames in os.walk(os.path.join(folder, name)) for f in filenames if re.match(r'K.*\.txt', f)]
+    # Read file Radstände
+    if os.path.basename(file) == 'Radstände.csv':
+        wheelbase = pd.read_csv(file, encoding='latin1', delimiter=';').values.tolist()
+        if wheelbase[0][0] == 'Baureihe':  # remove first line from list
+            wheelbase = wheelbase[1:]
+        continue
 
-    # Iterate through all files in the current directory
-    for file in current_dir:
-        current_data['names'].append(os.path.basename(file))
-        subfolder = os.path.relpath(os.path.dirname(file), folder)
-        current_data['subfolders'].append(subfolder)
+    baureihe = os.path.splitext(os.path.basename(file))[0]
+    try:
+        tmp_cogdata_raw = pd.read_csv(file, encoding=encoding, delimiter=';')
+    except pd.errors.ParserError as e:
+        print(f"Error parsing {file}: {e}")
+        continue
 
-    # Append the current data to the names_all list
-    names_all.append(current_data)
+    raw_parts = tmp_cogdata_raw.iloc[:, 0].astype(str).values
+    raw_cogs_tmp = tmp_cogdata_raw.iloc[:, 1:].values
+    raw_cogs = []
+    for i in range(raw_cogs_tmp.shape[0]):
+        raw_cogs.append(raw_cogs_tmp[i][1:])
+    raw_cogs = np.array(raw_cogs)
 
-    # Count the number of empty folders
-    empty_folder_vec = [not data['names'] for data in names_all]
+    parts, comps_idx = np.unique(raw_parts, return_inverse=True)
 
-    # Calculate the total number of valid files
-    total_files = sum(len(data['names']) for data in names_all) - sum(1 for data in names_all for name in data['names'] if 'Kopie' in name)
+    # Mittel der CoGs für Bauteile mit mehreren Komponenten
+    cogs = np.zeros((len(parts), 3))
+    for part_index in range(len(parts)):
+        part_cog_mean = np.mean(raw_cogs[comps_idx == part_index, :], axis=0)
+        cogs[part_index, :] = part_cog_mean
 
-    # Initialize the database with the required fields
-    database = [{
-        'ID': 0,
-        'Dateiname': '',
-        'Pfad': '',
-        'Unterpfad': '',
-        'Jahr': '',
-        'Baureihe': '',
-        'Nummer': '',
-        'Bauteil': '',
-        'Baustufe': '',
-        'Richtung': '',
-        'Last': '',
-        'Gang': ''
-    } for _ in range(total_files)]
+    # CoG des Schwingenlagers für Transformation bestimmen
+    cog_swila = cogs[np.char.find(list(parts), "SwiLa Links und Recht") >= 0, :]
+    # Transformation ins Schwingen KOS
+    cogs = cogs - cog_swila
 
-    # Define regular expressions for extracting information from filenames and paths
-    expression = re.compile(r'(?P<Baureihe>[KMAR]+\d*)_?(?:\sMUE2|MÜ_Funtionsba_-|-20|_-|_TUE)*_*(?P<Nummer>V?\d{6})?_\d\d\.\d\d\.(?P<Jahr>\d{4})_(?P<Bauteil>.+)_(?P<Richtung>[\+-][XYZ])?S?_(?P<Last>GL|VL|GS)[_-]HL_(?P<Gang>\d)')
-    exp_Baustufe = re.compile(r'.*_(?P<Baustufe>Kex|KEX|BS\d|FB|VS\d|AS|S|Serie)_.*')
-    exp_Nummer = re.compile(r'.*(?P<Nummer>\d{6}).*')
+    CoGfiles.append({
+        'Baureihe': baureihe,
+        'parts': parts,
+        'CoGs': cogs
+    })
 
-    current_pos = 0
-
-    # Iterate through all data in names_all
-    for data in names_all:
-        if not empty_folder_vec[names_all.index(data)]:
-            m = 0
-
-            # Extract Baustufe and Nummer from the folder path
-            tmp_Baustufe = exp_Baustufe.match(data['folder'])
-            tmp_Nummer = exp_Nummer.match(data['folder'])
-
-            for name, subfolder in zip(data['names'], data['subfolders']):
-                if 'Kopie' not in name:
-                    m += 1
-                    k = current_pos + m
-                    tmp = expression.match(name)
-
-                    database[k - 1]['Dateiname'] = name
-                    database[k - 1]['Pfad'] = data['folder']
-                    database[k - 1]['Unterpfad'] = subfolder
-                    database[k - 1]['Jahr'] = tmp.group('Jahr') if tmp else ''
-                    database[k - 1]['Baureihe'] = tmp.group('Baureihe') if tmp else ''
-                    database[k - 1]['Nummer'] = tmp.group('Nummer') if tmp else (tmp_Nummer.group('Nummer') if tmp_Nummer else '')
-                    database[k - 1]['Bauteil'] = tmp.group('Bauteil') if tmp else ''
-                    database[k - 1]['Richtung'] = tmp.group('Richtung') if tmp else ''
-                    database[k - 1]['Last'] = tmp.group('Last') if tmp else ''
-                    database[k - 1]['Gang'] = tmp.group('Gang') if tmp else ''
-                    database[k - 1]['Baustufe'] = tmp_Baustufe.group('Baustufe').upper() if tmp_Baustufe else ''
-
-                    database[k - 1]['ID'] = k
-
-            current_pos += m
-
-    # Replace empty entries with "Not found"
-    for entry in database:
-        for key in entry:
-            if not entry[key]:
-                entry[key] = 'Not found'
-
-    return database
+    # serverGlobals.CoGfiles = CoGfiles
+    # serverGlobals.wheelbase = wheelbase

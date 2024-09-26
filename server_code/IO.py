@@ -1,7 +1,10 @@
 import anvil.server
 import random
-import os
 import re
+import os
+import numpy as np
+import pandas as pd
+import chardet
 from . import serverGlobals
 
 # This is a server module. It runs on the Anvil server,
@@ -19,6 +22,10 @@ from . import serverGlobals
 @anvil.server.callable
 def test():
   print(serverGlobals.selectedData)
+  print('\n---------------------------------------------\n')
+  print(serverGlobals.CoGfiles)
+  print('\n---------------------------------------------\n')
+  print(serverGlobals.wheelbase)
 
 @anvil.server.callable
 def create_databaseTEST(read_path):
@@ -334,3 +341,106 @@ def get_unique_values(key, sourceSelectedData=False):
             unique_values.add(entry[key])
 
     return sorted(list(unique_values))
+
+@anvil.server.callable
+def loadCoGdata(rootPath):
+    """
+    Loads and processes center of gravity (CoG) data from CSV files located in the specified root path.
+
+    Args:
+        rootPath (str): The root directory path containing the 'Schwerpunktdaten' folder with CSV files.
+
+    The processed CoG data is stored in the `serverGlobals.CoGfiles` global variable.
+    The wheelbase information is stored in the `serverGlobals.wheelbase` global variable.
+    """
+
+    # Initialize an empty list to store CoG file data
+    CoGfiles = []
+
+    # Construct the path to the 'Schwerpunktdaten' directory
+    path = rootPath + '/Schwerpunktdaten'
+
+    # Initialize an empty list to store paths to CSV files
+    cog_files = []
+
+    # Recursively search for CSV files in the 'Schwerpunktdaten' directory
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('.csv'):
+                cog_files.append(root + '/' + file)
+
+    # Filter out directories from the list of files
+    cog_files = [file for file in cog_files if not os.path.isdir(file)]
+
+    # Process each CSV file
+    for file in cog_files:
+        encoding = detect_encoding(file)
+
+        # Read wheelbase data from 'Radstände.csv' file
+        if os.path.basename(file) == 'Radstände.csv':
+            wheelbase = pd.read_csv(file, encoding=encoding, delimiter=';').values.tolist()
+            if wheelbase[0][0] == 'Baureihe':  # Remove the first line if it contains headers
+                wheelbase = wheelbase[1:]
+            continue
+
+        # Extract the base name of the file (without extension) as the 'Baureihe'
+        baureihe = os.path.splitext(os.path.basename(file))[0]
+
+        try:
+            # Read the CSV file into a DataFrame
+            tmp_cogdata_raw = pd.read_csv(file, encoding=encoding, delimiter=';')
+        except pd.errors.ParserError as e:
+            print(f"Error parsing {file}: {e}")
+            continue
+
+        # Extract part names and CoG values from the DataFrame
+        raw_parts = tmp_cogdata_raw.iloc[:, 0].astype(str).values
+        raw_cogs_tmp = tmp_cogdata_raw.iloc[:, 1:].values
+
+        # Remove the first column from the CoG values
+        raw_cogs = []
+        for i in range(raw_cogs_tmp.shape[0]):
+            raw_cogs.append(raw_cogs_tmp[i][1:])
+        raw_cogs = np.array(raw_cogs)
+
+        # Identify unique parts and create an index array
+        parts, comps_idx = np.unique(raw_parts, return_inverse=True)
+
+        # Initialize an array to store the mean CoG values for each unique part
+        cogs = np.zeros((len(parts), 3))
+
+        # Calculate the mean CoG values for each unique part
+        for part_index in range(len(parts)):
+            part_cog_mean = np.mean(raw_cogs[comps_idx == part_index, :], axis=0)
+            cogs[part_index, :] = part_cog_mean
+
+        # Determine the CoG of the 'Schwingenlager' part for transformation
+        cog_swila = cogs[np.char.find(list(parts), "SwiLa Links und Recht") >= 0, :]
+
+        # Adjust the CoG values based on the CoG of the 'Schwingenlager' part
+        cogs = cogs - cog_swila
+
+        # Append the processed CoG data to the list
+        CoGfiles.append({
+            'Baureihe': baureihe,
+            'parts': parts,
+            'CoGs': cogs
+        })
+
+    # Store the processed CoG data and wheelbase information in global variables
+    serverGlobals.CoGfiles = CoGfiles
+    serverGlobals.wheelbase = wheelbase
+
+def detect_encoding(file_path):
+    """
+    Detects the encoding of a given file using the chardet library.
+
+    Args:
+        file_path (str): The path to the file whose encoding needs to be detected.
+
+    Returns:
+        str: The detected encoding of the file.
+    """
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return result['encoding']
