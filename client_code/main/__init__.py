@@ -58,6 +58,7 @@ class main(mainTemplate):
       globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
       self.button_loadDataBase.foreground = '#1EB980'
       self.link_analysis_click()
+
    
   def button_loadSelectedData_click(self, **event_args):
     self.button_loadSelectedData.foreground = '#1EB980'
