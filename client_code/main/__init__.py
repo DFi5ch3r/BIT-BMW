@@ -53,11 +53,11 @@ class main(mainTemplate):
     """This method is called when the link is clicked"""
     notificationString = "Generating Database..."
     with Notification(notificationString):
+
       # create database
       anvil.server.call('create_database',globals.input_customPath)
       #anvil.server.call('create_databaseTEST',globals.input_customPath)
       globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
-
 
       # load CoG data
       anvil.server.call('loadCoGdata',globals.input_customPath)
