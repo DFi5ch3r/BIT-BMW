@@ -4,6 +4,15 @@ import pandas as pd
 import chardet
 
 def detect_encoding(file_path):
+    """
+    Detects the encoding of a given file using the chardet library.
+
+    Args:
+        file_path (str): The path to the file whose encoding needs to be detected.
+
+    Returns:
+        str: The detected encoding of the file.
+    """
     with open(file_path, 'rb') as f:
         result = chardet.detect(f.read())
     return result['encoding']

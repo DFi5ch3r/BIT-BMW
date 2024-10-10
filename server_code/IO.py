@@ -23,9 +23,9 @@ from . import serverGlobals
 def test():
   print(serverGlobals.selectedData)
   print('\n---------------------------------------------\n')
-  print(serverGlobals.CoGfiles)
-  print('\n---------------------------------------------\n')
-  print(serverGlobals.wheelbase)
+  #print(serverGlobals.CoGfiles)
+  #print('\n---------------------------------------------\n')
+  #print(serverGlobals.wheelbase)
 
 @anvil.server.callable
 def create_databaseTEST(read_path):
@@ -430,6 +430,34 @@ def loadCoGdata(rootPath):
     # Store the processed CoG data and wheelbase information in global variables
     serverGlobals.CoGfiles = CoGfiles
     serverGlobals.wheelbase = wheelbase
+
+@anvil.server.callable
+def readData(selectedData = True):
+
+    if selectedData:
+        db = serverGlobals.selectedData
+    else:
+        db = serverGlobals.DB
+
+    total_entries = len(db)
+    progress_interval = max(1, total_entries // 10)  # Print progress every 10% or at least once
+
+    for i, entry in enumerate(db):
+        filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
+        # filePath = filePath.replace(' ', '\\ ')
+
+        if (not "Kopie" in filePath):
+            data = np.loadtxt(filePath)
+            if len(data) == 800:
+                entry['data'] = data
+            else:
+                print(f"Skipped {entry['Dateiname']}, since Data length is {len(data)}")
+        else:
+            print(f"Skipped {entry['Dateiname']}, since it is a copy")
+
+        # Print progress
+        if (i + 1) % progress_interval == 0 or (i + 1) == total_entries:
+            print(f"Progress: {i + 1}/{total_entries} entries processed")
 
 def detect_encoding(file_path):
     """

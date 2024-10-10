@@ -66,15 +66,25 @@ class main(mainTemplate):
       self.link_analysis_click()
    
   def button_loadSelectedData_click(self, **event_args):
+
+    Notification("Filtering database ...").show()
+
     self.button_loadSelectedData.foreground = '#1EB980'
     # filter by direction
     anvil.server.call('filter_database', key = 'Richtung', values = list(globals.selected_directions), sourceFullDB = True)
     # filter by buildstage
     anvil.server.call('filter_database', key = 'Baustufe', values = list(globals.selected_buildstage), sourceFullDB = False)
-    # filter by Buariehe and year
+    # filter by Baureihe and year
     anvil.server.call('filter_database', key = 'Baureihe', secondKey = 'Jahr', values = list(globals.selected_BaureiheYears), sourceFullDB = False)
     globals.dataLoaded = True
     self.content_panel.raise_event_on_children('x-updateDropDowns')
+
+    Notification("Reading data ...",).show()
+    anvil.server.call('readData', selectedData=True)
+    Notification("...done.", style="success").show()
+
+
+
 
     
   def button_clusterData_click(self, **event_args):
@@ -87,7 +97,8 @@ class main(mainTemplate):
     anvil.server.call('test')
     #self.show_globals()
     #self.content_panel.raise_event_on_children('x-updateResults')
-    
+
+
 # others  
   def show_globals(self, **event_args):
     """

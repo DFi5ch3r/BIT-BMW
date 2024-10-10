@@ -23,22 +23,22 @@ components:
           - event_bindings: {change: check_box_BS_BS0_change}
             layout_properties: {grid_position: 'GSPPLW,OSQTUY'}
             name: check_box_BS_BS0
-            properties: {font_size: null, spacing_above: none, spacing_below: none, text: BS0}
+            properties: {checked: true, font_size: null, spacing_above: none, spacing_below: none, text: BS0}
             type: CheckBox
           - event_bindings: {change: check_box_BS_VS1_change}
             layout_properties: {grid_position: 'GSPPLW,LCSEET'}
             name: check_box_BS_VS1
-            properties: {spacing_above: none, spacing_below: none, text: VS1}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: VS1}
             type: CheckBox
           - event_bindings: {change: check_box_4_BS_FB_change}
             layout_properties: {grid_position: 'GSPPLW,QIIGDT'}
             name: check_box_BS_FB
-            properties: {spacing_above: none, spacing_below: none, text: FB}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: FB}
             type: CheckBox
           - event_bindings: {change: check_box_BS_KEX_change}
             layout_properties: {grid_position: 'GSPPLW,BWWQJG'}
             name: check_box_BS_KEX
-            properties: {spacing_above: none, spacing_below: none, text: KEX}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: KEX}
             type: CheckBox
           - event_bindings: {change: check_box_BS_notFound_change}
             layout_properties: {grid_position: 'GSPPLW,CXIGJV'}
@@ -48,22 +48,22 @@ components:
           - event_bindings: {change: check_box_BS_BS1_change}
             layout_properties: {grid_position: 'PRZSCJ,DWXEJO'}
             name: check_box_BS_BS1
-            properties: {spacing_above: none, spacing_below: none, text: BS1}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: BS1}
             type: CheckBox
           - event_bindings: {change: check_box_BS_VS2_change}
             layout_properties: {grid_position: 'PRZSCJ,XMFJMJ'}
             name: check_box_BS_VS2
-            properties: {spacing_above: none, spacing_below: none, text: VS2}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: VS2}
             type: CheckBox
           - event_bindings: {change: check_box_4_BS_AS_change}
             layout_properties: {grid_position: 'PRZSCJ,HEWYTG'}
             name: check_box_BS_AS
-            properties: {spacing_above: none, spacing_below: none, text: AS}
+            properties: {checked: true, spacing_above: none, spacing_below: none, text: AS}
             type: CheckBox
           - event_bindings: {change: check_box_BS_SERIE_change}
             layout_properties: {grid_position: 'PRZSCJ,AVUTTZ'}
             name: check_box_BS_SERIE
-            properties: {allow_indeterminate: false, spacing_above: none, spacing_below: none, text: SERIE}
+            properties: {checked: true, allow_indeterminate: false, spacing_above: none, spacing_below: none, text: SERIE}
             type: CheckBox
           layout_properties: {grid_position: 'NUUFGK,DMGCMH'}
           name: card_buildstages
