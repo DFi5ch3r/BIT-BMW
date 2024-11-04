@@ -23,6 +23,22 @@ from . import serverGlobals
 def clusterComponents():
     serverGlobals.clusters_components = assembleData('Bauteil')
 
+@anvil.server.callable
+def clusterFrequencies():
+    pass
+
+@anvil.server.callable
+def clusterPositions():
+    pass
+
+@anvil.server.callable
+def generateEnvelopesForClusters(method):
+    if serverGlobals.clusters_components:
+        generateEnvelopes(serverGlobals.clusters_components, method)
+    if serverGlobals.clusters_positions:
+        generateEnvelopes(serverGlobals.clusters_positions, method)
+    if serverGlobals.clusters_frequencies:
+        generateEnvelopes(serverGlobals.clusters_frequencies, method)
 
 def assembleData(key):
     """
@@ -50,11 +66,13 @@ def assembleData(key):
     for tempKey in unique_keys:
         cluster =  {}
         cluster['name'] = tempKey
+        cluster['components'] = set()
         cluster['data'] = []
         # Collect data for each cluster
         for entry in db:
             if (entry[key] == tempKey) and ('data' in entry):
                 cluster['data'].append(entry['data'])
+                cluster['components'].add(entry['Bauteil'])
         # Stack the data arrays for each cluster
         cluster['data'] = np.stack(cluster['data'])
 

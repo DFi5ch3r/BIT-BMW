@@ -41,7 +41,7 @@ class analysis(analysisTemplate):
     self.drop_down_year.items = anvil.server.call('get_unique_values','Jahr', sourceSelectedData=True)
     if self.drop_down_year.items:
       self.drop_down_year.selected_value = self.drop_down_year.items[-1]
-    self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil', sourceSelectedData=True)
+    self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil', sourceSelectedData=True, prefixes=True)
 
   def updateResults(self, **event_args):
     pass

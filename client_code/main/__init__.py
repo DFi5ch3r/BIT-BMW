@@ -88,7 +88,15 @@ class main(mainTemplate):
 
     
   def button_clusterData_click(self, **event_args):
-    pass
+
+    if 'components' in globals.selected_clustering:
+        anvil.server.call('clusterComponents')
+    if 'frequencies' in globals.selected_clustering:
+        anvil.server.call('clusterFrequencies')
+    if 'positions' in globals.selected_clustering:
+        anvil.server.call('clusterPositions')
+
+    anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
 
   def button_displaySettings_click(self, **event_args):
     self.show_globals()

@@ -7,3 +7,5 @@ CoGfiles = []
 wheelbase = []
 
 clusters_components = []
+clusters_frequencies = []
+clusters_positions = []

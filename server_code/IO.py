@@ -317,7 +317,7 @@ def get_baureihe_and_years():
     return baureihe_years_list
 
 @anvil.server.callable
-def get_unique_values(key, sourceSelectedData=False):
+def get_unique_values(key, sourceSelectedData=False, prefixes = False):
     """
     Retrieves unique values for a specified key from the database.
 
@@ -340,7 +340,19 @@ def get_unique_values(key, sourceSelectedData=False):
         if key in entry:
             unique_values.add(entry[key])
 
-    return sorted(list(unique_values))
+    if prefixes:
+        unique_prefixes = set()
+
+        for value in unique_values:
+            parts = value.split('_')
+            for i in range(1, len(parts) + 1):
+                prefix = '_'.join(parts[:i])
+                unique_prefixes.add(prefix)
+
+        return sorted(list(unique_prefixes))
+
+    else:
+        return sorted(list(unique_values))
 
 @anvil.server.callable
 def loadCoGdata(rootPath):
@@ -458,6 +470,8 @@ def readData(selectedData = True):
         # Print progress
         if (i + 1) % progress_interval == 0 or (i + 1) == total_entries:
             print(f"Progress: {i + 1}/{total_entries} entries processed")
+
+
 
 def detect_encoding(file_path):
     """
