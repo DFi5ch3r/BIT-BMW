@@ -43,8 +43,10 @@ class analysis(analysisTemplate):
       self.drop_down_year.selected_value = self.drop_down_year.items[-1]
     self.drop_down_component.items = anvil.server.call('get_unique_values','Bauteil', sourceSelectedData=True, prefixes=True)
 
+    globals.selected_year = self.drop_down_year.selected_value
+    globals.selected_component = self.drop_down_component.selected_value
   def updateResults(self, **event_args):
-    pass
+    self.updatePlots()
   
   def saveBoxes(self, card, globalSet):
     """
@@ -135,13 +137,6 @@ class analysis(analysisTemplate):
   def check_box_cluster_comp_change(self, **event_args):
     self.saveBoxes(self.card_clustering, globals.selected_clustering)
 
-# envelope generation dropdowns
-  def drop_down_envelope_cluster_change(self, **event_args):
-    globals.selected_envelopeMethods[0] = self.drop_down_envelope_cluster.selected_value
-
-  def drop_down_envelope_predict_change(self, **event_args):
-    globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
-
 # function radio buttons
   def radio_button_function_predict_change(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
@@ -159,25 +154,31 @@ class analysis(analysisTemplate):
   def link_plot_overview_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_overview.bold = True
+    globals.activePlot = 'overview'
   def link_plot_freq_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_freq.bold = True
-
+    globals.activePlot = 'freq'
   def link_plot_comp_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_comp.bold = True
+    globals.activePlot = 'comp'
+    self.plot_2.figure = globals.plots_component
 
   def link_plot_pos_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_pos.bold = True
+    globals.activePlot = 'pos'
 
   def link_plot_cog_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_cog.bold = True
+    globals.activePlot = 'cog'
 
   def link_link_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_link.bold = True
+    globals.activePlot = 'link'
     
 # dorpdowns
   def drop_down_compFile_change(self, **event_args):
@@ -191,15 +192,42 @@ class analysis(analysisTemplate):
 
   def drop_down_component_change(self, **event_args):
    globals.selected_component = self.drop_down_component.selected_value
-  
+   self.updatePlots()
 
+   # envelope generation dropdowns
+  def drop_down_envelope_cluster_change(self, **event_args):
+   globals.selected_envelopeMethods[0] = self.drop_down_envelope_cluster.selected_value
+   anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
+   self.updatePlots()
 
+  def drop_down_envelope_predict_change(self, **event_args):
+   globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
+   self.updatePlots()
 
-
-      
-
-
-
-
+############################################################################################################
+#others
+  def updatePlots(self, **event_args):
+    if 'component' in globals.selected_clustering:
+      # component based
+      globals.plots_component = anvil.server.call('getPlotData', 'component', self.drop_down_component.selected_value,
+                                             self.drop_down_envelope_predict.selected_value)
+    if 'frequency' in globals.selected_clustering:
+      # frequency based
+      globals.plots_frequency = anvil.server.call('getPlotData', 'frequency', self.drop_down_component.selected_value,
+                                             self.drop_down_envelope_predict.selected_value)
+    if 'position' in globals.selected_clustering:
+        # position based
+        globals.plots_position = anvil.server.call('getPlotData', 'position', self.drop_down_component.selected_value,
+                                                 self.drop_down_envelope_predict.selected_value)
+    if globals.activePlot == 'comp':
+        self.plot_2.figure = globals.plots_component
+    elif globals.activePlot == 'freq':
+        self.plot_2.figure = globals.plots_frequency
+    elif globals.activePlot == 'pos':
+        self.plot_2.figure = globals.plots_position
+    elif globals.activePlot == 'cog':
+        pass
+    elif globals.activePlot == 'link':
+        pass
     
 

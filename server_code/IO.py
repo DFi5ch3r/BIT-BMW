@@ -1,10 +1,12 @@
 import anvil.server
+import dataAnalysis as da
 import random
 import re
 import os
 import numpy as np
 import pandas as pd
 import chardet
+import plotly.graph_objects as go
 from . import serverGlobals
 
 # This is a server module. It runs on the Anvil server,
@@ -472,7 +474,6 @@ def readData(selectedData = True):
             print(f"Progress: {i + 1}/{total_entries} entries processed")
 
 
-
 def detect_encoding(file_path):
     """
     Detects the encoding of a given file using the chardet library.
@@ -486,3 +487,59 @@ def detect_encoding(file_path):
     with open(file_path, 'rb') as f:
         result = chardet.detect(f.read())
     return result['encoding']
+
+############################################################################################################
+@anvil.server.callable
+def getPlotData(clusteringMethod, component, envelopeMethod):
+    plotData = []
+
+    if clusteringMethod == 'component':
+        clusters = serverGlobals.clusters_components
+    elif clusteringMethod == 'frequency':
+        clusters = serverGlobals.clusters_frequencies
+    elif clusteringMethod == 'position':
+        clusters = serverGlobals.clusters_positions
+
+    for cluster in clusters:
+        for comp in cluster['components']:
+            if component in comp:
+                plotData.append(cluster)
+
+    fig = go.Figure()
+    for cluster in plotData:
+        fig.add_trace(go.Scatter(x=cluster['frequencies'], y=cluster['envelope'], name=cluster['name'],  mode='lines', line=dict(color='black', width=1)))
+    fig.update_layout(
+        xaxis_title='f [Hz]',
+        yaxis_title='a [m/s²]',
+        plot_bgcolor='white',
+        xaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+        yaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        )
+    )
+
+    if len(plotData) > 1:
+        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
+    else:
+        superEnvelope = plotData[0]
+
+    fig.add_trace(go.Scatter(x=superEnvelope['frequencies'], y=superEnvelope['envelope'],name='prediction', mode='lines', opacity=0.5, line=dict(color='red', width=5)))
+
+    return fig
+

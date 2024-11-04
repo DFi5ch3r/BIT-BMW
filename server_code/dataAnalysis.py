@@ -92,6 +92,7 @@ def assembleData(key):
 
     return clusters
 
+@anvil.server.callable
 def generateEnvelopes(clusters,method):
     for cluster in clusters:
         if cluster['amplitudes'].shape[1] < 2:
@@ -134,3 +135,18 @@ def generateEnvelopes(clusters,method):
             else:
                 raise ValueError("Selected Method for generation of envelopes not implemented yet!")
 
+@anvil.server.callable
+def generateSuperEnvelope(clusters, method, component):
+    envelope = {}
+    envelope['name'] = component
+    envelope['components'] = set()
+    envelope['frequencies'] = clusters[0]['frequencies']
+    envelope['amplitudes'] = []
+
+    for cluster in clusters:
+        envelope['amplitudes'].append(cluster['envelope'])
+    envelope['amplitudes'] = np.column_stack(envelope['amplitudes'])
+
+    generateEnvelopes([envelope], method)
+
+    return envelope

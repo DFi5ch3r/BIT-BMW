@@ -1,7 +1,7 @@
 from ._anvil_designer import mainTemplate
 from anvil import *
 import anvil.server
-
+import plotly.graph_objects as go
 
 from ..input import input
 from ..settings import settings
@@ -81,7 +81,7 @@ class main(mainTemplate):
 
     Notification("Reading data ...",).show()
     anvil.server.call('readData', selectedData=True)
-    Notification("...done.", style="success").show()
+    Notification("...done loading data.", style="success").show()
 
 
 
@@ -89,14 +89,23 @@ class main(mainTemplate):
     
   def button_clusterData_click(self, **event_args):
 
-    if 'components' in globals.selected_clustering:
+    if 'component' in globals.selected_clustering:
+        Notification("Clustering by components ...").show()
         anvil.server.call('clusterComponents')
-    if 'frequencies' in globals.selected_clustering:
+    if 'frequency' in globals.selected_clustering:
+        Notification("Clustering by frequencies ...").show()
         anvil.server.call('clusterFrequencies')
-    if 'positions' in globals.selected_clustering:
+    if 'position' in globals.selected_clustering:
+        Notification("Clustering by positions ...").show()
         anvil.server.call('clusterPositions')
 
+    Notification("Generating envelopes ...").show()
     anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
+
+    self.content_panel.raise_event_on_children('x-updateResults')
+
+    Notification("...done clustering.", style="success").show()
+
 
   def button_displaySettings_click(self, **event_args):
     self.show_globals()
@@ -128,7 +137,6 @@ class main(mainTemplate):
   def dataNotUpToDate(self, **event_args):
     self.button_loadSelectedData.foreground = '#D64D47'
     globals.dataLoaded = False
-
 
 
 
