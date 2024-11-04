@@ -5,3 +5,5 @@ selectedData = []
 
 CoGfiles = []
 wheelbase = []
+
+clusters_components = []
