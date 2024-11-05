@@ -392,7 +392,7 @@ components:
   properties: {}
   type: FlowPanel
 - components:
-  - layout_properties: {width: 1319}
+  - layout_properties: {expand: false, width: 1319}
     name: plot_2
     properties: {}
     type: Plot
