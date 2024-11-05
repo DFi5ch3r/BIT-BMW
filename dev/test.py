@@ -11,7 +11,8 @@ path = '/home/dfischer/12-Projects/09-BMW-BIT/01-originalMatlabTool/BMW_BIT_TUB/
 IO.create_database(path)
 #db = serverGlobals.DB
 
-IO.filter_database('Baureihe', ['K51'], sourceFullDB = True)
+# IO.filter_database('Baureihe', ['K51'], sourceFullDB = True)
+IO.filter_database('Baureihe', ['K02'], sourceFullDB = True)
 
 IO.readData(selectedData=True)
 db2 = serverGlobals.selectedData

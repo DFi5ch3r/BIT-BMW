@@ -1,5 +1,4 @@
 import anvil.server
-import dataAnalysis as da
 import random
 import re
 import os
@@ -8,6 +7,8 @@ import pandas as pd
 import chardet
 import plotly.graph_objects as go
 from . import serverGlobals
+from . import dataAnalysis as da
+
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -344,11 +345,18 @@ def get_unique_values(key, sourceSelectedData=False, prefixes = False):
 
     if prefixes:
         unique_prefixes = set()
+        prefix_counts = {}
 
         for value in unique_values:
             parts = value.split('_')
             for i in range(1, len(parts) + 1):
                 prefix = '_'.join(parts[:i])
+                if prefix not in prefix_counts:
+                    prefix_counts[prefix] = 0
+                prefix_counts[prefix] += 1
+
+        for prefix, count in prefix_counts.items():
+            if count > 1 or prefix in unique_values:
                 unique_prefixes.add(prefix)
 
         return sorted(list(unique_prefixes))
@@ -531,7 +539,8 @@ def getPlotData(clusteringMethod, component, envelopeMethod):
             gridcolor='rgb(211,211,211)',
             gridwidth=1,
             griddash='dot',
-        )
+        ),
+
     )
 
     if len(plotData) > 1:
