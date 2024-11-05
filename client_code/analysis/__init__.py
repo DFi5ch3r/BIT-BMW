@@ -8,6 +8,9 @@ from .. import globals
 
 
 class analysis(analysisTemplate):
+###########################################################################################################
+# initialisation
+###########################################################################################################
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties) 
@@ -33,7 +36,9 @@ class analysis(analysisTemplate):
     globals.selected_year = self.drop_down_year.selected_value
     globals.selected_component = self.drop_down_component.selected_value
 
-# other functions
+############################################################################################################
+# auxiliary functions
+############################################################################################################
   def updateDropDowns(self, **event_args):
     """
     Updates the items in the dropdown menus for year and component.
@@ -65,7 +70,34 @@ class analysis(analysisTemplate):
         globalSet.add(box.text)
       else:
         globalSet.discard(box.text)
-    
+
+  def updatePlots(self, **event_args):
+    if 'component' in globals.selected_clustering:
+      # component based
+      globals.plots_component = anvil.server.call('getPlotData', 'component', self.drop_down_component.selected_value,
+                                             self.drop_down_envelope_predict.selected_value)
+    if 'frequency' in globals.selected_clustering:
+      # frequency based
+      globals.plots_frequency = anvil.server.call('getPlotData', 'frequency', self.drop_down_component.selected_value,
+                                             self.drop_down_envelope_predict.selected_value)
+    if 'position' in globals.selected_clustering:
+        # position based
+        globals.plots_position = anvil.server.call('getPlotData', 'position', self.drop_down_component.selected_value,
+                                                 self.drop_down_envelope_predict.selected_value)
+    if globals.activePlot == 'comp':
+        self.link_plot_comp_click()
+    elif globals.activePlot == 'freq':
+        self.link_plot_freq_click()
+    elif globals.activePlot == 'pos':
+        self.link_plot_pos_click()
+    elif globals.activePlot == 'cog':
+        pass
+    elif globals.activePlot == 'link':
+        pass
+############################################################################################################
+# checkboxes
+############################################################################################################
+
 # buildstage checkboxes
   def check_box_BS_BS0_change(self, **event_args):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
@@ -94,6 +126,7 @@ class analysis(analysisTemplate):
   def check_box_4_BS_AS_change(self, **event_args):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
     self.parent.parent.raise_event('x-dataNotUpToDate')
+
 # direction checkboxes
   def check_box_dir_xNeg_change(self, **event_args):
     self.saveBoxes(self.card_directions, globals.selected_directions)
@@ -113,7 +146,17 @@ class analysis(analysisTemplate):
   def check_box_dir_zPos_change(self, **event_args):
     self.saveBoxes(self.card_directions, globals.selected_directions)
     self.parent.parent.raise_event('x-dataNotUpToDate')
-    
+
+# clustering checkboxes
+  def check_box_cluster_frequ_change(self, **event_args):
+    self.saveBoxes(self.card_clustering, globals.selected_clustering)
+  def check_box_cluster_pos_change(self, **event_args):
+    self.saveBoxes(self.card_clustering, globals.selected_clustering)
+  def check_box_cluster_comp_change(self, **event_args):
+    self.saveBoxes(self.card_clustering, globals.selected_clustering)
+############################################################################################################
+# textboxes
+############################################################################################################
 # frequency range textboxes
   def text_box_freq_min_change(self, **event_args):
     if (int(self.text_box_freq_min.text) >= int(self.text_box_freq_max.text)):
@@ -121,22 +164,15 @@ class analysis(analysisTemplate):
     elif int(self.text_box_freq_min.text) <0:
       self.text_box_freq_min.text = 0
     globals.selected_frequencyRange[0] = self.text_box_freq_min.text
-    
     self.parent.parent.raise_event('x-dataNotUpToDate')
     
   def text_box_freq_max_change(self, **event_args):
     globals.selected_frequencyRange[1] = self.text_box_freq_max.text
     self.parent.parent.raise_event('x-dataNotUpToDate')
-# clustering checkboxes
-  def check_box_cluster_frequ_change(self, **event_args):
-    self.saveBoxes(self.card_clustering, globals.selected_clustering)
 
-  def check_box_cluster_pos_change(self, **event_args):
-    self.saveBoxes(self.card_clustering, globals.selected_clustering)
-
-  def check_box_cluster_comp_change(self, **event_args):
-    self.saveBoxes(self.card_clustering, globals.selected_clustering)
-
+############################################################################################################
+# radio buttons
+############################################################################################################
 # function radio buttons
   def radio_button_function_predict_change(self, **event_args):
     self.card_compFile.visible = not(self.card_compFile.visible)
@@ -146,6 +182,9 @@ class analysis(analysisTemplate):
     self.card_compFile.visible = not(self.card_compFile.visible)  
     globals.selected_predictCompare = self.radio_button_function_predict.selected
 
+############################################################################################################
+# links
+############################################################################################################
 # plot selection links
   def deselect_all_links(self):
     for link in self.card_plotSelection.get_components():
@@ -155,6 +194,8 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_overview.bold = True
     globals.activePlot = 'overview'
+    self.plot.figure = globals.plots_overview
+
   def link_plot_freq_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_freq.bold = True
@@ -163,7 +204,7 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_comp.bold = True
     globals.activePlot = 'comp'
-    self.plot_2.figure = globals.plots_component
+    self.plot.figure = globals.plots_component
 
   def link_plot_pos_click(self, **event_args):
     self.deselect_all_links()
@@ -179,8 +220,11 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_link.bold = True
     globals.activePlot = 'link'
-    
-# dorpdowns
+
+############################################################################################################
+# dropdowns
+############################################################################################################
+
   def drop_down_compFile_change(self, **event_args):
     globals.selected_comparisonFilePath = self.drop_down_compFile.selected_value
 
@@ -204,30 +248,7 @@ class analysis(analysisTemplate):
    globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
    self.updatePlots()
 
-############################################################################################################
-#others
-  def updatePlots(self, **event_args):
-    if 'component' in globals.selected_clustering:
-      # component based
-      globals.plots_component = anvil.server.call('getPlotData', 'component', self.drop_down_component.selected_value,
-                                             self.drop_down_envelope_predict.selected_value)
-    if 'frequency' in globals.selected_clustering:
-      # frequency based
-      globals.plots_frequency = anvil.server.call('getPlotData', 'frequency', self.drop_down_component.selected_value,
-                                             self.drop_down_envelope_predict.selected_value)
-    if 'position' in globals.selected_clustering:
-        # position based
-        globals.plots_position = anvil.server.call('getPlotData', 'position', self.drop_down_component.selected_value,
-                                                 self.drop_down_envelope_predict.selected_value)
-    if globals.activePlot == 'comp':
-        self.plot_2.figure = globals.plots_component
-    elif globals.activePlot == 'freq':
-        self.plot_2.figure = globals.plots_frequency
-    elif globals.activePlot == 'pos':
-        self.plot_2.figure = globals.plots_position
-    elif globals.activePlot == 'cog':
-        pass
-    elif globals.activePlot == 'link':
-        pass
+
+
     
 
