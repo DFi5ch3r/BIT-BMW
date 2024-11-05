@@ -498,7 +498,7 @@ def detect_encoding(file_path):
 
 ############################################################################################################
 @anvil.server.callable
-def getPlotData(clusteringMethod, component, envelopeMethod):
+def getPlot(clusteringMethod, component, envelopeMethod):
     plotData = []
 
     if clusteringMethod == 'component':

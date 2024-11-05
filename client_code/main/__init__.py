@@ -12,15 +12,25 @@ from .. import globals
 
 class main(mainTemplate):
   def __init__(self, **properties):
+###########################################################################################################
+# initialisation
+###########################################################################################################
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     self.set_event_handler('x-dataNotUpToDate', self.dataNotUpToDate)
-    
+    self.set_event_handler('x-clusterNotUpToDate', self.clusterNotUpToDate)
+
+    self.dataNotUpToDate()
+
     self.content_panel.clear()
     self.content_panel.add_component(analysis(), full_width_row=True)
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
 
+
+  ###########################################################################################################
+  # links
+  ###########################################################################################################
 # Topbar links
   def deselect_all_links(self):
     """Reset all the roles on the navbar links."""
@@ -48,7 +58,7 @@ class main(mainTemplate):
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
     
-# side bar
+# side bar links
   def button_loadDataBase_click(self, **event_args):
     """This method is called when the link is clicked"""
     notificationString = "Generating Database..."
@@ -67,9 +77,11 @@ class main(mainTemplate):
    
   def button_loadSelectedData_click(self, **event_args):
 
-    Notification("Filtering database ...").show()
+    if not globals.selected_BaureiheYears:
+        Notification("No data selected!", style="danger").show()
+        return
 
-    self.button_loadSelectedData.foreground = '#1EB980'
+    Notification("Filtering database ...").show()
     # filter by direction
     anvil.server.call('filter_database', key = 'Richtung', values = list(globals.selected_directions), sourceFullDB = True)
     # filter by buildstage
@@ -83,21 +95,27 @@ class main(mainTemplate):
     anvil.server.call('readData', selectedData=True)
     Notification("...done loading data.", style="success").show()
 
+    self.button_loadSelectedData.foreground = '#1EB980'
+    globals.dataLoaded = True
 
-
-
-    
   def button_clusterData_click(self, **event_args):
+
+    if not globals.selected_BaureiheYears:
+        Notification("No data selected!!", style="danger").show()
+        return
+
+    if not globals.dataLoaded:
+      self.button_loadSelectedData_click()
 
     if 'component' in globals.selected_clustering:
         Notification("Clustering by components ...").show()
-        anvil.server.call('clusterComponents')
+        anvil.server.call('clusterComponents', globals.selected_frequencyRange)
     if 'frequency' in globals.selected_clustering:
         Notification("Clustering by frequencies ...").show()
-        anvil.server.call('clusterFrequencies')
+        anvil.server.call('clusterFrequencies', globals.selected_frequencyRange)
     if 'position' in globals.selected_clustering:
         Notification("Clustering by positions ...").show()
-        anvil.server.call('clusterPositions')
+        anvil.server.call('clusterPositions', globals.selected_frequencyRange)
 
     Notification("Generating envelopes ...").show()
     anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
@@ -106,6 +124,8 @@ class main(mainTemplate):
 
     Notification("...done clustering.", style="success").show()
 
+    self.button_clusterData.foreground = '#1EB980'
+    globals.clustered = True
 
   def button_displaySettings_click(self, **event_args):
     self.show_globals()
@@ -116,7 +136,9 @@ class main(mainTemplate):
     #self.content_panel.raise_event_on_children('x-updateResults')
 
 
-# others  
+###########################################################################################################
+# auxiliary functions
+###########################################################################################################
   def show_globals(self, **event_args):
     """
     Creates a notification window within the Anvil GUI containing all the values of the variables
@@ -134,9 +156,13 @@ class main(mainTemplate):
     # Display the notification window
     anvil.Notification(table_string, title="Global Variables", style="info", timeout=None).show()
 
+
   def dataNotUpToDate(self, **event_args):
     self.button_loadSelectedData.foreground = '#D64D47'
+    self.button_clusterData.foreground = '#D64D47'
     globals.dataLoaded = False
 
+  def clusterNotUpToDate(self, **event_args):
+      self.button_clusterData.foreground = '#D64D47'
 
 

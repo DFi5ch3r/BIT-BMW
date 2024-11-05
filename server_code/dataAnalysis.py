@@ -20,15 +20,15 @@ from . import serverGlobals
 #   return 42
 
 @anvil.server.callable
-def clusterComponents():
+def clusterComponents(frequencyRange):
     serverGlobals.clusters_components = assembleData('Bauteil')
-
+    serverGlobals.clusters_components = adjustToFrequencyRange(serverGlobals.clusters_components, frequencyRange)
 @anvil.server.callable
-def clusterFrequencies():
+def clusterFrequencies(frequencyRange):
     pass
 
 @anvil.server.callable
-def clusterPositions():
+def clusterPositions(frequencyRange):
     pass
 
 @anvil.server.callable
@@ -92,8 +92,51 @@ def assembleData(key):
 
     return clusters
 
+def adjustToFrequencyRange(clusters,frequencyRange):
+    """
+    Adjusts the frequency and amplitude data of clusters to a specified frequency range.
+
+    Args:
+        clusters (list): A list of clusters, each containing 'frequencies' and 'amplitudes'.
+        frequencyRange (tuple): A tuple specifying the minimum and maximum frequency range.
+
+    Returns:
+        list: The function modifies the clusters in place and returns the adjusted clusters.
+
+    """
+    for cluster in clusters:
+        idx = (cluster['frequencies'] >= frequencyRange[0]) & (cluster['frequencies'] <= frequencyRange[1])
+        cluster['frequencies'] = cluster['frequencies'][idx]
+        cluster['amplitudes'] = cluster['amplitudes'][idx]
+
+    return clusters
+
 @anvil.server.callable
 def generateEnvelopes(clusters,method):
+    """
+    Generate envelopes for each cluster based on the specified method.
+
+    Args:
+        clusters (list): A list of clusters, each containing 'frequencies' and 'amplitudes'.
+        method (str): The method to use for generating envelopes. Options include:
+            - "Maximum": Maximum value across amplitudes.
+            - "Minimum": Minimum value across amplitudes.
+            - "Mean": Mean value across amplitudes.
+            - "+1*std.dev.(68%)": Mean plus one standard deviation.
+            - "+2*std.dev.(95%)": Mean plus two standard deviations.
+            - "+3*std.dev.(99%)": Mean plus three standard deviations.
+            - "99th-percentile (each freq.)": 99th percentile for each frequency.
+            - "95th-percentile (each freq.)": 95th percentile for each frequency.
+            - "75th-percentile (each freq.)": 75th percentile for each frequency.
+            - "Median (each freq.)": Median for each frequency.
+            - "99th-percentile (total)": 99th percentile across all data.
+            - "95th-percentile (total)": 95th percentile across all data.
+            - "75th-percentile (total)": 75th percentile across all data.
+            - "Median (total)": Median across all data.
+
+    Raises:
+        ValueError: If the selected method is not implemented.
+    """
     for cluster in clusters:
         if cluster['amplitudes'].shape[1] < 2:
             cluster['envelope'] = cluster['amplitudes']
@@ -104,6 +147,7 @@ def generateEnvelopes(clusters,method):
                 cluster['envelope'] = np.min(cluster['amplitudes'], axis=1)
             elif method == "Mean":
                 cluster['envelope'] = np.mean(cluster['amplitudes'], axis=1)
+
             # normal distribution based methods
             elif method == "+1*std.dev.(68%)":
                 cluster['envelope'] = np.mean(cluster['amplitudes'], axis=1) + np.std(cluster['amplitudes'], axis=1)
@@ -137,6 +181,17 @@ def generateEnvelopes(clusters,method):
 
 @anvil.server.callable
 def generateSuperEnvelope(clusters, method, component):
+    """
+    Generate a super envelope for a set of clusters based on the specified method.
+
+    Args:
+        clusters (list): A list of clusters, each containing 'frequencies' and 'envelope'.
+        method (str): The method to use for generating the super envelope.
+        component (str): The name of the component for which the super envelope is generated.
+
+    Returns:
+        dict: A dictionary representing the super envelope, containing 'name', 'components', 'frequencies', and 'amplitudes'.
+    """
     envelope = {}
     envelope['name'] = component
     envelope['components'] = set()

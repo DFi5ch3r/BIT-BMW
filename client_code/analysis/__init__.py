@@ -29,8 +29,8 @@ class analysis(analysisTemplate):
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
     self.saveBoxes(self.card_directions, globals.selected_directions)
     self.saveBoxes(self.card_clustering, globals.selected_clustering)  
-    globals.selected_frequencyRange[0] = self.text_box_freq_min.text
-    globals.selected_frequencyRange[1] = self.text_box_freq_max.text
+    globals.selected_frequencyRange[0] = int(self.text_box_freq_min.text)
+    globals.selected_frequencyRange[1] = int(self.text_box_freq_max.text)
     globals.selected_envelopeMethods[0] = self.drop_down_envelope_cluster.selected_value
     globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
     globals.selected_year = self.drop_down_year.selected_value
@@ -74,15 +74,15 @@ class analysis(analysisTemplate):
   def updatePlots(self, **event_args):
     if 'component' in globals.selected_clustering:
       # component based
-      globals.plots_component = anvil.server.call('getPlotData', 'component', self.drop_down_component.selected_value,
+      globals.plots_component = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
                                              self.drop_down_envelope_predict.selected_value)
     if 'frequency' in globals.selected_clustering:
       # frequency based
-      globals.plots_frequency = anvil.server.call('getPlotData', 'frequency', self.drop_down_component.selected_value,
+      globals.plots_frequency = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
                                              self.drop_down_envelope_predict.selected_value)
     if 'position' in globals.selected_clustering:
         # position based
-        globals.plots_position = anvil.server.call('getPlotData', 'position', self.drop_down_component.selected_value,
+        globals.plots_position = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
                                                  self.drop_down_envelope_predict.selected_value)
     if globals.activePlot == 'comp':
         self.link_plot_comp_click()
@@ -163,11 +163,11 @@ class analysis(analysisTemplate):
       self.text_box_freq_min.text = int(self.text_box_freq_max.text) - 10
     elif int(self.text_box_freq_min.text) <0:
       self.text_box_freq_min.text = 0
-    globals.selected_frequencyRange[0] = self.text_box_freq_min.text
+    globals.selected_frequencyRange[0] = int(self.text_box_freq_min.text)
     self.parent.parent.raise_event('x-dataNotUpToDate')
     
   def text_box_freq_max_change(self, **event_args):
-    globals.selected_frequencyRange[1] = self.text_box_freq_max.text
+    globals.selected_frequencyRange[1] = int(self.text_box_freq_max.text)
     self.parent.parent.raise_event('x-dataNotUpToDate')
 
 ############################################################################################################
@@ -241,12 +241,14 @@ class analysis(analysisTemplate):
    # envelope generation dropdowns
   def drop_down_envelope_cluster_change(self, **event_args):
    globals.selected_envelopeMethods[0] = self.drop_down_envelope_cluster.selected_value
-   anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
-   self.updatePlots()
+   if globals.clustered:
+     anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
+     self.updatePlots()
 
   def drop_down_envelope_predict_change(self, **event_args):
    globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
-   self.updatePlots()
+   if globals.clustered:
+     self.updatePlots()
 
 
 
