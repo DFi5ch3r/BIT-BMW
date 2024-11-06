@@ -25,6 +25,10 @@ class analysis(analysisTemplate):
     self.drop_down_envelope_cluster.items = globals.envelopGenerationMethods
     self.drop_down_envelope_predict.items = globals.envelopGenerationMethods
 
+    self.drop_down_year.enabled = False
+    if globals.selected_compare:
+      self.radio_button_function_compare_clicked()
+
 # initialise GUI globals (selected_*)
     self.saveBoxes(self.card_buildstages, globals.selected_buildstage)
     self.saveBoxes(self.card_directions, globals.selected_directions)
@@ -72,28 +76,51 @@ class analysis(analysisTemplate):
         globalSet.discard(box.text)
 
   def updatePlots(self, **event_args):
-    if 'component' in globals.selected_clustering:
-      # component based
-      globals.plots_component = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
-                                             self.drop_down_envelope_predict.selected_value)
-    if 'frequency' in globals.selected_clustering:
-      # frequency based
-      globals.plots_frequency = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
-                                             self.drop_down_envelope_predict.selected_value)
-    if 'position' in globals.selected_clustering:
-        # position based
-        globals.plots_position = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
-                                                 self.drop_down_envelope_predict.selected_value)
-    if globals.activePlot == 'comp':
-        self.link_plot_comp_click()
-    elif globals.activePlot == 'freq':
-        self.link_plot_freq_click()
-    elif globals.activePlot == 'pos':
-        self.link_plot_pos_click()
-    elif globals.activePlot == 'cog':
-        pass
-    elif globals.activePlot == 'link':
-        pass
+    if globals.clustered:
+      if 'component' in globals.selected_clustering:
+        # component based
+        globals.plots_component = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
+                                               self.drop_down_envelope_predict.selected_value)
+      if 'frequency' in globals.selected_clustering:
+        # frequency based
+        globals.plots_frequency = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
+                                               self.drop_down_envelope_predict.selected_value)
+      if 'position' in globals.selected_clustering:
+          # position based
+          globals.plots_position = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
+                                                   self.drop_down_envelope_predict.selected_value)
+
+      globals.plots_overview = anvil.server.call('getOverviewPlot', globals.selected_component, globals.plots_component, globals.plots_position, globals.plots_frequency)
+
+      if globals.selected_compare:
+        if globals.selected_showComparisonData:
+          fileName = self.drop_down_compFile.selected_value
+        else:
+          fileName = None
+        anvil.server.call('assembleComparisonData', globals.selected_year, globals.selected_component,
+                            globals.selected_frequencyRange,globals.selected_envelopeMethods[1])
+        self.drop_down_compFile.items = anvil.server.call('getComparisonDataFileNames')
+        globals.plots_overview, success = anvil.server.call('addComparisonDataToOverviewPlot', globals.plots_overview, globals.selected_envelopeMethods[1], globals.selected_frequencyRange, fileName)
+
+        if not success:
+            Notification("Comparison data not available for selected component and year.", style="warning").show()
+
+      if globals.activePlot == 'overview':
+          self.link_plot_overview_click()
+      if globals.activePlot == 'comp':
+          self.link_plot_comp_click()
+      elif globals.activePlot == 'freq':
+          self.link_plot_freq_click()
+      elif globals.activePlot == 'pos':
+          self.link_plot_pos_click()
+      elif globals.activePlot == 'cog':
+          pass
+      elif globals.activePlot == 'link':
+          pass
+
+
+
+
 ############################################################################################################
 # checkboxes
 ############################################################################################################
@@ -175,12 +202,22 @@ class analysis(analysisTemplate):
 ############################################################################################################
 # function radio buttons
   def radio_button_function_predict_change(self, **event_args):
-    self.card_compFile.visible = not(self.card_compFile.visible)
-    globals.selected_predictCompare = self.radio_button_function_predict.selected
+    globals.selected_compare = self.radio_button_function_compare.selected
+    self.card_compFile.visible = globals.selected_compare
+    self.drop_down_year.enabled = False
+    self.updatePlots()
   
   def radio_button_function_compare_clicked(self, **event_args):
-    self.card_compFile.visible = not(self.card_compFile.visible)  
-    globals.selected_predictCompare = self.radio_button_function_predict.selected
+    globals.selected_compare = True
+    self.card_compFile.visible = globals.selected_compare
+    self.drop_down_year.enabled = True
+    self.updatePlots()
+
+
+
+
+
+
 
 ############################################################################################################
 # links
@@ -226,13 +263,16 @@ class analysis(analysisTemplate):
 ############################################################################################################
 
   def drop_down_compFile_change(self, **event_args):
-    globals.selected_comparisonFilePath = self.drop_down_compFile.selected_value
+    globals.selected_comparisonFile = self.drop_down_compFile.selected_value
+    self.updatePlots()
 
   def check_box_compFile_show_change(self, **event_args):
     globals.selected_showComparisonData = self.check_box_compFile_show.checked
+    self.updatePlots()
 
   def drop_down_year_change(self, **event_args):
     globals.selected_year = self.drop_down_year.selected_value
+    self.updatePlots()
 
   def drop_down_component_change(self, **event_args):
    globals.selected_component = self.drop_down_component.selected_value
@@ -249,6 +289,10 @@ class analysis(analysisTemplate):
    globals.selected_envelopeMethods[1] = self.drop_down_envelope_predict.selected_value
    if globals.clustered:
      self.updatePlots()
+
+
+
+
 
 
 

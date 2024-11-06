@@ -30,6 +30,9 @@ def test():
   #print('\n---------------------------------------------\n')
   #print(serverGlobals.wheelbase)
 
+###########################################################################################################
+# input
+###########################################################################################################
 @anvil.server.callable
 def create_databaseTEST(read_path):
   """
@@ -254,7 +257,7 @@ def create_database(read_path):
     serverGlobals.DB = database
 
 @anvil.server.callable
-def filter_database(key, values, sourceFullDB = True, secondKey = False):
+def filter_database(key, values, sourceFullDB = True, secondKey = False, returnDB = False):
     """
     Filters the global database based on the specified key and values.
 
@@ -262,8 +265,11 @@ def filter_database(key, values, sourceFullDB = True, secondKey = False):
         key (str): The key to filter the database entries by.
         values (list): A list of values to filter the entries.
         sourceFullDB (bool, optional): If True, use the full database from serverGlobals.DB.
-                                       If False, use the selected data from serverGlobals.selectedData.
-                                       Defaults to True.
+                                       If False, use the selected data from serverGlobals.selectedData. Defaults to True.
+        secondKey (bool, optional): If True, use a combination of key and secondKey for filtering (use for Baureihe-year assembly). Defaults to False.
+
+    Updates:
+        serverGlobals.selectedData: The filtered database entries.
     """
     # Access the global database
     if sourceFullDB:
@@ -285,8 +291,10 @@ def filter_database(key, values, sourceFullDB = True, secondKey = False):
                 # Append the entry to the filtered database
                 filtered_database.append(entry)
 
-    # Update the global database variable with the filtered database
-    serverGlobals.selectedData = filtered_database
+    if returnDB:
+        return filtered_database
+    else:
+        serverGlobals.selectedData = filtered_database
 
 @anvil.server.callable
 def get_baureihe_and_years():
@@ -496,29 +504,44 @@ def detect_encoding(file_path):
         result = chardet.detect(f.read())
     return result['encoding']
 
-############################################################################################################
+###########################################################################################################
+# output
+###########################################################################################################
 @anvil.server.callable
 def getPlot(clusteringMethod, component, envelopeMethod):
     plotData = []
 
     if clusteringMethod == 'component':
         clusters = serverGlobals.clusters_components
+        envelopeColour = 'purple'
     elif clusteringMethod == 'frequency':
         clusters = serverGlobals.clusters_frequencies
+        envelopeColour = 'red'
     elif clusteringMethod == 'position':
         clusters = serverGlobals.clusters_positions
+        envelopeColour = 'gold'
 
     for cluster in clusters:
         for comp in cluster['components']:
             if component in comp:
                 plotData.append(cluster)
 
+    if len(plotData) > 1:
+        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
+    else:
+        superEnvelope = plotData[0]
+
     fig = go.Figure()
     for cluster in plotData:
         fig.add_trace(go.Scatter(x=cluster['frequencies'], y=cluster['envelope'], name=cluster['name'],  mode='lines', line=dict(color='black', width=1)))
+
+    fig.add_trace(go.Scatter(x=superEnvelope['frequencies'], y=superEnvelope['envelope'],name='prediction', mode='lines', opacity=0.5, line=dict(color=envelopeColour, width=5)))
+
     fig.update_layout(
-        xaxis_title='f [Hz]',
-        yaxis_title='a [m/s²]',
+        xaxis_title='<b>' + 'f [Hz]' + '</b>',
+        yaxis_title='<b>' + 'a [m/s²]' + '</b>',
+        title='<b>' + component + ' - ' + clusteringMethod + ' based clustering'+ '</b>',
+        title_x=0.5,
         plot_bgcolor='white',
         xaxis=dict(
             showline=True,
@@ -543,12 +566,101 @@ def getPlot(clusteringMethod, component, envelopeMethod):
 
     )
 
-    if len(plotData) > 1:
-        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
-    else:
-        superEnvelope = plotData[0]
-
-    fig.add_trace(go.Scatter(x=superEnvelope['frequencies'], y=superEnvelope['envelope'],name='prediction', mode='lines', opacity=0.5, line=dict(color='red', width=5)))
-
     return fig
 
+@anvil.server.callable
+def getOverviewPlot(component, compPlot, posPlot, freqPlot):
+    fig = go.Figure()
+    if compPlot:
+        fig.add_trace(compPlot.data[-1])
+        fig.data[-1].name = 'component based prediction'
+        fig.data[-1].line.color = 'purple'
+    if posPlot:
+        fig.add_trace(posPlot.data[-1])
+        fig.data[-1].name = 'position based prediction'
+        fig.data[-1].line.color = 'gold'
+    if freqPlot:
+        fig.add_trace(freqPlot.data[-1])
+        fig.data[-1].name = 'frequency based prediction'
+        fig.data[-1].line.color = 'red'
+
+    fig['data'][0]['showlegend']=True
+
+    fig.update_layout(
+        xaxis_title='<b>' + 'f [Hz]' + '</b>',
+        yaxis_title='<b>' + 'a [m/s²]' + '</b>',
+        title='<b>' + component + ' - cluster envelopes' + '</b>',
+        title_x=0.5,
+        plot_bgcolor='white',
+        xaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+        yaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+    )
+    return fig
+
+@anvil.server.callable
+def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange,measurementFileName=None):
+    success = False
+    envelope = getComparisonDataEnvelope()
+    if len(overviewPlot.data) > 3:
+        overviewPlot.data = overviewPlot.data[:3]
+    if envelope is not None:
+        overviewPlot.add_trace(go.Scatter(x=envelope[0], y=envelope[1],name='measurement envelope', mode='lines', opacity=1, line=dict(color='black', width=2)))
+        success = True
+    if measurementFileName:
+        if measurementFileName in getComparisonDataFileNames():
+            x,y = getComparisonData(measurementFileName)
+            print(x,y) #todo DEBUG
+            overviewPlot.add_trace(go.Scatter(x=x, y=y, name='selected measurement', mode='lines', opacity=1, line=dict(color='blue', width=2)))
+
+    return overviewPlot, success
+
+@anvil.server.callable
+def getComparisonData(fileName):
+    """
+    Retrieve the frequency and amplitude data for a given comparison file.
+
+    Args:
+        fileName (str): The name of the file to retrieve data for.
+
+    Returns:
+        tuple: A tuple containing the frequency and amplitude data.
+    """
+    for entry in serverGlobals.comparisonData:
+        if entry['name'] == fileName:
+            return entry['frequencies'], entry['amplitudes']
+
+@anvil.server.callable
+def getComparisonDataFileNames():
+    """
+    Retrieve the file names of the comparison data.
+
+    Returns:
+        list: A list of file names.
+    """
+    filenames = set()
+    for entry in serverGlobals.comparisonData:
+        filenames.add(entry['name'])
+
+    return sorted(list(filenames))
+
+@anvil.server.callable
+def getComparisonDataEnvelope():
+    return serverGlobals.comparisonEnvelope

@@ -40,7 +40,7 @@ def generateEnvelopesForClusters(method):
     if serverGlobals.clusters_frequencies:
         generateEnvelopes(serverGlobals.clusters_frequencies, method)
 
-def assembleData(key):
+def assembleData(key, db = None):
     """
     Assemble data into clusters based on a unique key.
 
@@ -50,8 +50,11 @@ def assembleData(key):
     Returns:
         list: A list of clusters, each containing 'name', 'frequencies', and 'amplitudes'.
     """
+    if db is None:
+        db = serverGlobals.selectedData
+    else:
+        db = db
 
-    db = serverGlobals.selectedData
     unique_keys = set()
 
     # Iterate through each entry in the database to find unique keys
@@ -82,7 +85,10 @@ def assembleData(key):
             if not np.array_equal(frequencies, cluster['data'][i, :, 0]):
                 raise ValueError("frequency data arrays do not match")
         # Extract amplitudes for each cluster
-        amplitudes = np.column_stack([cluster['data'][i, :, 1] for i in range(cluster['data'].shape[0])])
+        if cluster['data'].shape[0] == 1:
+            amplitudes = cluster['data'][0, :, 1]
+        else:
+            amplitudes = np.column_stack([cluster['data'][i, :, 1] for i in range(cluster['data'].shape[0])])
         cluster['frequencies'] = frequencies
         cluster['amplitudes'] = amplitudes
 
@@ -205,3 +211,49 @@ def generateSuperEnvelope(clusters, method, component):
     generateEnvelopes([envelope], method)
 
     return envelope
+
+#comparison data
+@anvil.server.callable
+def assembleComparisonData(year, component, frequencyRange, envelopeMethod):
+    """
+    Assemble comparison data for a specific year and component.
+
+    Args:
+        year (int): The year to filter the data.
+        component (str): The component to filter the data.
+        envelopeMethod (str): The method to use for generating envelopes.
+        frequencyRange (tuple): The frequency range to adjust the data.
+
+    Returns:
+        dict: The envelope of comparison data.
+    """
+    db = serverGlobals.selectedData
+    comparisonData = []
+
+    for entry in db:
+        if (entry['Jahr'] == year) and (component in entry['Bauteil'] ) and ('data' in entry):
+            comparisonData.append(entry)
+
+    clusters = assembleData('Jahr', comparisonData)
+    clusters = adjustToFrequencyRange(clusters, frequencyRange)
+    generateEnvelopes(clusters, envelopeMethod)
+
+
+    comparisonData = assembleData('Dateiname', comparisonData)
+
+    for entry in comparisonData:        #todo: revise, here due to strange bug with K03/2015/Blinker_hi
+        if len(entry['amplitudes'].shape) > 1:
+            entry['amplitudes'] = entry['amplitudes'][:, 0]
+
+    comparisonData = adjustToFrequencyRange(comparisonData, frequencyRange)
+
+    serverGlobals.comparisonData = comparisonData
+    if len(clusters)<1:
+        serverGlobals.comparisonEnvelope = None
+    else:
+        serverGlobals.comparisonEnvelope = [clusters[0]['frequencies'], clusters[0]['envelope']]
+
+
+
+
+

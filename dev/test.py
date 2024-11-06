@@ -12,7 +12,8 @@ IO.create_database(path)
 #db = serverGlobals.DB
 
 # IO.filter_database('Baureihe', ['K51'], sourceFullDB = True)
-IO.filter_database('Baureihe', ['K02'], sourceFullDB = True)
+# IO.filter_database('Baureihe', ['K02'], sourceFullDB = True)
+IO.filter_database('Baureihe', ['K03'], sourceFullDB = True)
 
 IO.readData(selectedData=True)
 db2 = serverGlobals.selectedData

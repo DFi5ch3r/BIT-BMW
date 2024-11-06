@@ -119,13 +119,13 @@ class main(mainTemplate):
 
     Notification("Generating envelopes ...").show()
     anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
+    globals.clustered = True
 
     self.content_panel.raise_event_on_children('x-updateResults')
 
     Notification("...done clustering.", style="success").show()
-
     self.button_clusterData.foreground = '#1EB980'
-    globals.clustered = True
+
 
   def button_displaySettings_click(self, **event_args):
     self.show_globals()
