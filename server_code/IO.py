@@ -627,7 +627,6 @@ def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange
     if measurementFileName:
         if measurementFileName in getComparisonDataFileNames():
             x,y = getComparisonData(measurementFileName)
-            print(x,y) #todo DEBUG
             overviewPlot.add_trace(go.Scatter(x=x, y=y, name='selected measurement', mode='lines', opacity=1, line=dict(color='blue', width=2)))
 
     return overviewPlot, success
