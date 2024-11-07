@@ -297,6 +297,34 @@ components:
       properties: {}
       type: Label
     - components:
+      - layout_properties: {grid_position: 'OCPTHZ,RVSGJP'}
+        name: label_13_copy
+        properties: {role: null, text: 'mean std. deviation [m/s²]'}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,SYNOSU'}
+        name: label_results_stdDev_freq
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,JUBWRS'}
+        name: label_results_stdDev_comp
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,WKIRGZ'}
+        name: label_results_stdDev_pos
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - layout_properties: {grid_position: 'OCPTHZ,KAXGEA'}
+        name: label_22_copy
+        properties: {}
+        type: Label
+      layout_properties: {grid_position: 'DPGINC,IOTBVG'}
+      name: outlined_card_10
+      properties: {role: null}
+      type: ColumnPanel
+    - components:
       - layout_properties: {grid_position: 'VVBEAG,CENBRT PVNBOW,NDIUFN'}
         name: label_12
         properties: {text: 'magnitude error [kHz*m/s²]'}
@@ -346,34 +374,6 @@ components:
       layout_properties: {grid_position: 'ANVAVH,YWYUTP'}
       name: card_error
       properties: {role: null, visible: false}
-      type: ColumnPanel
-    - components:
-      - layout_properties: {grid_position: 'OCPTHZ,RVSGJP'}
-        name: label_13_copy
-        properties: {role: null, text: 'mean std. deviation [m/s²]'}
-        type: Label
-      - data_bindings: []
-        layout_properties: {grid_position: 'OCPTHZ,SYNOSU'}
-        name: label_results_stdDev_freq
-        properties: {background: 'theme:Disabled Container', foreground: ''}
-        type: Label
-      - data_bindings: []
-        layout_properties: {grid_position: 'OCPTHZ,JUBWRS'}
-        name: label_results_stdDev_comp
-        properties: {background: 'theme:Disabled Container', foreground: ''}
-        type: Label
-      - data_bindings: []
-        layout_properties: {grid_position: 'OCPTHZ,WKIRGZ'}
-        name: label_results_stdDev_pos
-        properties: {background: 'theme:Disabled Container', foreground: ''}
-        type: Label
-      - layout_properties: {grid_position: 'OCPTHZ,KAXGEA'}
-        name: label_22_copy
-        properties: {}
-        type: Label
-      layout_properties: {grid_position: 'AJDJSX,GFNOJR'}
-      name: outlined_card_10
-      properties: {role: null}
       type: ColumnPanel
     layout_properties: {width: 1122}
     name: outlined_card_5
