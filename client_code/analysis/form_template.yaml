@@ -293,8 +293,8 @@ components:
       properties: {text: position based}
       type: Label
     - layout_properties: {grid_position: 'UCTZIV,QIRENW'}
-      name: label_1
-      properties: {}
+      name: label_measEnv
+      properties: {text: measurement envelope, visible: false}
       type: Label
     - components:
       - layout_properties: {grid_position: 'OCPTHZ,RVSGJP'}
@@ -316,9 +316,10 @@ components:
         name: label_results_stdDev_pos
         properties: {background: 'theme:Disabled Container', foreground: ''}
         type: Label
-      - layout_properties: {grid_position: 'OCPTHZ,KAXGEA'}
-        name: label_22_copy
-        properties: {}
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,PPOSYT'}
+        name: label_results_stdDev_measurements
+        properties: {background: 'theme:Disabled Container', foreground: '', visible: false}
         type: Label
       layout_properties: {grid_position: 'DPGINC,IOTBVG'}
       name: outlined_card_10
@@ -387,7 +388,7 @@ components:
       type: ColumnPanel
     layout_properties: {width: 1122}
     name: outlined_card_5
-    properties: {col_widths: '{"HTHYWZ":15,"GSHLZC":15,"UBJSIC":15,"MFDTFY":10,"QIRENW":17}', role: elevated-card}
+    properties: {col_spacing: small, col_widths: '{"HTHYWZ":15,"GSHLZC":15,"UBJSIC":15,"MFDTFY":15,"QIRENW":12}', role: elevated-card}
     type: ColumnPanel
   layout_properties: {grid_position: 'GQJQMK,MCCAXK RNCZUO,EBOIDA'}
   name: flow_panel_2
