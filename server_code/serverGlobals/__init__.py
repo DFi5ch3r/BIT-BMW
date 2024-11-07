@@ -12,3 +12,4 @@ clusters_positions = []
 
 comparisonData = []
 comparisonEnvelope = []
+comparisonEnvelope_meanStdDev = []

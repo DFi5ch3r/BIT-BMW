@@ -79,7 +79,7 @@ class analysis(analysisTemplate):
     if globals.clustered:
       if 'component' in globals.selected_clustering:
         # component based
-        globals.plots_component = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
+        globals.plots_component, self.label_results_stdDev_comp.text = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
       if 'frequency' in globals.selected_clustering:
         # frequency based

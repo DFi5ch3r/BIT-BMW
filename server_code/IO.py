@@ -526,10 +526,7 @@ def getPlot(clusteringMethod, component, envelopeMethod):
             if component in comp:
                 plotData.append(cluster)
 
-    if len(plotData) > 1:
-        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
-    else:
-        superEnvelope = plotData[0]
+    superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
 
     fig = go.Figure()
     for cluster in plotData:
@@ -566,7 +563,7 @@ def getPlot(clusteringMethod, component, envelopeMethod):
 
     )
 
-    return fig
+    return fig, superEnvelope['meanStdDev']
 
 @anvil.server.callable
 def getOverviewPlot(component, compPlot, posPlot, freqPlot):

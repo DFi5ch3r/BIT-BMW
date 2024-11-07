@@ -199,17 +199,22 @@ def generateSuperEnvelope(clusters, method, component):
         dict: A dictionary representing the super envelope, containing 'name', 'components', 'frequencies', and 'amplitudes'.
     """
     envelope = {}
-    envelope['name'] = component
-    envelope['components'] = set()
-    envelope['frequencies'] = clusters[0]['frequencies']
-    envelope['amplitudes'] = []
 
-    for cluster in clusters:
-        envelope['amplitudes'].append(cluster['envelope'])
-    envelope['amplitudes'] = np.column_stack(envelope['amplitudes'])
+    if len(clusters) > 1:
+        envelope['name'] = component
+        envelope['frequencies'] = clusters[0]['frequencies']
+        envelope['amplitudes'] = []
 
-    generateEnvelopes([envelope], method)
+        for cluster in clusters:
+            envelope['amplitudes'].append(cluster['envelope'])
+        envelope['amplitudes'] = np.column_stack(envelope['amplitudes'])
 
+        envelope['meanStdDev'] = np.mean(np.std(envelope['amplitudes'], axis=1))
+        generateEnvelopes([envelope], method)
+
+    else:
+        envelope = clusters[0]
+        envelope['meanStdDev'] = 0
     return envelope
 
 #comparison data
@@ -252,8 +257,7 @@ def assembleComparisonData(year, component, frequencyRange, envelopeMethod):
         serverGlobals.comparisonEnvelope = None
     else:
         serverGlobals.comparisonEnvelope = [clusters[0]['frequencies'], clusters[0]['envelope']]
-
-
+        serverGlobals.comparisonEnvelope_meanStdDev = np.mean(np.std(clusters[0]['amplitudes'], axis=1))
 
 
 
