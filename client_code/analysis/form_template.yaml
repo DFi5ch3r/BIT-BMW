@@ -345,7 +345,7 @@ components:
         type: Label
       layout_properties: {grid_position: 'ANVAVH,YWYUTP'}
       name: card_error
-      properties: {role: null}
+      properties: {role: null, visible: false}
       type: ColumnPanel
     - components:
       - layout_properties: {grid_position: 'OCPTHZ,RVSGJP'}

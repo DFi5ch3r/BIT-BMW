@@ -204,12 +204,14 @@ class analysis(analysisTemplate):
   def radio_button_function_predict_change(self, **event_args):
     globals.selected_compare = self.radio_button_function_compare.selected
     self.card_compFile.visible = globals.selected_compare
+    self.card_error.visible = globals.selected_compare
     self.drop_down_year.enabled = False
     self.updatePlots()
   
   def radio_button_function_compare_clicked(self, **event_args):
     globals.selected_compare = True
     self.card_compFile.visible = globals.selected_compare
+    self.card_error.visible = globals.selected_compare
     self.drop_down_year.enabled = True
     self.updatePlots()
 
