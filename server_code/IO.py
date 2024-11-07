@@ -626,7 +626,7 @@ def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange
             x,y = getComparisonData(measurementFileName)
             overviewPlot.add_trace(go.Scatter(x=x, y=y, name='selected measurement', mode='lines', opacity=1, line=dict(color='blue', width=2)))
 
-    return overviewPlot, success
+    return overviewPlot, success, serverGlobals.comparisonEnvelope_meanStdDev
 
 @anvil.server.callable
 def getComparisonData(fileName):

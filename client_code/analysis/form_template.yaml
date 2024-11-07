@@ -304,22 +304,22 @@ components:
       - data_bindings: []
         layout_properties: {grid_position: 'OCPTHZ,SYNOSU'}
         name: label_results_stdDev_freq
-        properties: {background: 'theme:Disabled Container', foreground: ''}
+        properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
         type: Label
       - data_bindings: []
         layout_properties: {grid_position: 'OCPTHZ,JUBWRS'}
         name: label_results_stdDev_comp
-        properties: {background: 'theme:Disabled Container', foreground: ''}
+        properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
         type: Label
       - data_bindings: []
         layout_properties: {grid_position: 'OCPTHZ,WKIRGZ'}
         name: label_results_stdDev_pos
-        properties: {background: 'theme:Disabled Container', foreground: ''}
+        properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
         type: Label
       - data_bindings: []
         layout_properties: {grid_position: 'OCPTHZ,PPOSYT'}
         name: label_results_stdDev_measurements
-        properties: {background: 'theme:Disabled Container', foreground: '', visible: false}
+        properties: {align: center, background: 'theme:Disabled Container', foreground: '', visible: false}
         type: Label
       layout_properties: {grid_position: 'DPGINC,IOTBVG'}
       name: outlined_card_10
@@ -334,17 +334,17 @@ components:
         - data_bindings: []
           layout_properties: {grid_position: 'XGRUVC,XUYYXI'}
           name: label_results_error_freq
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - data_bindings: []
           layout_properties: {grid_position: 'XGRUVC,OQXOOG'}
           name: label_results_error_comp
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - data_bindings: []
           layout_properties: {grid_position: 'XGRUVC,YLZXBY'}
           name: label_results_error_pos
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - layout_properties: {grid_position: 'XGRUVC,ROOHZG'}
           name: label_21

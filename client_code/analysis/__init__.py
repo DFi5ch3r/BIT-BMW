@@ -79,16 +79,19 @@ class analysis(analysisTemplate):
     if globals.clustered:
       if 'component' in globals.selected_clustering:
         # component based
-        globals.plots_component, self.label_results_stdDev_comp.text = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
+        globals.plots_component, stDev = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
+        self.label_results_stdDev_comp.text = f"{stDev:.2f}"
       if 'frequency' in globals.selected_clustering:
         # frequency based
-        globals.plots_frequency = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
+        globals.plots_frequency, stDev = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
+        self.label_results_stdDev_freq.text = f"{stDev:.2f}"
       if 'position' in globals.selected_clustering:
           # position based
-          globals.plots_position = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
+          globals.plots_position, stDev = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
                                                    self.drop_down_envelope_predict.selected_value)
+          self.label_results_stdDev_pos.text = f"{stDev:.2f}"
 
       globals.plots_overview = anvil.server.call('getOverviewPlot', globals.selected_component, globals.plots_component, globals.plots_position, globals.plots_frequency)
 
@@ -97,13 +100,17 @@ class analysis(analysisTemplate):
           fileName = self.drop_down_compFile.selected_value
         else:
           fileName = None
+
         anvil.server.call('assembleComparisonData', globals.selected_year, globals.selected_component,
                             globals.selected_frequencyRange,globals.selected_envelopeMethods[1])
         self.drop_down_compFile.items = anvil.server.call('getComparisonDataFileNames')
-        globals.plots_overview, success = anvil.server.call('addComparisonDataToOverviewPlot', globals.plots_overview, globals.selected_envelopeMethods[1], globals.selected_frequencyRange, fileName)
+        globals.plots_overview, success, stDev = anvil.server.call('addComparisonDataToOverviewPlot', globals.plots_overview, globals.selected_envelopeMethods[1], globals.selected_frequencyRange, fileName)
 
         if not success:
             Notification("Comparison data not available for selected component and year.", style="warning").show()
+            self.label_results_stdDev_measurements.text = '-'
+        else:
+            self.label_results_stdDev_measurements.text = f"{stDev:.2f}"
 
       if globals.activePlot == 'overview':
           self.link_plot_overview_click()
@@ -205,6 +212,8 @@ class analysis(analysisTemplate):
     globals.selected_compare = self.radio_button_function_compare.selected
     self.card_compFile.visible = globals.selected_compare
     self.card_error.visible = globals.selected_compare
+    self.label_measEnv.visible = globals.selected_compare
+    self.label_results_stdDev_measurements.visible = globals.selected_compare
     self.drop_down_year.enabled = False
     self.updatePlots()
   
@@ -212,6 +221,8 @@ class analysis(analysisTemplate):
     globals.selected_compare = True
     self.card_compFile.visible = globals.selected_compare
     self.card_error.visible = globals.selected_compare
+    self.label_measEnv.visible = globals.selected_compare
+    self.label_results_stdDev_measurements.visible = globals.selected_compare
     self.drop_down_year.enabled = True
     self.updatePlots()
 
