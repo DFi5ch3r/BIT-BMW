@@ -77,24 +77,25 @@ class analysis(analysisTemplate):
 
   def updatePlots(self, **event_args):
     if globals.clustered:
-      if 'component' in globals.selected_clustering:
+      if globals.clustered_comp:
         # component based
-        globals.plots_component, stDev = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
+        globals.plots_component, componentEnv, stDev = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
         self.label_results_stdDev_comp.text = f"{stDev:.2f}"
-      if 'frequency' in globals.selected_clustering:
+      if globals.clustered_freq:
         # frequency based
-        globals.plots_frequency, stDev = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
+        globals.plots_frequency, freqencyEnv, stDev = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
         self.label_results_stdDev_freq.text = f"{stDev:.2f}"
-      if 'position' in globals.selected_clustering:
+      if globals.clustered_pos:
           # position based
-          globals.plots_position, stDev = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
+          globals.plots_position, positionEnv, stDev = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
                                                    self.drop_down_envelope_predict.selected_value)
           self.label_results_stdDev_pos.text = f"{stDev:.2f}"
 
       globals.plots_overview = anvil.server.call('getOverviewPlot', globals.selected_component, globals.plots_component, globals.plots_position, globals.plots_frequency)
 
+      #comparison
       if globals.selected_compare:
         if globals.selected_showComparisonData:
           fileName = self.drop_down_compFile.selected_value
@@ -111,6 +112,27 @@ class analysis(analysisTemplate):
             self.label_results_stdDev_measurements.text = '-'
         else:
             self.label_results_stdDev_measurements.text = f"{stDev:.2f}"
+            if globals.clustered_comp:
+              magError, shapeConf = anvil.server.call('getErrors', componentEnv)
+              self.label_results_error_comp.text = f"{magError:.0f}"
+              self.label_results_shape_comp.text = f"{shapeConf:.3f}"
+            else:
+              self.label_results_error_comp.text = '-'
+              self.label_results_shape_comp.text = '-'
+            if globals.clustered_freq:
+                magError, shapeConf = anvil.server.call('getErrors', freqencyEnv)
+                self.label_results_error_freq.text = f"{magError:.0f}"
+                self.label_results_shape_freq.text = f"{shapeConf:.3f}"
+            else:
+                self.label_results_error_freq.text = '-'
+                self.label_results_shape_freq.text = '-'
+            if globals.clustered_pos:
+                magError, shapeConf = anvil.server.call('getErrors', positionEnv)
+                self.label_results_error_pos.text = f"{magError:.0f}"
+                self.label_results_shape_pos.text = f"{shapeConf:.3f}"
+            else:
+                self.label_results_error_pos.text = '-'
+                self.label_results_shape_pos.text = '-'
 
       if globals.activePlot == 'overview':
           self.link_plot_overview_click()

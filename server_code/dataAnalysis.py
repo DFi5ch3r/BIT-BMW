@@ -3,6 +3,7 @@ import random
 import re
 import os
 import numpy as np
+from scipy.spatial.distance import pdist
 import pandas as pd
 import chardet
 from . import serverGlobals
@@ -23,6 +24,7 @@ from . import serverGlobals
 def clusterComponents(frequencyRange):
     serverGlobals.clusters_components = assembleData('Bauteil')
     serverGlobals.clusters_components = adjustToFrequencyRange(serverGlobals.clusters_components, frequencyRange)
+
 @anvil.server.callable
 def clusterFrequencies(frequencyRange):
     pass
@@ -259,5 +261,13 @@ def assembleComparisonData(year, component, frequencyRange, envelopeMethod):
         serverGlobals.comparisonEnvelope = [clusters[0]['frequencies'], clusters[0]['envelope']]
         serverGlobals.comparisonEnvelope_meanStdDev = np.mean(np.std(clusters[0]['amplitudes'], axis=1))
 
+@anvil.server.callable
+def getErrors(predictionEnvelope):
+
+    errorVec = np.vstack((serverGlobals.comparisonEnvelope[1], predictionEnvelope[1]))
+    magError = serverGlobals.frequencyResolution * np.sum(np.abs(errorVec[1,:] - errorVec[0,:])) / 1000
+    anglErr =  1 - pdist(errorVec, 'cosine')[0]
+
+    return magError, anglErr
 
 

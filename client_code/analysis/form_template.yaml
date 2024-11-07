@@ -362,17 +362,17 @@ components:
         - data_bindings: []
           layout_properties: {grid_position: 'EISNTL,HZEKJI'}
           name: label_results_shape_freq
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - data_bindings: []
           layout_properties: {grid_position: 'EISNTL,VDXRFT'}
           name: label_results_shape_comp
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - data_bindings: []
           layout_properties: {grid_position: 'EISNTL,WLFSPV'}
           name: label_results_shape_pos
-          properties: {background: 'theme:Disabled Container', foreground: ''}
+          properties: {align: center, background: 'theme:Disabled Container', foreground: ''}
           type: Label
         - layout_properties: {grid_position: 'EISNTL,YDEAQT'}
           name: label_22

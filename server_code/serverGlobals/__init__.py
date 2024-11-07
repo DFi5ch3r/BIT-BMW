@@ -13,3 +13,5 @@ clusters_positions = []
 comparisonData = []
 comparisonEnvelope = []
 comparisonEnvelope_meanStdDev = []
+
+frequencyResolution = 4

@@ -110,12 +110,21 @@ class main(mainTemplate):
     if 'component' in globals.selected_clustering:
         Notification("Clustering by components ...").show()
         anvil.server.call('clusterComponents', globals.selected_frequencyRange)
+        globals.clustered_comp = True
+    else:
+        globals.clustered_comp = False
     if 'frequency' in globals.selected_clustering:
         Notification("Clustering by frequencies ...").show()
         anvil.server.call('clusterFrequencies', globals.selected_frequencyRange)
+        globals.clustered_freq = True
+    else:
+        globals.clustered_freq = False
     if 'position' in globals.selected_clustering:
         Notification("Clustering by positions ...").show()
         anvil.server.call('clusterPositions', globals.selected_frequencyRange)
+        globals.clustered_pos = True
+    else:
+        globals.clustered_pos = False
 
     Notification("Generating envelopes ...").show()
     anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])

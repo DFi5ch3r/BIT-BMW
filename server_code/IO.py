@@ -563,7 +563,7 @@ def getPlot(clusteringMethod, component, envelopeMethod):
 
     )
 
-    return fig, superEnvelope['meanStdDev']
+    return fig, [superEnvelope['frequencies'], superEnvelope['envelope']], superEnvelope['meanStdDev']
 
 @anvil.server.callable
 def getOverviewPlot(component, compPlot, posPlot, freqPlot):

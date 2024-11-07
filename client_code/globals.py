@@ -8,6 +8,9 @@ envelopGenerationMethods = ['Maximum', 'Minimum', 'Mean', '+3*std.dev.(99%)', '+
 
 dataLoaded = False
 clustered = False
+clustered_pos = False
+clustered_freq = False
+clustered_comp = False
 
 selected_BaureiheYears = set()
 selected_directions = set()
