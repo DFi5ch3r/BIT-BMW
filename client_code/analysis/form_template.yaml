@@ -296,78 +296,88 @@ components:
       name: label_1
       properties: {}
       type: Label
-    - layout_properties: {grid_position: 'AZEEVD,RUZZFY'}
-      name: label_12
-      properties: {text: 'magnitude error [kHz*m/s²]'}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'AZEEVD,XWKVUV'}
-      name: label_results_error_freq
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'AZEEVD,SOCQAC'}
-      name: label_results_error_comp
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'AZEEVD,YKQRPW'}
-      name: label_results_error_pos
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - layout_properties: {grid_position: 'AZEEVD,KHUTCO'}
-      name: label_21
-      properties: {}
-      type: Label
-    - layout_properties: {grid_position: 'LBNRHI,HBAHZS EXPMHQ,QMJBQC'}
-      name: label_13
-      properties: {role: null, text: conformity of shape}
-      type: Label
-    - layout_properties: {grid_position: 'LBNRHI,HBAHZS IDTUBA,VLSLKG'}
-      name: label_13_copy
-      properties: {role: null, text: 'mean std. deviation [m/s²]'}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,XEGIJH VJEDSZ,BMDZMS'}
-      name: label_results_shape_freq
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,XEGIJH CZSGGU,PBUAHJ'}
-      name: label_results_stdDev_freq
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,VIISTW VRCQAE,HXBFWC'}
-      name: label_results_shape_comp
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,VIISTW UBQORF,XKJPMF'}
-      name: label_results_stdDev_comp
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,FQNKAE XIBOKP,RXTIBX'}
-      name: label_results_shape_pos
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - data_bindings: []
-      layout_properties: {grid_position: 'LBNRHI,FQNKAE OOOOWJ,UAUULW'}
-      name: label_results_stdDev_pos
-      properties: {background: 'theme:Disabled Container', foreground: ''}
-      type: Label
-    - layout_properties: {grid_position: 'LBNRHI,AVIYWK XDFQWN,RJFNGA'}
-      name: label_22
-      properties: {}
-      type: Label
-    - layout_properties: {grid_position: 'LBNRHI,AVIYWK ZAHERO,PNVYFO'}
-      name: label_22_copy
-      properties: {}
-      type: Label
+    - components:
+      - layout_properties: {grid_position: 'VVBEAG,CENBRT PVNBOW,NDIUFN'}
+        name: label_12
+        properties: {text: 'magnitude error [kHz*m/s²]'}
+        type: Label
+      - layout_properties: {grid_position: 'VVBEAG,CENBRT JBHFXP,LWIHSK'}
+        name: label_13
+        properties: {role: null, text: conformity of shape}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,NYYACH THJELB,SMLLNJ'}
+        name: label_results_error_freq
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,NYYACH TFZCPK,TVVLKA'}
+        name: label_results_shape_freq
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,XOODSW PUJGJZ,IFEFNI'}
+        name: label_results_error_comp
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,XOODSW RDNJUE,WJBWUT'}
+        name: label_results_shape_comp
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,IJDYOC YGFDYA,KVNHTG'}
+        name: label_results_error_pos
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'VVBEAG,IJDYOC EDGCAO,GUOUWY'}
+        name: label_results_shape_pos
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - layout_properties: {grid_position: 'VVBEAG,XCMMMY CXRZTA,NLNWYZ'}
+        name: label_21
+        properties: {}
+        type: Label
+      - layout_properties: {grid_position: 'VVBEAG,XCMMMY FDXUCP,OCNDRH'}
+        name: label_22
+        properties: {}
+        type: Label
+      layout_properties: {grid_position: 'ANVAVH,YWYUTP'}
+      name: card_error
+      properties: {role: null}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'OCPTHZ,RVSGJP'}
+        name: label_13_copy
+        properties: {role: null, text: 'mean std. deviation [m/s²]'}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,SYNOSU'}
+        name: label_results_stdDev_freq
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,JUBWRS'}
+        name: label_results_stdDev_comp
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - data_bindings: []
+        layout_properties: {grid_position: 'OCPTHZ,WKIRGZ'}
+        name: label_results_stdDev_pos
+        properties: {background: 'theme:Disabled Container', foreground: ''}
+        type: Label
+      - layout_properties: {grid_position: 'OCPTHZ,KAXGEA'}
+        name: label_22_copy
+        properties: {}
+        type: Label
+      layout_properties: {grid_position: 'AJDJSX,GFNOJR'}
+      name: outlined_card_10
+      properties: {role: null}
+      type: ColumnPanel
     layout_properties: {width: 1122}
     name: outlined_card_5
-    properties: {col_widths: '{"HBAHZS":15,"XEGIJH":10,"VIISTW":10,"FQNKAE":10,"RUZZFY":15,"XWKVUV":10,"SOCQAC":10,"YKQRPW":10,"HTHYWZ":15,"GSHLZC":10,"UBJSIC":10,"MFDTFY":10,"AVIYWK":27,"KHUTCO":27,"QIRENW":27}', role: elevated-card}
+    properties: {col_widths: '{"HTHYWZ":15,"GSHLZC":15,"UBJSIC":15,"MFDTFY":10,"QIRENW":17}', role: elevated-card}
     type: ColumnPanel
   layout_properties: {grid_position: 'GQJQMK,MCCAXK RNCZUO,EBOIDA'}
   name: flow_panel_2
