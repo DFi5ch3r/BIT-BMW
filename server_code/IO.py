@@ -385,7 +385,7 @@ def loadCoGdata(rootPath):
     """
 
     # Initialize an empty list to store CoG file data
-    CoGfiles = []
+    CoGData = []
 
     # Construct the path to the 'Schwerpunktdaten' directory
     path = rootPath + '/Schwerpunktdaten'
@@ -451,15 +451,23 @@ def loadCoGdata(rootPath):
         cogs = cogs - cog_swila
 
         # Append the processed CoG data to the list
-        CoGfiles.append({
+        CoGData.append({
             'Baureihe': baureihe,
             'parts': parts,
             'CoGs': cogs
         })
 
     # Store the processed CoG data and wheelbase information in global variables
-    serverGlobals.CoGfiles = CoGfiles
-    serverGlobals.wheelbase = wheelbase
+    wheelbase = [{'Baureihe': item[0], 'Radstand': item[1]} for item in wheelbase]
+
+    for entry in CoGData:
+        for entry2 in wheelbase:
+            if entry2['Baureihe'] == entry['Baureihe']:
+                wb =  entry2['Radstand']
+        entry['CoGs'] = entry['CoGs']/wb
+
+    serverGlobals.CoGData = CoGData
+    #serverGlobals.wheelbase = wheelbase
 
 @anvil.server.callable
 def CoG_TranslationTable():
@@ -499,9 +507,8 @@ def CoG_TranslationTable():
 
 @anvil.server.callable
 def addCoGdataToDB():
-    #todo: NOT TESTED
     baureihen = set()
-    for entry in serverGlobals.CoGfiles:
+    for entry in serverGlobals.CoGData:
         baureihen.add(entry['Baureihe'])
     baureihen = list(baureihen)
 
@@ -509,15 +516,17 @@ def addCoGdataToDB():
 
     for entry in serverGlobals.DB:
         if entry['Baureihe'] in baureihen:
-            for CoG in serverGlobals.CoGfiles:
+            for CoG in serverGlobals.CoGData:
                 if CoG['Baureihe'] == entry['Baureihe']:
                     translation = False
                     for key, values in translationTable.items():
                         if entry['Bauteil'] in values:
                             translation = key
+
+                            cogIndex = list(CoG['parts']).index(translation)
+                            entry['CoG'] = CoG['CoGs'][cogIndex]
+                            entry['CoG_Bauteil'] = translation
                             break
-                    cogIndex = list(CoG['parts']).index(translation)
-                    entry['CoG'] = CoG['CoGs'][cogIndex]
 
 
 
@@ -625,6 +634,70 @@ def getPlot(clusteringMethod, component, envelopeMethod):
     )
 
     return fig, [superEnvelope['frequencies'], superEnvelope['envelope']], superEnvelope['meanStdDev']
+
+@anvil.server.callable
+def getCogPlot():
+    # Group data by Baureihe and Jahr
+    grouped_data = {}
+    for entry in serverGlobals.selectedData:
+        if 'CoG' in entry:
+            baureihe = entry.get('Baureihe')
+            jahr = entry.get('Jahr')
+            cog = entry.get('CoG')
+            cogBauteil = entry.get('CoG_Bauteil')
+
+            key = (baureihe, jahr)
+            if key not in grouped_data:
+                grouped_data[key] = {'cogs': [], 'cogBauteil': []}
+            grouped_data[key]['cogs'].append(cog)
+            grouped_data[key]['cogBauteil'].append(cogBauteil)
+
+    fig = go.Figure()
+
+    # Plot CoG for each Baureihe-year combination
+    for (baureihe, jahr), data in grouped_data.items():
+        cogs = data['cogs']
+        cogBauteil = data['cogBauteil']
+        x = [cog[0] for cog in cogs]
+        y = [cog[2] for cog in cogs]
+        text = cogBauteil
+        fig.add_trace(go.Scatter(
+            x=x, y=y,
+            mode='markers+text',
+            marker=dict(size=5),
+            text=text,
+            textposition='top center',
+            name=f'{baureihe} ({jahr})'
+        ))
+
+    fig.update_layout(
+        xaxis_title='<b>' + 'x/wheelbase [-]' + '</b>',
+        yaxis_title='<b>' + 'y/wheelbase [-]' + '</b>',
+        title='<b> CoG of all components </b>',
+        title_x=0.5,
+        plot_bgcolor='white',
+        xaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+        yaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+    )
+    return fig
 
 @anvil.server.callable
 def getOverviewPlot(component, compPlot, posPlot, freqPlot):

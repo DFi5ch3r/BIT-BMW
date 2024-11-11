@@ -44,4 +44,5 @@ plots_component = []
 plots_frequency = []
 plots_position = []
 plots_overview = []
+plots_cog = []
 activePlot = 'overview'

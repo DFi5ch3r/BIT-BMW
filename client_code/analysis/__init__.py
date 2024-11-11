@@ -93,6 +93,7 @@ class analysis(analysisTemplate):
                                                    self.drop_down_envelope_predict.selected_value)
           self.label_results_stdDev_pos.text = f"{stDev:.2f}"
 
+      # overview
       globals.plots_overview = anvil.server.call('getOverviewPlot', globals.selected_component, globals.plots_component, globals.plots_position, globals.plots_frequency)
 
       #comparison
@@ -134,6 +135,10 @@ class analysis(analysisTemplate):
                 self.label_results_error_pos.text = '-'
                 self.label_results_shape_pos.text = '-'
 
+      # cogs
+      globals.plots_cog = anvil.server.call('getCogPlot')
+
+      # select active plot
       if globals.activePlot == 'overview':
           self.link_plot_overview_click()
       if globals.activePlot == 'comp':
@@ -143,7 +148,7 @@ class analysis(analysisTemplate):
       elif globals.activePlot == 'pos':
           self.link_plot_pos_click()
       elif globals.activePlot == 'cog':
-          pass
+          self.link_plot_cog_click()
       elif globals.activePlot == 'link':
           pass
 
@@ -287,6 +292,7 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_cog.bold = True
     globals.activePlot = 'cog'
+    self.plot.figure = globals.plots_cog
 
   def link_link_click(self, **event_args):
     self.deselect_all_links()

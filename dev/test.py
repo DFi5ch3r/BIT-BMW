@@ -11,23 +11,29 @@ path = '/home/dfischer/12-Projects/09-BMW-BIT/01-originalMatlabTool/BMW_BIT_TUB/
 IO.create_database(path)
 #db = serverGlobals.DB
 
-# IO.filter_database('Baureihe', ['K51'], sourceFullDB = True)
+IO.filter_database('Baureihe', ['K51'], sourceFullDB = True)
 # IO.filter_database('Baureihe', ['K02'], sourceFullDB = True)
-IO.filter_database('Baureihe', ['K03'], sourceFullDB = True)
+#IO.filter_database('Baureihe', ['K03'], sourceFullDB = True)
 
 IO.readData(selectedData=True)
+
+
+IO.loadCoGdata(path)
+IO.addCoGdataToDB()
 db2 = serverGlobals.selectedData
 
-clusters = DA.assembleData('Bauteil')
+#clusters = DA.assembleData('Bauteil')
 
-envelopGenerationMethods = ['Maximum', 'Minimum', 'Mean', '+3*std.dev.(99%)', '+2*std.dev.(95%)', '+1*std.dev.(68%)', '99th-percentile (each freq.)', '95th-percentile (each freq.)', '75th-percentile (each freq.)', 'Median (each freq.)', '99th-percentile (total)', '95th-percentile (total)', '75th-percentile (total)', 'Median (total)']
+#envelopGenerationMethods = ['Maximum', 'Minimum', 'Mean', '+3*std.dev.(99%)', '+2*std.dev.(95%)', '+1*std.dev.(68%)', '99th-percentile (each freq.)', '95th-percentile (each freq.)', '75th-percentile (each freq.)', 'Median (each freq.)', '99th-percentile (total)', '95th-percentile (total)', '75th-percentile (total)', 'Median (total)']
 
-DA.generateEnvelopes(clusters, envelopGenerationMethods[2])
+#DA.generateEnvelopes(clusters, envelopGenerationMethods[2])
 
 
 
 import plotly.graph_objects as go
 
+fig = IO.getCogPlot()
+fig.show()
 def plot_cluster(cluster):
     """
     Plots all amplitude rows over frequencies in black and the envelope over frequencies in red.
@@ -59,4 +65,4 @@ def plot_cluster(cluster):
     # Show the plot
     fig.show()
 
-plot_cluster(clusters[0])
+#plot_cluster(clusters[0])

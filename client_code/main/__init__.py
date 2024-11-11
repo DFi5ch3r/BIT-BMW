@@ -71,6 +71,7 @@ class main(mainTemplate):
 
       # load CoG data
       anvil.server.call('loadCoGdata',globals.input_customPath)
+      anvil.server.call('addCoGdataToDB')
 
       self.button_loadDataBase.foreground = '#1EB980'
       self.link_analysis_click()
