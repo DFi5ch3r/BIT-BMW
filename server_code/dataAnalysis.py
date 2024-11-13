@@ -33,7 +33,7 @@ def clusterFrequencies(frequencyRange):
     return False
 
 @anvil.server.callable
-def clusterPositions(nClusters,frequencyRange):
+def clusterPositions(nClusters, frequencyRange, hierarchical=True):
 
     cogs = []
     indices = []
@@ -44,7 +44,10 @@ def clusterPositions(nClusters,frequencyRange):
     cogs = np.array(cogs)
 
     if indices:
-        clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+        if hierarchical:
+            clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+        else:
+            clustering = sklearn.cluster.KMeans(nClusters, random_state=0)
         clusterIndices = clustering.fit_predict(cogs)
 
         for i in range(len(indices)):

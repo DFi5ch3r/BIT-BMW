@@ -117,7 +117,7 @@ class main(mainTemplate):
 
     if 'position' in globals.selected_clustering:
         Notification("Clustering by positions ...").show()
-        globals.clustered_pos = anvil.server.call('clusterPositions', globals.settings_posClusterNumber, globals.selected_frequencyRange)
+        globals.clustered_pos = anvil.server.call('clusterPositions', globals.settings_posClusterNumber, globals.selected_frequencyRange,globals.settings_posClusterIsHierarchical)
 
 
     Notification("Generating envelopes ...").show()
@@ -134,12 +134,12 @@ class main(mainTemplate):
     self.show_globals()
 
   def button_test_click(self, **event_args):
-    #anvil.server.call('test')
+    anvil.server.call('test')
     #self.show_globals()
     #self.content_panel.raise_event_on_children('x-updateResults')
-    #import anvil.js.window
-    anvil.js.window.location.reload(True)
 
+  def link_reset_click(self, **event_args):
+    anvil.js.window.location.reload(True)
 
 ###########################################################################################################
 # auxiliary functions
@@ -170,8 +170,6 @@ class main(mainTemplate):
   def clusterNotUpToDate(self, **event_args):
       self.button_clusterData.foreground = '#D64D47'
 
-  def link_reset_click(self, **event_args):
-    """This method is called when the link is clicked"""
-    pass
+
 
 
