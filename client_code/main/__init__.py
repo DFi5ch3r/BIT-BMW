@@ -61,8 +61,8 @@ class main(mainTemplate):
 # side bar links
   def button_loadDataBase_click(self, **event_args):
     """This method is called when the link is clicked"""
-    notificationString = "Generating Database..."
-    with Notification(notificationString):
+
+    with Notification("Generating Database..."):
 
       # create database
       anvil.server.call('create_database',globals.input_customPath)
@@ -92,8 +92,8 @@ class main(mainTemplate):
     globals.dataLoaded = True
     self.content_panel.raise_event_on_children('x-updateDropDowns')
 
-    Notification("Reading data ...",).show()
-    anvil.server.call('readData', selectedData=True)
+    with Notification("Reading data ...",):
+        anvil.server.call('readData', selectedData=True)
     Notification("...done loading data.", style="success").show()
 
     self.button_loadSelectedData.foreground = '#1EB980'

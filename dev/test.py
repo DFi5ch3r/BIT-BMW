@@ -34,8 +34,8 @@ clusters = serverGlobals.clusters_positions
 
 import plotly.graph_objects as go
 
-#fig = IO.getCogPlot()
-#fig.show()
+fig = IO.getCogPlot()
+fig.show()
 def plot_cluster(cluster):
     """
     Plots all amplitude rows over frequencies in black and the envelope over frequencies in red.

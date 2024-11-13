@@ -26,7 +26,6 @@ from . import serverGlobals
 def clusterComponents(frequencyRange):
     serverGlobals.clusters_components = assembleData('Bauteil')
     serverGlobals.clusters_components = adjustToFrequencyRange(serverGlobals.clusters_components, frequencyRange)
-
     return True
 
 @anvil.server.callable
@@ -44,16 +43,20 @@ def clusterPositions(nClusters,frequencyRange):
             indices.append(i)
     cogs = np.array(cogs)
 
-    clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
-    clusterIndices = clustering.fit_predict(cogs)
+    if indices:
+        clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+        clusterIndices = clustering.fit_predict(cogs)
 
-    for i in range(len(indices)):
-        serverGlobals.selectedData[indices[i]]['positionCluster'] = clusterIndices[i]
+        for i in range(len(indices)):
+            serverGlobals.selectedData[indices[i]]['positionCluster'] = clusterIndices[i]
 
-    serverGlobals.clusters_positions = assembleData('positionCluster')
-    serverGlobals.clusters_positions = adjustToFrequencyRange(serverGlobals.clusters_positions, frequencyRange)
+        serverGlobals.clusters_positions = assembleData('positionCluster')
+        serverGlobals.clusters_positions = adjustToFrequencyRange(serverGlobals.clusters_positions, frequencyRange)
 
-    return True
+        return True
+    else:
+        return False
+
 @anvil.server.callable
 def generateEnvelopesForClusters(method):
     if serverGlobals.clusters_components:
@@ -94,14 +97,18 @@ def assembleData(key, db = None):
         cluster['name'] = tempKey
         cluster['components'] = set()
         cluster['data'] = []
+        cluster['cogs'] = []
         # Collect data for each cluster
         for entry in db:
             if key in entry:
                 if (entry[key] == tempKey) and ('data' in entry):
                     cluster['data'].append(entry['data'])
                     cluster['components'].add(entry['Bauteil'])
+                    if 'cog' in entry:
+                        cluster['cogs'].append(entry['cog'])
         # Stack the data arrays for each cluster
         cluster['data'] = np.stack(cluster['data'])
+        cluster['cogs'] = np.array(cluster['cogs'])
 
         # Check if the frequency data arrays match
         frequencies = cluster['data'][0, :, 0]

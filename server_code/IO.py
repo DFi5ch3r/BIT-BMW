@@ -6,8 +6,9 @@ import numpy as np
 import pandas as pd
 import chardet
 import plotly.graph_objects as go
+import shapely.geometry
 from . import serverGlobals
-from . import dataAnalysis as da
+from . import dataAnalysis
 
 
 # This is a server module. It runs on the Anvil server,
@@ -628,7 +629,7 @@ def getPlot(clusteringMethod, component, envelopeMethod):
 
     )
     if plotData:
-        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
+        superEnvelope = dataAnalysis.generateSuperEnvelope(plotData, envelopeMethod,component)
 
         for cluster in plotData:
             fig.add_trace(go.Scatter(x=cluster['frequencies'], y=cluster['envelope'], name=str(cluster['name']),  mode='lines', line=dict(color='black', width=1)))
@@ -673,6 +674,18 @@ def getCogPlot():
             textposition='top center',
             name=f'{baureihe} ({jahr})'
         ))
+
+    # plot clusters
+    if serverGlobals.clusters_positions:
+        for cluster in serverGlobals.clusters_positions:
+            x = list(cluster['cogs'][:, 0])
+            y = list(cluster['cogs'][:, 2])
+            convex_hull = shapely.geometry.MultiPoint([xy for xy in zip(x, y)]).convex_hull
+            if isinstance(convex_hull, shapely.geometry.Polygon):
+                coords = np.array(convex_hull.exterior.coords)
+            else:
+                coords = np.array(convex_hull.coords)
+            fig.add_trace(go.Scatter(x=coords[:, 0], y=coords[:, 1], mode='lines', fill="toself", name='cluster ' + str(cluster['name'])))
 
     fig.update_layout(
         xaxis_title='<b>' + 'x/wheelbase [-]' + '</b>',
