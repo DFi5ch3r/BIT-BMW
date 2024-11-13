@@ -170,4 +170,8 @@ class main(mainTemplate):
   def clusterNotUpToDate(self, **event_args):
       self.button_clusterData.foreground = '#D64D47'
 
+  def link_reset_click(self, **event_args):
+    """This method is called when the link is clicked"""
+    pass
+
 
