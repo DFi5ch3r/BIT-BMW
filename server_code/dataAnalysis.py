@@ -3,7 +3,9 @@ import random
 import re
 import os
 import numpy as np
+import sklearn.cluster
 from scipy.spatial.distance import pdist
+import sklearn.cluster as skl
 import pandas as pd
 import chardet
 from . import serverGlobals
@@ -25,14 +27,33 @@ def clusterComponents(frequencyRange):
     serverGlobals.clusters_components = assembleData('Bauteil')
     serverGlobals.clusters_components = adjustToFrequencyRange(serverGlobals.clusters_components, frequencyRange)
 
+    return True
+
 @anvil.server.callable
 def clusterFrequencies(frequencyRange):
-    pass
+    return False
 
 @anvil.server.callable
-def clusterPositions(frequencyRange):
-    pass
+def clusterPositions(nClusters,frequencyRange):
 
+    cogs = []
+    indices = []
+    for i in range(len(serverGlobals.selectedData)):
+        if 'cog' in serverGlobals.selectedData[i]:
+            cogs.append(serverGlobals.selectedData[i]['cog'])
+            indices.append(i)
+    cogs = np.array(cogs)
+
+    clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+    clusterIndices = clustering.fit_predict(cogs)
+
+    for i in range(len(indices)):
+        serverGlobals.selectedData[indices[i]]['positionCluster'] = clusterIndices[i]
+
+    serverGlobals.clusters_positions = assembleData('positionCluster')
+    serverGlobals.clusters_positions = adjustToFrequencyRange(serverGlobals.clusters_positions, frequencyRange)
+
+    return True
 @anvil.server.callable
 def generateEnvelopesForClusters(method):
     if serverGlobals.clusters_components:
@@ -75,9 +96,10 @@ def assembleData(key, db = None):
         cluster['data'] = []
         # Collect data for each cluster
         for entry in db:
-            if (entry[key] == tempKey) and ('data' in entry):
-                cluster['data'].append(entry['data'])
-                cluster['components'].add(entry['Bauteil'])
+            if key in entry:
+                if (entry[key] == tempKey) and ('data' in entry):
+                    cluster['data'].append(entry['data'])
+                    cluster['components'].add(entry['Bauteil'])
         # Stack the data arrays for each cluster
         cluster['data'] = np.stack(cluster['data'])
 
@@ -213,7 +235,6 @@ def generateSuperEnvelope(clusters, method, component):
 
         envelope['meanStdDev'] = np.mean(np.std(envelope['amplitudes'], axis=1))
         generateEnvelopes([envelope], method)
-
     else:
         envelope = clusters[0]
         envelope['meanStdDev'] = 0

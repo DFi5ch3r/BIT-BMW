@@ -454,7 +454,7 @@ def loadCoGdata(rootPath):
         CoGData.append({
             'Baureihe': baureihe,
             'parts': parts,
-            'CoGs': cogs
+            'cogs': cogs
         })
 
     # Store the processed CoG data and wheelbase information in global variables
@@ -464,10 +464,10 @@ def loadCoGdata(rootPath):
         for entry2 in wheelbase:
             if entry2['Baureihe'] == entry['Baureihe']:
                 wb =  entry2['Radstand']
-        entry['CoGs'] = entry['CoGs']/wb
+        entry['cogs'] = entry['cogs']/wb
 
     serverGlobals.CoGData = CoGData
-    #serverGlobals.wheelbase = wheelbase
+    serverGlobals.wheelbase = wheelbase
 
 @anvil.server.callable
 def CoG_TranslationTable():
@@ -524,8 +524,8 @@ def addCoGdataToDB():
                             translation = key
 
                             cogIndex = list(CoG['parts']).index(translation)
-                            entry['CoG'] = CoG['CoGs'][cogIndex]
-                            entry['CoG_Bauteil'] = translation
+                            entry['cog'] = CoG['cogs'][cogIndex]
+                            entry['cog_Bauteil'] = translation
                             break
 
 
@@ -580,10 +580,11 @@ def detect_encoding(file_path):
 @anvil.server.callable
 def getPlot(clusteringMethod, component, envelopeMethod):
     plotData = []
-
+    showLegend = False
     if clusteringMethod == 'component':
         clusters = serverGlobals.clusters_components
         envelopeColour = 'purple'
+        showLegend = True
     elif clusteringMethod == 'frequency':
         clusters = serverGlobals.clusters_frequencies
         envelopeColour = 'red'
@@ -596,18 +597,12 @@ def getPlot(clusteringMethod, component, envelopeMethod):
             if component in comp:
                 plotData.append(cluster)
 
-    superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
-
     fig = go.Figure()
-    for cluster in plotData:
-        fig.add_trace(go.Scatter(x=cluster['frequencies'], y=cluster['envelope'], name=cluster['name'],  mode='lines', line=dict(color='black', width=1)))
-
-    fig.add_trace(go.Scatter(x=superEnvelope['frequencies'], y=superEnvelope['envelope'],name='prediction', mode='lines', opacity=0.5, line=dict(color=envelopeColour, width=5)))
-
     fig.update_layout(
+        showlegend = showLegend,
         xaxis_title='<b>' + 'f [Hz]' + '</b>',
         yaxis_title='<b>' + 'a [m/s²]' + '</b>',
-        title='<b>' + component + ' - ' + clusteringMethod + ' based clustering'+ '</b>',
+        title='<b>' + component + ' - ' + clusteringMethod + ' based clustering' + '</b>',
         title_x=0.5,
         plot_bgcolor='white',
         xaxis=dict(
@@ -632,19 +627,28 @@ def getPlot(clusteringMethod, component, envelopeMethod):
         ),
 
     )
+    if plotData:
+        superEnvelope = da.generateSuperEnvelope(plotData, envelopeMethod,component)
 
-    return fig, [superEnvelope['frequencies'], superEnvelope['envelope']], superEnvelope['meanStdDev']
+        for cluster in plotData:
+            fig.add_trace(go.Scatter(x=cluster['frequencies'], y=cluster['envelope'], name=str(cluster['name']),  mode='lines', line=dict(color='black', width=1)))
+
+        fig.add_trace(go.Scatter(x=superEnvelope['frequencies'], y=superEnvelope['envelope'],name='prediction', mode='lines', opacity=0.5, line=dict(color=envelopeColour, width=5)))
+
+        return fig, [superEnvelope['frequencies'], superEnvelope['envelope']], superEnvelope['meanStdDev']
+    else:
+        return False, [], []
 
 @anvil.server.callable
 def getCogPlot():
     # Group data by Baureihe and Jahr
     grouped_data = {}
     for entry in serverGlobals.selectedData:
-        if 'CoG' in entry:
+        if 'cog' in entry:
             baureihe = entry.get('Baureihe')
             jahr = entry.get('Jahr')
-            cog = entry.get('CoG')
-            cogBauteil = entry.get('CoG_Bauteil')
+            cog = entry.get('cog')
+            cogBauteil = entry.get('cog_Bauteil')
 
             key = (baureihe, jahr)
             if key not in grouped_data:

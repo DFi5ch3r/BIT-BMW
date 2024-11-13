@@ -46,3 +46,5 @@ plots_position = []
 plots_overview = []
 plots_cog = []
 activePlot = 'overview'
+
+positionDataForComponentsExist = False

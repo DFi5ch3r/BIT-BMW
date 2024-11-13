@@ -22,6 +22,8 @@ IO.loadCoGdata(path)
 IO.addCoGdataToDB()
 db2 = serverGlobals.selectedData
 
+clusters = DA.clusterPositions(6,[72,2000])
+clusters = serverGlobals.clusters_positions
 #clusters = DA.assembleData('Bauteil')
 
 #envelopGenerationMethods = ['Maximum', 'Minimum', 'Mean', '+3*std.dev.(99%)', '+2*std.dev.(95%)', '+1*std.dev.(68%)', '99th-percentile (each freq.)', '95th-percentile (each freq.)', '75th-percentile (each freq.)', 'Median (each freq.)', '99th-percentile (total)', '95th-percentile (total)', '75th-percentile (total)', 'Median (total)']
@@ -32,8 +34,8 @@ db2 = serverGlobals.selectedData
 
 import plotly.graph_objects as go
 
-fig = IO.getCogPlot()
-fig.show()
+#fig = IO.getCogPlot()
+#fig.show()
 def plot_cluster(cluster):
     """
     Plots all amplitude rows over frequencies in black and the envelope over frequencies in red.

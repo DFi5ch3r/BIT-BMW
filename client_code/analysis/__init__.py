@@ -77,21 +77,27 @@ class analysis(analysisTemplate):
 
   def updatePlots(self, **event_args):
     if globals.clustered:
-      if globals.clustered_comp:
+      if globals.clustered_comp and 'component' in globals.selected_clustering:
         # component based
         globals.plots_component, componentEnv, stDev = anvil.server.call('getPlot', 'component', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
         self.label_results_stdDev_comp.text = f"{stDev:.2f}"
-      if globals.clustered_freq:
+      if globals.clustered_freq and 'frequency' in globals.selected_clustering:
         # frequency based
         globals.plots_frequency, freqencyEnv, stDev = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
         self.label_results_stdDev_freq.text = f"{stDev:.2f}"
-      if globals.clustered_pos:
+      if globals.clustered_pos and 'position' in globals.selected_clustering:
           # position based
           globals.plots_position, positionEnv, stDev = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
                                                    self.drop_down_envelope_predict.selected_value)
-          self.label_results_stdDev_pos.text = f"{stDev:.2f}"
+          if positionEnv:
+            globals.positionDataForComponentsExist = True
+            self.label_results_stdDev_pos.text = f"{stDev:.2f}"
+          else:
+            globals.positionDataForComponentsExist = False
+            self.label_results_stdDev_pos.text = '-'
+            Notification("Position data for "+ self.drop_down_component.selected_value + " not available.", style="warning").show()
 
       # overview
       globals.plots_overview = anvil.server.call('getOverviewPlot', globals.selected_component, globals.plots_component, globals.plots_position, globals.plots_frequency)
@@ -211,10 +217,13 @@ class analysis(analysisTemplate):
 # clustering checkboxes
   def check_box_cluster_frequ_change(self, **event_args):
     self.saveBoxes(self.card_clustering, globals.selected_clustering)
+    self.parent.parent.raise_event('x-clusterNotUpToDate')
   def check_box_cluster_pos_change(self, **event_args):
     self.saveBoxes(self.card_clustering, globals.selected_clustering)
+    self.parent.parent.raise_event('x-clusterNotUpToDate')
   def check_box_cluster_comp_change(self, **event_args):
     self.saveBoxes(self.card_clustering, globals.selected_clustering)
+    self.parent.parent.raise_event('x-clusterNotUpToDate')
 ############################################################################################################
 # textboxes
 ############################################################################################################
@@ -287,6 +296,7 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_pos.bold = True
     globals.activePlot = 'pos'
+    self.plot.figure = globals.plots_position
 
   def link_plot_cog_click(self, **event_args):
     self.deselect_all_links()

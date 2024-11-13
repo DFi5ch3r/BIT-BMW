@@ -4,7 +4,7 @@ DB = [{'Baureihe': 'load database',}]
 selectedData = []
 
 CoGData = []
-#wheelbase = []
+wheelbase = []
 
 clusters_components = []
 clusters_frequencies = []
