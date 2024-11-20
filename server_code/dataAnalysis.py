@@ -3,9 +3,11 @@ import random
 import re
 import os
 import numpy as np
-import sklearn.cluster
-from scipy.spatial.distance import pdist
+from scipy.spatial.distance import pdist, cdist
+import scipy.cluster.hierarchy as sch
 import sklearn.cluster as skl
+from sklearn.metrics import pairwise_distances
+import plotly.graph_objects as go
 import pandas as pd
 import chardet
 from . import serverGlobals
@@ -29,11 +31,34 @@ def clusterComponents(frequencyRange):
     return True
 
 @anvil.server.callable
-def clusterFrequencies(frequencyRange):
-    return False
+def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric):
+
+    data = []
+    indices = []
+    for i in range(len(serverGlobals.selectedData)):
+        if 'data' in serverGlobals.selectedData[i]:
+            data.append(serverGlobals.selectedData[i]['data'][:,1])
+            indices.append(i)
+    data = np.array(data).T
+
+    # adjust to frequency range
+    dataInClusterFormat = [{}]
+    dataInClusterFormat[0]['amplitudes'] = data
+    dataInClusterFormat[0]['frequencies'] = serverGlobals.selectedData[0]['data'][:,0]
+
+    dataInClusterFormat = adjustToFrequencyRange(dataInClusterFormat, frequencyRange)
+    data = dataInClusterFormat[0]['amplitudes']
+
+    nClustersAuto, serverGlobals.plot_linkage = calcNumberOfClusters(data, distanceMetric, nClusters)
+    if not nClusters:
+        nClusters = nClustersAuto
+
+
+    return True
+
 
 @anvil.server.callable
-def clusterPositions(nClusters, frequencyRange, hierarchical=True):
+def clusterPositions(nClusters, frequencyRange, isHierarchical):
 
     cogs = []
     indices = []
@@ -44,10 +69,10 @@ def clusterPositions(nClusters, frequencyRange, hierarchical=True):
     cogs = np.array(cogs)
 
     if indices:
-        if hierarchical:
-            clustering = sklearn.cluster.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+        if isHierarchical:
+            clustering = skl.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
         else:
-            clustering = sklearn.cluster.KMeans(nClusters, random_state=0)
+            clustering = skl.KMeans(nClusters, random_state=0, n_init=20, init='k-means++')
         clusterIndices = clustering.fit_predict(cogs)
 
         for i in range(len(indices)):
@@ -301,4 +326,142 @@ def getErrors(predictionEnvelope):
 
     return magError, anglErr
 
+# clustering functions
+def kmeans_clustering(data, nClusters, distanceMetric='correlation'):
+    """
+    Perform KMeans clustering with kmeans++ initialization and specified distance metric.
 
+    distanceMetric options: ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘cityblock’, ‘correlation’, ‘cosine’, ‘dice’, ‘euclidean’, ‘hamming’, ‘jaccard’, ‘jensenshannon’, ‘kulczynski1’, ‘mahalanobis’, ‘matching’, ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalmichener’, ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
+    data: m x n numpy array, m measurements, n dimensions
+    """
+
+    # Transpose the data to shape (m, n) for KMeans
+    data = data.T
+
+    # Initialize KMeans with kmeans++ initialization
+    kmeans = skl.KMeans(n_clusters=nClusters, init='k-means++', random_state=0, n_init=20)
+
+    # Fit the model
+    kmeans.fit(data)
+
+    # Compute the distance matrix using the specified distance metric
+    distance_matrix = cdist(data, kmeans.cluster_centers_, metric=distanceMetric)
+
+    # Assign labels based on the minimum distance
+    labels = np.argmin(distance_matrix, axis=1)
+
+    return labels, kmeans
+
+def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
+    """
+    Perform hierarchical clustering with specified distance metric.
+
+    Args:
+        data (np.ndarray): The data to cluster, shape (n, m) where n is the number of dimensions and m is the number of measurements.
+        n_clusters (int): The number of clusters.
+        distance_metric (str): The distance metric to use ('euclidean', 'cityblock', 'cosine', etc.).
+
+    distanceMetric options: ‘cityblock’, ‘cosine’, ‘euclidean’, ‘l1’, ‘l2’, ‘manhattan’, ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘correlation’, ‘dice’, ‘hamming’, ‘jaccard’, ‘kulsinski’, ‘mahalanobis’, ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalmichener’, ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
+
+    Returns:
+        np.ndarray: The cluster labels.
+    """
+    # Transpose the data to shape (m, n) for distance computation
+    data = data.T
+
+    # Compute the distance matrix using the specified distance metric
+    distance_matrix = pairwise_distances(data, metric=distanceMetric)
+
+    if 'euclidean' in distanceMetric:
+        linkage = 'ward'
+    else:
+        linkage = 'average'
+    # Perform Agglomerative Clustering with the precomputed distance matrix
+    clustering = skl.AgglomerativeClustering(n_clusters=nClusters, metric='precomputed', linkage=linkage)
+    labels = clustering.fit_predict(distance_matrix)
+
+    return labels, clustering
+
+def calcNumberOfClusters(data,distanceMetric,manualNClusters=False, mean_window = 5, sensitivity=False):
+
+    # Compute the distance matrix using the specified distance metric
+    distance_matrix = pdist(data.T, metric=distanceMetric)
+    if 'euclidean' in distanceMetric:
+        linkage = 'ward'
+    else:
+        linkage = 'average'
+
+    linkVector = sch.linkage(distance_matrix, method=linkage)
+    linkVector = linkVector[:, 2]
+
+    # get sensitivity (from original matlab tool)
+    sensitivityDict = dict()
+    sensitivityDict['seuclidean'] = 0.3
+    sensitivityDict['euclidean'] = 40
+    sensitivityDict['sqeuclidean'] = 10e4
+    sensitivityDict['cityblock'] = 50
+    sensitivityDict['minkowski'] = 4
+    sensitivityDict['chebychev'] = 1
+    sensitivityDict['cosine'] = 4e-4
+    sensitivityDict['correlation'] = 10e-3
+
+    if not sensitivity:
+        sensitivity = sensitivityDict[distanceMetric]
+
+    # Translated matlab code
+    nSClstrs = len(linkVector) - np.arange(1, len(linkVector) + 1)
+
+    # Filtering linkVector with mean window
+    link_mean = np.zeros(len(linkVector))
+    for i in range(mean_window + 1, len(link_mean) - mean_window - 1):
+        link_mean[i] = np.mean(linkVector[i - mean_window:i + mean_window])
+
+    # Derive mean linkage
+    mean_link_p = np.concatenate([
+        np.zeros(mean_window + 1),
+        np.diff(link_mean[mean_window + 1: -mean_window - 1]),
+        np.zeros(mean_window + 1)
+    ])
+
+    # Find optimum cluster number based on derivative
+    Clusternumber_idx = np.argmax(mean_link_p > sensitivity)
+    Clusternumber = nSClstrs[Clusternumber_idx]
+
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=nSClstrs, y=linkVector, mode='lines', name='linkage'))
+    fig.add_trace(go.Scatter(x=[Clusternumber,Clusternumber], y=[0,np.max(linkVector)], mode='lines', line=dict(color='red', width=2), name='automatic cluster number'))
+    if manualNClusters:
+        fig.add_trace(go.Scatter(x=[manualNClusters, manualNClusters], y=[0.1, np.max(linkVector)], mode='lines', line=dict(color='green', width=2), name='manual cluster number'))
+
+    fig.update_layout(
+        showlegend=True,
+        xaxis_title='<b>' + 'number of clusters' + '</b>',
+        yaxis_title='<b>' + 'error in clusters' + '</b>',
+        title='<b> Automated number of clusters selections: '+ str(Clusternumber)+ '</b>',
+        title_x=0.5,
+        plot_bgcolor='white',
+        xaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+        ),
+        yaxis=dict(
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            mirror=True,
+            showgrid=True,
+            gridcolor='rgb(211,211,211)',
+            gridwidth=1,
+            griddash='dot',
+            autorangeoptions_clipmin=0,
+
+        ),
+    )
+    return Clusternumber, fig

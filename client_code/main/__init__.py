@@ -113,7 +113,22 @@ class main(mainTemplate):
         globals.clustered_comp = anvil.server.call('clusterComponents', globals.selected_frequencyRange)
     if 'frequency' in globals.selected_clustering:
         Notification("Clustering by frequencies ...").show()
-        globals.clustered_freq = anvil.server.call('clusterFrequencies', globals.selected_frequencyRange)
+
+        # automatic cluster number or custom number of clusters
+        if globals.settings_freqSuperClusterNumberCustom:
+            nClusters = globals.settings_freqSuperClusterNumber
+        else:
+            nClusters = False
+
+        # distance metric
+        if globals.settings_freqClusterIsHierarchical:
+            distanceMetric = globals.settings_freqDistanceMetricHierarchical
+        else:
+            distanceMetric = globals.settings_freqDistanceMetricKMeans
+
+        globals.clustered_freq = anvil.server.call('clusterFrequencies',nClusters, globals.selected_frequencyRange, globals.settings_freqClusterIsHierarchical, distanceMetric)
+
+
 
     if 'position' in globals.selected_clustering:
         Notification("Clustering by positions ...").show()

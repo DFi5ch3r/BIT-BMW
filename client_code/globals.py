@@ -29,9 +29,10 @@ settings_posClusterNumber = 6
 settings_freqClusterIsHierarchical = True
 settings_freqSuperClusterNumber = 30
 settings_freqSuperClusterNumberCustom = False
-settings_freqDistanceMetricsHierarchical = ["seuclidian","euclidian","squaredeuclidean","cityblock","minkowski","chebychev","cosine","correlation"]
+settings_freqDistanceMetricsHierarchical = ["seuclidean","euclidean","sqeuclidean","cityblock","minkowski","chebychev","cosine","correlation"]
 settings_freqDistanceMetricHierarchical = settings_freqDistanceMetricsHierarchical[0]
-settings_freqDistanceMetricsKMeans = ["correlation","squaredeuclidean","cityblock","cosine"]
+settings_freqDistanceMetricsKMeans = ['correlation', 'seuclidean', 'sqeuclidean', 'cityblock', 'cosine']
+
 settings_freqDistanceMetricKMeans = settings_freqDistanceMetricsKMeans[0]
 settings_excludeMotor = False
 
@@ -45,6 +46,7 @@ plots_frequency = []
 plots_position = []
 plots_overview = []
 plots_cog = []
+plots_link = []
 activePlot = 'overview'
 
 positionDataForComponentsExist = False

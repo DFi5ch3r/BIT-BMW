@@ -764,6 +764,10 @@ def getOverviewPlot(component, compPlot, posPlot, freqPlot):
     return fig
 
 @anvil.server.callable
+def getLinkagePlot():
+    return serverGlobals.plot_linkage
+
+@anvil.server.callable
 def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange,measurementFileName=None):
     success = False
     envelope = getComparisonDataEnvelope()

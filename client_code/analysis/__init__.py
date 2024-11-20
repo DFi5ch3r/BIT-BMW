@@ -76,6 +76,10 @@ class analysis(analysisTemplate):
         globalSet.discard(box.text)
 
   def updatePlots(self, **event_args):
+
+    # linkage
+    globals.plots_link = anvil.server.call('getLinkagePlot')
+
     if globals.clustered:
       if globals.clustered_comp and 'component' in globals.selected_clustering:
         # component based
@@ -87,6 +91,7 @@ class analysis(analysisTemplate):
         globals.plots_frequency, freqencyEnv, stDev = anvil.server.call('getPlot', 'frequency', self.drop_down_component.selected_value,
                                                self.drop_down_envelope_predict.selected_value)
         self.label_results_stdDev_freq.text = f"{stDev:.2f}"
+
       if globals.clustered_pos and 'position' in globals.selected_clustering:
           # position based
           globals.plots_position, positionEnv, stDev = anvil.server.call('getPlot', 'position', self.drop_down_component.selected_value,
@@ -308,6 +313,7 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_link.bold = True
     globals.activePlot = 'link'
+    self.plot.figure = globals.plots_link
 
 ############################################################################################################
 # dropdowns
