@@ -19,19 +19,18 @@ IO.readData(selectedData=True)
 
 
 IO.loadCoGdata(path)
-#IO.addCoGdataToDB()
+IO.addCoGdataToDB()
 db2 = serverGlobals.selectedData
 
-#clusters = DA.clusterPositions(6,[72,2000],True)
-#clusters = serverGlobals.clusters_positions
-#clusters = DA.assembleData('Bauteil')
+DA.clusterPositions(6,[72,2000],True)
+DA.clusterFrequencies(False,[72,2000],True,'seuclidean')
+clustersPos = serverGlobals.clusters_positions
+clustersFreq = serverGlobals.clusters_frequencies
 
 #DA.generateEnvelopes(clusters, envelopGenerationMethods[2])
 
-DA.clusterFrequencies(False,[72,2000], True, 'seuclidean')
 
-serverGlobals.plot_linkage.show
-serverGlobals.plot_linkage.show()
+
 
 
 

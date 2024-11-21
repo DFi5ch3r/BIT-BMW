@@ -291,6 +291,7 @@ class analysis(analysisTemplate):
     self.deselect_all_links()
     self.link_plot_freq.bold = True
     globals.activePlot = 'freq'
+    self.plot.figure = globals.plots_frequency
   def link_plot_comp_click(self, **event_args):
     self.deselect_all_links()
     self.link_plot_comp.bold = True

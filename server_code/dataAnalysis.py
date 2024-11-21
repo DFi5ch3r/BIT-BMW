@@ -33,6 +33,7 @@ def clusterComponents(frequencyRange):
 @anvil.server.callable
 def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric):
 
+    # assemble data for clustering (amplitudes)
     data = []
     indices = []
     for i in range(len(serverGlobals.selectedData)):
@@ -49,11 +50,23 @@ def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric)
     dataInClusterFormat = adjustToFrequencyRange(dataInClusterFormat, frequencyRange)
     data = dataInClusterFormat[0]['amplitudes']
 
+    # linkage / automatic number of clusters
     nClustersAuto, serverGlobals.plot_linkage = calcNumberOfClusters(data, distanceMetric, nClusters)
     if not nClusters:
         nClusters = nClustersAuto
 
+    # clustering
+    if isHierarchical:
+        clusterIndices = hierarchical_clustering(data, nClusters, distanceMetric)
+    else:
+        clusterIndices = kmeans_clustering(data, nClusters, distanceMetric)
 
+    # assign cluster indices to selected data
+    for i in range(len(indices)):
+        serverGlobals.selectedData[indices[i]]['frequencyCluster'] = clusterIndices[i]
+
+    serverGlobals.clusters_frequencies = assembleData('frequencyCluster')
+    serverGlobals.clusters_frequencies = adjustToFrequencyRange(serverGlobals.clusters_frequencies, frequencyRange)
     return True
 
 
@@ -203,7 +216,7 @@ def generateEnvelopes(clusters,method):
         ValueError: If the selected method is not implemented.
     """
     for cluster in clusters:
-        if cluster['amplitudes'].shape[1] < 2:
+        if len(cluster['amplitudes'].shape) < 2:
             cluster['envelope'] = cluster['amplitudes']
         else:
             if method == "Maximum":
@@ -350,7 +363,7 @@ def kmeans_clustering(data, nClusters, distanceMetric='correlation'):
     # Assign labels based on the minimum distance
     labels = np.argmin(distance_matrix, axis=1)
 
-    return labels, kmeans
+    return labels
 
 def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
     """
@@ -372,7 +385,7 @@ def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
     # Compute the distance matrix using the specified distance metric
     distance_matrix = pairwise_distances(data, metric=distanceMetric)
 
-    if 'euclidean' in distanceMetric:
+    if distanceMetric == 'euclidean':
         linkage = 'ward'
     else:
         linkage = 'average'
@@ -380,7 +393,7 @@ def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
     clustering = skl.AgglomerativeClustering(n_clusters=nClusters, metric='precomputed', linkage=linkage)
     labels = clustering.fit_predict(distance_matrix)
 
-    return labels, clustering
+    return labels
 
 def calcNumberOfClusters(data,distanceMetric,manualNClusters=False, mean_window = 5, sensitivity=False):
 
@@ -460,7 +473,7 @@ def calcNumberOfClusters(data,distanceMetric,manualNClusters=False, mean_window 
             gridcolor='rgb(211,211,211)',
             gridwidth=1,
             griddash='dot',
-            autorangeoptions_clipmin=0,
+#            autorangeoptions_clipmin=0,
 
         ),
     )

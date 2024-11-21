@@ -109,34 +109,33 @@ class main(mainTemplate):
       self.button_loadSelectedData_click()
 
     if 'component' in globals.selected_clustering:
-        Notification("Clustering by components ...").show()
-        globals.clustered_comp = anvil.server.call('clusterComponents', globals.selected_frequencyRange)
+        with Notification("Clustering by components ..."):
+            globals.clustered_comp = anvil.server.call('clusterComponents', globals.selected_frequencyRange)
     if 'frequency' in globals.selected_clustering:
-        Notification("Clustering by frequencies ...").show()
+        with Notification("Clustering by frequencies ..."):
 
-        # automatic cluster number or custom number of clusters
-        if globals.settings_freqSuperClusterNumberCustom:
-            nClusters = globals.settings_freqSuperClusterNumber
-        else:
-            nClusters = False
+            # automatic cluster number or custom number of clusters
+            if globals.settings_freqSuperClusterNumberCustom:
+                nClusters = globals.settings_freqSuperClusterNumber
+            else:
+                nClusters = False
 
-        # distance metric
-        if globals.settings_freqClusterIsHierarchical:
-            distanceMetric = globals.settings_freqDistanceMetricHierarchical
-        else:
-            distanceMetric = globals.settings_freqDistanceMetricKMeans
+            # distance metric
+            if globals.settings_freqClusterIsHierarchical:
+                distanceMetric = globals.settings_freqDistanceMetricHierarchical
+            else:
+                distanceMetric = globals.settings_freqDistanceMetricKMeans
 
-        globals.clustered_freq = anvil.server.call('clusterFrequencies',nClusters, globals.selected_frequencyRange, globals.settings_freqClusterIsHierarchical, distanceMetric)
-
+            globals.clustered_freq = anvil.server.call('clusterFrequencies',nClusters, globals.selected_frequencyRange, globals.settings_freqClusterIsHierarchical, distanceMetric)
 
 
     if 'position' in globals.selected_clustering:
-        Notification("Clustering by positions ...").show()
-        globals.clustered_pos = anvil.server.call('clusterPositions', globals.settings_posClusterNumber, globals.selected_frequencyRange,globals.settings_posClusterIsHierarchical)
+        with Notification("Clustering by positions ..."):
+            globals.clustered_pos = anvil.server.call('clusterPositions', globals.settings_posClusterNumber, globals.selected_frequencyRange,globals.settings_posClusterIsHierarchical)
 
 
-    Notification("Generating envelopes ...").show()
-    anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
+    with Notification("Generating envelopes for clusters..."):
+        anvil.server.call('generateEnvelopesForClusters', globals.selected_envelopeMethods[0])
     globals.clustered = True
 
     self.content_panel.raise_event_on_children('x-updateResults')
