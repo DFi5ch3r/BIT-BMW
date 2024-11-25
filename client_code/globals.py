@@ -32,7 +32,6 @@ settings_freqSuperClusterNumberCustom = False
 settings_freqDistanceMetricsHierarchical = ["seuclidean","euclidean","sqeuclidean","cityblock","minkowski","chebychev","cosine","correlation"]
 settings_freqDistanceMetricHierarchical = settings_freqDistanceMetricsHierarchical[0]
 settings_freqDistanceMetricsKMeans = ['correlation', 'seuclidean', 'sqeuclidean', 'cityblock', 'cosine']
-
 settings_freqDistanceMetricKMeans = settings_freqDistanceMetricsKMeans[0]
 settings_excludeMotor = False
 

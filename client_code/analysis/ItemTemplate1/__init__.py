@@ -9,7 +9,12 @@ class ItemTemplate1(ItemTemplate1Template):
     self.init_components(**properties)
     self.check_box_type.text = self.item['Baureihe']
     self.repeating_panel_1.items = self.item['Years']
-    # Any code you write here will run before the form opens.
+
+    for br in globals.selected_BaureiheYears:
+      if self.check_box_type.text in br:
+        self.check_box_type.checked = True
+        break
+
 
   def button_expandYears_click(self, **event_args):
     self.repeating_panel_1.visible = not(self.repeating_panel_1.visible)

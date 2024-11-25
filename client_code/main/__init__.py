@@ -10,6 +10,7 @@ from ..analysis import analysis
 from .. import globals
 
 
+
 class main(mainTemplate):
   def __init__(self, **properties):
 ###########################################################################################################

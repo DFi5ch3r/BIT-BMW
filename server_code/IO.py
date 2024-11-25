@@ -561,6 +561,8 @@ def readData(selectedData = True):
             print(f"Progress: {i + 1}/{total_entries} entries processed")
 
 
+
+
 def detect_encoding(file_path):
     """
     Detects the encoding of a given file using the chardet library.

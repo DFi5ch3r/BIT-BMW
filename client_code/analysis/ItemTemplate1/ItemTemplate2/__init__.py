@@ -9,8 +9,12 @@ class ItemTemplate2(ItemTemplate2Template):
 
     self.init_components(**properties)
     self.check_box_years.text = self.item['year']
-    
     self.set_event_handler('x-toggleBox', self.toggleBox)
+
+    if self.item['baureihe'] + '-.-' + self.item['year'] in globals.selected_BaureiheYears:
+      self.check_box_years.checked = True
+    else:
+      self.check_box_years.checked = False
 
   def toggleBox(self, **event_args):
     self.check_box_years.checked=event_args['check']
