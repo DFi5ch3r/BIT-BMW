@@ -63,21 +63,40 @@ class main(mainTemplate):
   def button_loadDataBase_click(self, **event_args):
     """This method is called when the link is clicked"""
 
-    with Notification("Generating Database..."):
+    with (Notification("Generating Database...")):
 
-      dbLoaded = anvil.server.call('load_database')
+      if globals.input_inputMethod == 'directory':
+          cacheDB = alert('Do you want to use the cached database?', title='Use cached database', buttons=[('Yes', True), ('No', False)], dismissible=False)
 
-      if not dbLoaded:
-          # create database
-          anvil.server.call('create_database',globals.input_customPath)
-      #anvil.server.call('create_databaseTEST',globals.input_customPath)
+          if cacheDB:
+            dbLoaded = anvil.server.call('load_database')
+            if not dbLoaded:
+                Notification("No cached database not found, reading from files...", style='warning').show()
+          else:
+            dbLoaded = False
 
+          if not dbLoaded:
+              # create database
+              anvil.server.call('create_database',globals.input_customPath)
+              #anvil.server.call('create_databaseTEST',globals.input_customPath)
+          # load CoG data
+          anvil.server.call('loadCoGdata',globals.input_customPath)
+          anvil.server.call('addCoGdataToDB')
+
+      elif globals.input_inputMethod == 'previously generated database':
+        # path = os.path.join(globals.input_customPath, globals.input_fileName)
+        path = globals.input_customPath + '/' + globals.input_fileName
+        dbLoaded = anvil.server.call('load_database', path)
+        if not dbLoaded:
+            Notification("Database not found!", style="danger").show()
+            return
+      elif globals.input_inputMethod == 'external database':
+        Notification("External database not implemented yet!", style="danger").show()
+        return
+      else:
+        Notification("No input method selected!", style="danger").show()
+        return
       globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
-
-      # load CoG data
-      anvil.server.call('loadCoGdata',globals.input_customPath)
-      anvil.server.call('addCoGdataToDB')
-
       self.button_loadDataBase.foreground = '#1EB980'
       self.link_analysis_click()
    
