@@ -7,7 +7,7 @@ class input(inputTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    # Any code you write here will run before the form opens.
+
     self.dropDown_inputMethod.selected_value = globals.input_inputMethod
     self.text_box_fileName.text = globals.input_fileName
     self.text_box_path.text = globals.input_customPath

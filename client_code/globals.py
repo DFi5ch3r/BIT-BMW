@@ -1,6 +1,3 @@
-import anvil.server
-
-
 DB = [{'Baureihe': 'load database',}]
 baureihe_years = []
 

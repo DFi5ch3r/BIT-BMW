@@ -1,6 +1,7 @@
 from ._anvil_designer import settingsTemplate
 from anvil import *
 import anvil.server
+
 from .. import globals
 
 class settings(settingsTemplate):
@@ -52,6 +53,7 @@ class settings(settingsTemplate):
   def text_box_pos_clusters_change(self, **event_args):
      globals.settings_posClusterNumber = int(self.text_box_pos_clusters.text)
      self.parent.parent.raise_event('x-clusterNotUpToDate')
+
   def text_box_freq_superClusters_change(self, **event_args):
     globals.settings_freqSuperClusterNumber = int(self.text_box_freq_superClusters.text)
     self.parent.parent.raise_event('x-clusterNotUpToDate')
@@ -59,6 +61,7 @@ class settings(settingsTemplate):
   def check_box_excludeMotor_change(self, **event_args):
     globals.settings_excludeMotor = self.check_box_excludeMotor.checked
     self.parent.parent.raise_event('x-dataNotUpToDate')
+
   def drop_down_distance_hierarchical_change(self, **event_args):
     globals.settings_freqDistanceMetricHierarchical = self.drop_down_distance_hierarchical.selected_value
     self.parent.parent.raise_event('x-clusterNotUpToDate')

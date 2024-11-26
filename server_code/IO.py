@@ -1,4 +1,5 @@
 import anvil.server
+
 import random
 import re
 import os
@@ -9,6 +10,7 @@ import time
 import plotly.graph_objects as go
 import shapely.geometry
 import pickle
+
 from . import serverGlobals
 from . import dataAnalysis
 
@@ -18,20 +20,8 @@ from . import dataAnalysis
 #
 # To allow anvil.server.call() to call functions here, we mark
 # them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
 
-@anvil.server.callable
-def test():
-  print(serverGlobals.selectedData)
-  print('\n---------------------------------------------\n')
-  #print(serverGlobals.CoGfiles)
-  #print('\n---------------------------------------------\n')
-  #print(serverGlobals.wheelbase)
+
 
 ###########################################################################################################
 # input
@@ -39,16 +29,13 @@ def test():
 @anvil.server.callable
 def create_databaseTEST(read_path):
   """
-    Creates a test database with randomly generated entries and updates the global database.
+    Creates a test database with predefined entries and random data.
 
     Args:
         read_path (str): The path to the directory containing the files to be processed.
 
-    This function performs the following steps:
-    1. Initializes a test database with predefined entries.
-    2. Defines lists of possible values for various fields.
-    3. Generates additional random entries and appends them to the test database.
-    4. Updates the global database variable with the test database.
+    Updates:
+        serverGlobals.DB: The global variable storing the test database.
   """
   testDB = [
     {
@@ -109,6 +96,8 @@ def create_databaseTEST(read_path):
     }
 
   ]
+
+  # define lists of possible values for random data generatio
   baureihen = ['K12345', 'M67890', 'A11111', 'R22222']
   bauteile = ['Bauteil1', 'Bauteil2', 'Bauteil3', 'Bauteil4']
   richtungen = ['+X', '-Y', '+Z', '-X']
@@ -116,6 +105,7 @@ def create_databaseTEST(read_path):
   baustufen = ['KEX', 'BS1', 'FB', 'VS1']
   years = ['2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014']
 
+  # generate additional random entries for the test database
   for i in range(5, 15):
       testDB.append({
           'ID': i,
@@ -131,18 +121,32 @@ def create_databaseTEST(read_path):
           'Last': random.choice(lasten),
           'Gang': f'{random.randint(1, 5)}'
       })
+
+  # Store the test database in the global variable
   #return testDB
   serverGlobals.DB = testDB
   #print(serverGlobals.DB)
 
 @anvil.server.callable
 def load_database(specificPath = False):
+    """
+    Load the database from a specified path or a default path if not provided.
 
+    Args:
+        specificPath (str, optional): The path to the database file. Defaults to False.
+
+    Returns:
+        bool: True if the database was successfully loaded, False otherwise.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the loaded database.
+    """
     if specificPath:
         path = specificPath
     else:
         path = 'cacheDB.pkl'
 
+    # check if the specified path exists
     if os.path.exists(path):
         with open(path, 'rb') as file:
             serverGlobals.DB = pickle.load(file)
@@ -150,14 +154,16 @@ def load_database(specificPath = False):
     else:
         return False
 
-
 @anvil.server.callable
 def create_database(read_path):
     """
-    Creates a database by processing files in the specified directory and extracting relevant information.
+    Create a database from the files in the specified directory path.
 
     Args:
         read_path (str): The path to the directory containing the files to be processed.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the created database.
 
     Database format:
         [
@@ -278,17 +284,22 @@ def create_database(read_path):
 @anvil.server.callable
 def filter_database(key, values, sourceFullDB = True, secondKey = False, returnDB = False):
     """
-    Filters the global database based on the specified key and values.
+    Filter the database based on the specified key and values.
 
     Args:
-        key (str): The key to filter the database entries by.
-        values (list): A list of values to filter the entries.
-        sourceFullDB (bool, optional): If True, use the full database from serverGlobals.DB.
-                                       If False, use the selected data from serverGlobals.selectedData. Defaults to True.
-        secondKey (bool, optional): If True, use a combination of key and secondKey for filtering (use for Baureihe-year assembly). Defaults to False.
+        key (str): The key to filter the database by.
+        values (list): The list of values to filter the database entries.
+        sourceFullDB (bool, optional): If True, use the full database from serverGlobals.DB. If False, use the selected
+                                       data from serverGlobals.selectedData. Defaults to True.
+        secondKey (str, optional): An additional key to filter the database entries. Defaults to False.
+        returnDB (bool, optional): If True, return the filtered database. If False, update serverGlobals.selectedData
+                                   with the filtered entries. Defaults to False.
+
+    Returns:
+        list or None: The filtered database if returnDB is True, otherwise None.
 
     Updates:
-        serverGlobals.selectedData: The filtered database entries.
+        serverGlobals.selectedData: The global variable storing the filtered database entries if returnDB is False.
     """
     # Access the global database
     if sourceFullDB:
@@ -315,33 +326,38 @@ def filter_database(key, values, sourceFullDB = True, secondKey = False, returnD
     else:
         serverGlobals.selectedData = filtered_database
 
-
 @anvil.server.callable
 def excludeMotor():
     """
-    Filters the global database to exclude entries with 'Motor' in the 'Bauteil' field.
+    Exclude entries with 'Motor' in the 'Bauteil' field from the selected data.
 
     Updates:
-        serverGlobals.selectedData: The filtered database entries.
+        serverGlobals.selectedData: The global variable storing the filtered database entries.
     """
+    # Access the selected data from the global variable
     database = serverGlobals.selectedData
+    # Filter out entries where 'Bauteil' contains 'Motor'
     filtered_database = [entry for entry in database if 'Motor' not in entry['Bauteil']]
+    # Update the global variable with the filtered data
     serverGlobals.selectedData = filtered_database
 
 @anvil.server.callable
 def get_baureihe_and_years():
     """
-    Creates a list of dictionaries, each containing the name of the Baureihe and the respective years as a list.
-
-    Args:
-        database (list): A list of dictionaries, each representing a file with extracted information.
+    Retrieve unique 'Baureihe' and their corresponding 'Years' from the database.
 
     Returns:
-        list: A list of dictionaries, each containing the name of the Baureihe and the respective years as a list.
+        list: A list of dictionaries, each containing a 'Baureihe' and a list of 'Years'.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the database entries.
     """
+    # Access the global database
     database = serverGlobals.DB
+    # Initialize a dictionary to store 'Baureihe' and their corresponding 'Years'
     baureihe_to_years = {}
 
+    # Iterate through each entry in the database
     for entry in database:
         baureihe = entry['Baureihe']
         year = entry['Jahr']
@@ -350,6 +366,7 @@ def get_baureihe_and_years():
                 baureihe_to_years[baureihe] = set()
             baureihe_to_years[baureihe].add(year)
 
+    # Convert the dictionary to a list of dictionaries
     baureihe_years_list = [
       {
           'Baureihe': baureihe,
@@ -366,28 +383,37 @@ def get_unique_values(key, sourceSelectedData=False, prefixes = False):
 
     Args:
         key (str): The key to retrieve unique values for.
-        sourceSelectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData.
-                                             If False, use the full database from serverGlobals.DB. Defaults to False.
+        sourceSelectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData. If False, use the full database from serverGlobals.DB. Defaults to False.
         prefixes (bool, optional): If True, return unique prefixes of the values. Defaults to False.
 
     Returns:
         list: A sorted list of unique values or prefixes.
+
+    Functions called:
+        - None
+
     """
+    # initialize a set to store unique values
     unique_values = set()
 
+    # determine the source database
     if sourceSelectedData:
       DB = serverGlobals.selectedData
     else:
       DB = serverGlobals.DB
-  
+
+    # iterate through each entry in the database
     for entry in DB:
         if key in entry:
             unique_values.add(entry[key])
 
     if prefixes:
+
         unique_prefixes = set()
+        # initialize a dictionary to count prefix occurrences
         prefix_counts = {}
 
+        # iterate through each unique value
         for value in unique_values:
             parts = value.split('_')
             for i in range(1, len(parts) + 1):
@@ -396,6 +422,7 @@ def get_unique_values(key, sourceSelectedData=False, prefixes = False):
                     prefix_counts[prefix] = 0
                 prefix_counts[prefix] += 1
 
+        # add prefixes that occur more than once or are in unique values
         for prefix, count in prefix_counts.items():
             if count > 1 or prefix in unique_values:
                 unique_prefixes.add(prefix)
@@ -408,13 +435,21 @@ def get_unique_values(key, sourceSelectedData=False, prefixes = False):
 @anvil.server.callable
 def loadCoGdata(rootPath):
     """
-    Loads and processes center of gravity (CoG) data from CSV files located in the specified root path.
+    Load Center of Gravity (CoG) data from CSV files in the specified root path.
 
     Args:
-        rootPath (str): The root directory path containing the 'Schwerpunktdaten' folder with CSV files.
+        rootPath (str): The root directory path containing the 'Schwerpunktdaten' folder with CoG data files.
 
-    The processed CoG data is stored in the `serverGlobals.CoGfiles` global variable.
-    The wheelbase information is stored in the `serverGlobals.wheelbase` global variable.
+    Updates:
+        serverGlobals.CoGData: The global variable storing the processed CoG data.
+        serverGlobals.wheelbase: The global variable storing the wheelbase information.
+
+    Functions called:
+        - detect_encoding
+        - os.walk
+        - pd.read_csv
+        - np.mean
+        - shapely.geometry.MultiPoint
     """
 
     # Initialize an empty list to store CoG file data
@@ -505,7 +540,7 @@ def loadCoGdata(rootPath):
 @anvil.server.callable
 def CoG_TranslationTable():
     """
-    Creates a translation table for CoG data.
+    Creates a translation table for CoG data (adapted from matlab tool).
 
     Returns:
         dict: A dictionary where keys are strings in CoG data and values are lists of corresponding strings in measurement data.
@@ -540,13 +575,25 @@ def CoG_TranslationTable():
 
 @anvil.server.callable
 def addCoGdataToDB():
+    """
+    Add Center of Gravity (CoG) data to the database entries.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the database entries with added CoG data.
+
+    Functions called:
+        - CoG_TranslationTable
+    """
+    # create a set to store unique 'Baureihe' values from CoG data
     baureihen = set()
     for entry in serverGlobals.CoGData:
         baureihen.add(entry['Baureihe'])
     baureihen = list(baureihen)
 
+    # get the translation table for CoG data
     translationTable = CoG_TranslationTable()
 
+    # iterate through each entry in the database
     for entry in serverGlobals.DB:
         if entry['Baureihe'] in baureihen:
             for CoG in serverGlobals.CoGData:
@@ -555,19 +602,31 @@ def addCoGdataToDB():
                     for key, values in translationTable.items():
                         if entry['Bauteil'] in values:
                             translation = key
-
+                            # find the index of the translated part in CoG data
                             cogIndex = list(CoG['parts']).index(translation)
+                            # add CoG data to the database entry
                             entry['cog'] = CoG['cogs'][cogIndex]
                             entry['cog_Bauteil'] = translation
                             break
 
-
-
 @anvil.server.callable
 def readData(selectedData = True):
+    """
+    Read data from files and update the database entries with the data.
 
+    Args:
+        selectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData. If False, use the full database from serverGlobals.DB. Defaults to True.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the database entries with added data.
+        serverGlobals.selectedData: The global variable storing the selected database entries with added data.
+
+    Functions called:
+        - None
+    """
     start_time = time.time()
 
+    # determine the source database
     if selectedData:
         db = serverGlobals.selectedData
     else:
@@ -576,16 +635,20 @@ def readData(selectedData = True):
     total_entries = len(db)
     progress_interval = max(1, total_entries // 10)  # Print progress every 10% or at least once
 
+    # iterate through each entry in the database
     for i, entry in enumerate(db):
-        # Check if the entry already has 'data'
+        # check if the entry already has 'data'
         if 'data' in entry:
             continue
-
+        # construct the file path for the entry
         filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
 
         if not "Kopie" in filePath:
+            # load the data from the file
             data = np.loadtxt(filePath)
+            # check if the data length is 800
             if len(data) == 800:
+                # update the entry with the loaded data
                 entry['data'] = data
 
                 # Find the corresponding element in serverGlobals.DB and update it
@@ -604,6 +667,7 @@ def readData(selectedData = True):
 
     print(f"Data reading completed in {time.time() - start_time:.2f} seconds")
 
+    # save the updated database to a cache file
     pickle.dump(serverGlobals.DB, open("cacheDB.pkl", "wb"))
 
 def detect_encoding(file_path):
@@ -615,6 +679,9 @@ def detect_encoding(file_path):
 
     Returns:
         str: The detected encoding of the file.
+
+    Functions called:
+        - None
     """
     with open(file_path, 'rb') as f:
         result = chardet.detect(f.read())
@@ -625,8 +692,24 @@ def detect_encoding(file_path):
 ###########################################################################################################
 @anvil.server.callable
 def getPlot(clusteringMethod, component, envelopeMethod):
+    """
+    Generate a plot based on the specified clustering method, component, and envelope method.
+
+    Args:
+        clusteringMethod (str): The method used for clustering ('component', 'frequency', 'position').
+        component (str): The component to be plotted.
+        envelopeMethod (str): The method used to generate the envelope.
+
+    Returns:
+        tuple: A tuple containing the plotly figure object, the envelope data, and the mean standard deviation.
+
+    Functions called:
+        - dataAnalysis.generateSuperEnvelope
+    """
     plotData = []
     showLegend = False
+
+    # Determine the clusters and envelope color based on the clustering method
     if clusteringMethod == 'component':
         clusters = serverGlobals.clusters_components
         envelopeColour = 'purple'
@@ -638,11 +721,13 @@ def getPlot(clusteringMethod, component, envelopeMethod):
         clusters = serverGlobals.clusters_positions
         envelopeColour = 'gold'
 
+    # Collect plot data for the specified component
     for cluster in clusters:
         for comp in cluster['components']:
             if component in comp:
                 plotData.append(cluster)
 
+    # Initialize the plotly figure
     fig = go.Figure()
     fig.update_layout(
         showlegend = showLegend,
@@ -673,6 +758,7 @@ def getPlot(clusteringMethod, component, envelopeMethod):
         ),
 
     )
+    # Add lines to the plot
     if plotData:
         superEnvelope = dataAnalysis.generateSuperEnvelope(plotData, envelopeMethod,component)
 
@@ -687,6 +773,18 @@ def getPlot(clusteringMethod, component, envelopeMethod):
 
 @anvil.server.callable
 def getCogPlot():
+    """
+    Generate a plot of Center of Gravity (CoG) data for selected components.
+
+    Groups the data by 'Baureihe' and 'Jahr', and plots the CoG for each group.
+    Additionally, plots the clusters if available.
+
+    Returns:
+        plotly.graph_objects.Figure: The generated plotly figure object.
+
+    Functions called:
+        - None
+    """
     # Group data by Baureihe and Jahr
     grouped_data = {}
     for entry in serverGlobals.selectedData:
@@ -720,16 +818,20 @@ def getCogPlot():
             name=f'{baureihe} ({jahr})'
         ))
 
-    # plot clusters
+    # Plot clusters if available
     if serverGlobals.clusters_positions:
         for cluster in serverGlobals.clusters_positions:
+            # Extract x and y coordinates of the cluster's center of gravity (CoG)
             x = list(cluster['cogs'][:, 0])
             y = list(cluster['cogs'][:, 2])
+            # Calculate the convex hull of the CoG points
             convex_hull = shapely.geometry.MultiPoint([xy for xy in zip(x, y)]).convex_hull
+            # Check if the convex hull is a polygon or a line
             if isinstance(convex_hull, shapely.geometry.Polygon):
                 coords = np.array(convex_hull.exterior.coords)
             else:
                 coords = np.array(convex_hull.coords)
+            # Add the convex hull as a trace to the plot
             fig.add_trace(go.Scatter(x=coords[:, 0], y=coords[:, 1], mode='lines', fill="toself", name='cluster ' + str(cluster['name'])))
 
     fig.update_layout(
@@ -763,6 +865,22 @@ def getCogPlot():
 
 @anvil.server.callable
 def getOverviewPlot(component, compPlot, posPlot, freqPlot):
+    """
+    Generate an overview plot combining component, position, and frequency-based predictions.
+
+    Args:
+        component (str): The component to be plotted.
+        compPlot (plotly.graph_objects.Figure): The plotly figure object for component-based prediction.
+        posPlot (plotly.graph_objects.Figure): The plotly figure object for position-based prediction.
+        freqPlot (plotly.graph_objects.Figure): The plotly figure object for frequency-based prediction.
+
+    Returns:
+        plotly.graph_objects.Figure: The generated plotly figure object.
+
+    Functions called:
+        - None
+    """
+
     fig = go.Figure()
     if compPlot:
         fig.add_trace(compPlot.data[-1])
@@ -810,17 +928,42 @@ def getOverviewPlot(component, compPlot, posPlot, freqPlot):
 
 @anvil.server.callable
 def getLinkagePlot():
+    """
+    Retrieve the linkage plot from the server globals.
+
+    Returns:
+        plotly.graph_objects.Figure: The linkage plot stored in serverGlobals.
+    """
     return serverGlobals.plot_linkage
 
 @anvil.server.callable
-def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange,measurementFileName=None):
+def addComparisonDataToOverviewPlot(overviewPlot, measurementFileName=None):
+    """
+    Add comparison data to the overview plot.
+
+    Args:
+        overviewPlot (plotly.graph_objects.Figure): The existing overview plot to which comparison data will be added.
+        measurementFileName (str, optional): The name of the measurement file to retrieve data for. Defaults to None.
+
+    Returns:
+        tuple: A tuple containing the updated overview plot, a success flag, and the mean standard deviation of the comparison envelope.
+
+    Functions called:
+        - getComparisonDataEnvelope
+        - getComparisonDataFileNames
+        - getComparisonData
+    """
     success = False
     envelope = getComparisonDataEnvelope()
+
+    # cut of previous comparison data
     if len(overviewPlot.data) > 3:
         overviewPlot.data = overviewPlot.data[:3]
+    # add the comparison envelope to the plot if available
     if envelope is not None:
         overviewPlot.add_trace(go.Scatter(x=envelope[0], y=envelope[1],name='measurement envelope', mode='lines', opacity=1, line=dict(color='black', width=2)))
         success = True
+    # add the selected measurement data to the plot if a valid file name is provided
     if measurementFileName:
         if measurementFileName in getComparisonDataFileNames():
             x,y = getComparisonData(measurementFileName)
@@ -831,13 +974,16 @@ def addComparisonDataToOverviewPlot(overviewPlot, envelopeMethod, frequencyRange
 @anvil.server.callable
 def getComparisonData(fileName):
     """
-    Retrieve the frequency and amplitude data for a given comparison file.
+    Retrieve the comparison data for a given file name.
 
     Args:
-        fileName (str): The name of the file to retrieve data for.
+        fileName (str): The name of the file to retrieve comparison data for.
 
     Returns:
-        tuple: A tuple containing the frequency and amplitude data.
+        tuple: A tuple containing the frequencies and amplitudes from the comparison data.
+
+    Functions called:
+        - None
     """
     for entry in serverGlobals.comparisonData:
         if entry['name'] == fileName:
@@ -846,10 +992,13 @@ def getComparisonData(fileName):
 @anvil.server.callable
 def getComparisonDataFileNames():
     """
-    Retrieve the file names of the comparison data.
+    Retrieve the list of comparison data file names.
 
     Returns:
-        list: A list of file names.
+        list: A sorted list of unique comparison data file names.
+
+    Functions called:
+        - None
     """
     filenames = set()
     for entry in serverGlobals.comparisonData:
@@ -859,4 +1008,13 @@ def getComparisonDataFileNames():
 
 @anvil.server.callable
 def getComparisonDataEnvelope():
+    """
+    Retrieve the comparison data envelope from the server globals.
+
+    Returns:
+        tuple: A tuple containing the frequencies and amplitudes of the comparison data envelope.
+
+    Functions called:
+        - None
+    """
     return serverGlobals.comparisonEnvelope

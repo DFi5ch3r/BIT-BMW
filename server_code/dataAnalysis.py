@@ -1,15 +1,12 @@
 import anvil.server
-import random
-import re
-import os
+
 import numpy as np
 from scipy.spatial.distance import pdist, cdist
 import scipy.cluster.hierarchy as sch
 import sklearn.cluster as skl
 from sklearn.metrics import pairwise_distances
 import plotly.graph_objects as go
-import pandas as pd
-import chardet
+
 from . import serverGlobals
 
 # This is a server module. It runs on the Anvil server,
@@ -17,22 +14,47 @@ from . import serverGlobals
 #
 # To allow anvil.server.call() to call functions here, we mark
 # them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
 
 @anvil.server.callable
 def clusterComponents(frequencyRange):
+    """
+    Cluster components based on the provided frequency range.
+
+    Args:
+        frequencyRange (tuple): A tuple specifying the minimum and maximum frequency range.
+
+    Returns:
+        bool: True if clustering is successful.
+
+    Functions called:
+        - assembleData
+        - adjustToFrequencyRange
+    """
     serverGlobals.clusters_components = assembleData('Bauteil')
     serverGlobals.clusters_components = adjustToFrequencyRange(serverGlobals.clusters_components, frequencyRange)
     return True
 
 @anvil.server.callable
 def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric):
+    """
+    Cluster frequencies based on the provided parameters.
 
+    Args:
+        nClusters (int): The number of clusters.
+        frequencyRange (tuple): A tuple specifying the minimum and maximum frequency range.
+        isHierarchical (bool): If True, use hierarchical clustering; otherwise, use KMeans clustering.
+        distanceMetric (str): The distance metric to use for clustering.
+
+    Returns:
+        bool: True if clustering is successful.
+
+    Functions called:
+        - assembleData
+        - adjustToFrequencyRange
+        - calcNumberOfClusters
+        - hierarchical_clustering
+        - kmeans_clustering
+    """
     # assemble data for clustering (amplitudes)
     data = []
     indices = []
@@ -50,12 +72,12 @@ def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric)
     dataInClusterFormat = adjustToFrequencyRange(dataInClusterFormat, frequencyRange)
     data = dataInClusterFormat[0]['amplitudes']
 
-    # linkage / automatic number of clusters
+    # determine the number of clusters automatically if not provided
     nClustersAuto, serverGlobals.plot_linkage = calcNumberOfClusters(data, distanceMetric, nClusters)
     if not nClusters:
         nClusters = nClustersAuto
 
-    # clustering
+    # perform clustering
     if isHierarchical:
         clusterIndices = hierarchical_clustering(data, nClusters, distanceMetric)
     else:
@@ -65,14 +87,29 @@ def clusterFrequencies(nClusters,frequencyRange, isHierarchical, distanceMetric)
     for i in range(len(indices)):
         serverGlobals.selectedData[indices[i]]['frequencyCluster'] = clusterIndices[i]
 
+    # assemble and adjust clusters to frequency range
     serverGlobals.clusters_frequencies = assembleData('frequencyCluster')
     serverGlobals.clusters_frequencies = adjustToFrequencyRange(serverGlobals.clusters_frequencies, frequencyRange)
     return True
 
-
 @anvil.server.callable
 def clusterPositions(nClusters, frequencyRange, isHierarchical):
+    """
+    Cluster positions based on the provided parameters.
 
+    Args:
+        nClusters (int): the number of clusters.
+        frequencyRange (tuple): a tuple specifying the minimum and maximum frequency range.
+        isHierarchical (bool): if True, use hierarchical clustering; otherwise, use KMeans clustering.
+
+    Returns:
+        bool: True if clustering is successful.
+
+    Functions called:
+        - assembleData
+        - adjustToFrequencyRange
+    """
+    # collect center of gravity (cog) data for clustering
     cogs = []
     indices = []
     for i in range(len(serverGlobals.selectedData)):
@@ -82,15 +119,19 @@ def clusterPositions(nClusters, frequencyRange, isHierarchical):
     cogs = np.array(cogs)
 
     if indices:
+        # perform hierarchical clustering if specified
         if isHierarchical:
             clustering = skl.AgglomerativeClustering(nClusters, metric='euclidean', linkage='single')
+        # perform KMeans clustering otherwise
         else:
             clustering = skl.KMeans(nClusters, random_state=0, n_init=20, init='k-means++')
         clusterIndices = clustering.fit_predict(cogs)
 
+        # assign cluster indices to selected data
         for i in range(len(indices)):
             serverGlobals.selectedData[indices[i]]['positionCluster'] = clusterIndices[i]
 
+        # assemble and adjust clusters to frequency range
         serverGlobals.clusters_positions = assembleData('positionCluster')
         serverGlobals.clusters_positions = adjustToFrequencyRange(serverGlobals.clusters_positions, frequencyRange)
 
@@ -100,6 +141,15 @@ def clusterPositions(nClusters, frequencyRange, isHierarchical):
 
 @anvil.server.callable
 def generateEnvelopesForClusters(method):
+    """
+    Generate envelopes for each cluster based on the specified method.
+
+    Args:
+        method (str): the method to use for generating envelopes.
+
+    Functions called:
+        - generateEnvelopes
+    """
     if serverGlobals.clusters_components:
         generateEnvelopes(serverGlobals.clusters_components, method)
     if serverGlobals.clusters_positions:
@@ -109,14 +159,19 @@ def generateEnvelopesForClusters(method):
 
 def assembleData(key, db = None):
     """
-    Assemble data into clusters based on a unique key.
+    Assemble data into clusters based on a specified key.
 
     Args:
-        key (str): The key to group data by.
+        key (str): the key to cluster the data by.
+        db (list, optional): the database to use. Defaults to None, which uses serverGlobals.selectedData.
 
     Returns:
-        list: A list of clusters, each containing 'name', 'frequencies', and 'amplitudes'.
+        list: a list of clusters, each containing 'name', 'components', 'frequencies', 'amplitudes', and 'cogs'.
+
+    Functions called:
+        - None
     """
+
     if db is None:
         db = serverGlobals.selectedData
     else:
@@ -124,14 +179,14 @@ def assembleData(key, db = None):
 
     unique_keys = set()
 
-    # Iterate through each entry in the database to find unique keys
+    # iterate through each entry in the database to find unique keys
     for entry in db:
         if key in entry:
             unique_keys.add(entry[key])
 
     unique_keys = sorted(list(unique_keys))
 
-    # Create clusters based on unique keys
+    # create clusters based on unique keys
     clusters = []
     for tempKey in unique_keys:
         cluster =  {}
@@ -139,7 +194,7 @@ def assembleData(key, db = None):
         cluster['components'] = set()
         cluster['data'] = []
         cluster['cogs'] = []
-        # Collect data for each cluster
+        # collect data for each cluster
         for entry in db:
             if key in entry:
                 if (entry[key] == tempKey) and ('data' in entry):
@@ -147,16 +202,16 @@ def assembleData(key, db = None):
                     cluster['components'].add(entry['Bauteil'])
                     if 'cog' in entry:
                         cluster['cogs'].append(entry['cog'])
-        # Stack the data arrays for each cluster
+        # stack the data arrays for each cluster
         cluster['data'] = np.stack(cluster['data'])
         cluster['cogs'] = np.array(cluster['cogs'])
 
-        # Check if the frequency data arrays match
+        # check if the frequency data arrays match
         frequencies = cluster['data'][0, :, 0]
         for i in range(1, cluster['data'].shape[0]):
             if not np.array_equal(frequencies, cluster['data'][i, :, 0]):
                 raise ValueError("frequency data arrays do not match")
-        # Extract amplitudes for each cluster
+        # extract amplitudes for each cluster
         if cluster['data'].shape[0] == 1:
             amplitudes = cluster['data'][0, :, 1]
         else:
@@ -172,15 +227,17 @@ def assembleData(key, db = None):
 
 def adjustToFrequencyRange(clusters,frequencyRange):
     """
-    Adjusts the frequency and amplitude data of clusters to a specified frequency range.
+    Adjust clusters to the specified frequency range.
 
     Args:
-        clusters (list): A list of clusters, each containing 'frequencies' and 'amplitudes'.
-        frequencyRange (tuple): A tuple specifying the minimum and maximum frequency range.
+        clusters (list): a list of clusters, each containing 'frequencies' and 'amplitudes'.
+        frequencyRange (tuple): a tuple specifying the minimum and maximum frequency range.
 
     Returns:
-        list: The function modifies the clusters in place and returns the adjusted clusters.
+        list: the adjusted list of clusters.
 
+    Functions called:
+        - None
     """
     for cluster in clusters:
         idx = (cluster['frequencies'] >= frequencyRange[0]) & (cluster['frequencies'] <= frequencyRange[1])
@@ -212,10 +269,15 @@ def generateEnvelopes(clusters,method):
             - "75th-percentile (total)": 75th percentile across all data.
             - "Median (total)": Median across all data.
 
+    Functions called:
+        - None
+
     Raises:
         ValueError: If the selected method is not implemented.
+
     """
     for cluster in clusters:
+        # if amplitudes have less than 2 dimensions, use them directly as envelope
         if len(cluster['amplitudes'].shape) < 2:
             cluster['envelope'] = cluster['amplitudes']
         else:
@@ -260,7 +322,7 @@ def generateEnvelopes(clusters,method):
 @anvil.server.callable
 def generateSuperEnvelope(clusters, method, component):
     """
-    Generate a super envelope for a set of clusters based on the specified method.
+    Generate a super envelope for the given clusters based on the specified method.
 
     Args:
         clusters (list): A list of clusters, each containing 'frequencies' and 'envelope'.
@@ -268,7 +330,10 @@ def generateSuperEnvelope(clusters, method, component):
         component (str): The name of the component for which the super envelope is generated.
 
     Returns:
-        dict: A dictionary representing the super envelope, containing 'name', 'components', 'frequencies', and 'amplitudes'.
+        dict: The generated super envelope containing 'name', 'frequencies', 'amplitudes', 'envelope', and 'meanStdDev'.
+
+    Functions called:
+        - generateEnvelopes
     """
     envelope = {}
 
@@ -277,52 +342,68 @@ def generateSuperEnvelope(clusters, method, component):
         envelope['frequencies'] = clusters[0]['frequencies']
         envelope['amplitudes'] = []
 
+        # Collect envelopes from each cluster
         for cluster in clusters:
             envelope['amplitudes'].append(cluster['envelope'])
         envelope['amplitudes'] = np.column_stack(envelope['amplitudes'])
 
+        # Calculate the mean standard deviation of the amplitudes
         envelope['meanStdDev'] = np.mean(np.std(envelope['amplitudes'], axis=1))
         generateEnvelopes([envelope], method)
     else:
         envelope = clusters[0]
         envelope['meanStdDev'] = 0
+
     return envelope
 
-#comparison data
+# comparison data functions
+#----------------------------------------------------------------------------------------------------------------------#
+
 @anvil.server.callable
 def assembleComparisonData(year, component, frequencyRange, envelopeMethod):
     """
-    Assemble comparison data for a specific year and component.
+    Assemble comparison data for a given year and component, adjust it to the specified frequency range, and generate
+    envelopes.
 
     Args:
-        year (int): The year to filter the data.
-        component (str): The component to filter the data.
+        year (int): The year to filter the data by.
+        component (str): The component to filter the data by.
+        frequencyRange (tuple): A tuple specifying the minimum and maximum frequency range.
         envelopeMethod (str): The method to use for generating envelopes.
-        frequencyRange (tuple): The frequency range to adjust the data.
+
+    Functions called:
+        - assembleData
+        - adjustToFrequencyRange
+        - generateEnvelopes
 
     Returns:
-        dict: The envelope of comparison data.
+        None
     """
     db = serverGlobals.selectedData
     comparisonData = []
 
+    # filter the database for entries matching the specified year and component
     for entry in db:
         if (entry['Jahr'] == year) and (component in entry['Bauteil'] ) and ('data' in entry):
             comparisonData.append(entry)
 
+    # assemble and adjust clusters to the specified frequency range
     clusters = assembleData('Jahr', comparisonData)
     clusters = adjustToFrequencyRange(clusters, frequencyRange)
     generateEnvelopes(clusters, envelopeMethod)
 
-
+    # assemble comparison data by filename
     comparisonData = assembleData('Dateiname', comparisonData)
 
+    # ensure amplitudes have the correct shape
     for entry in comparisonData:        #todo: revise, here due to strange bug with K03/2015/Blinker_hi
         if len(entry['amplitudes'].shape) > 1:
             entry['amplitudes'] = entry['amplitudes'][:, 0]
 
+    # adjust comparison data to the specified frequency range
     comparisonData = adjustToFrequencyRange(comparisonData, frequencyRange)
 
+    # store the comparison data and envelope in serverGlobals
     serverGlobals.comparisonData = comparisonData
     if len(clusters)<1:
         serverGlobals.comparisonEnvelope = None
@@ -332,7 +413,18 @@ def assembleComparisonData(year, component, frequencyRange, envelopeMethod):
 
 @anvil.server.callable
 def getErrors(predictionEnvelope):
+    """
+    Calculate the magnitude and angular errors between the comparison envelope and the prediction envelope.
 
+    Args:
+        predictionEnvelope (list): A list containing the predicted envelope data with frequencies and amplitudes.
+
+    Functions called:
+        - None
+
+    Returns:
+        tuple: A tuple containing the magnitude error and angular error.
+    """
     errorVec = np.vstack((serverGlobals.comparisonEnvelope[1], predictionEnvelope[1]))
     magError = serverGlobals.frequencyResolution * np.sum(np.abs(errorVec[1,:] - errorVec[0,:])) / 1000
     anglErr =  1 - pdist(errorVec, 'cosine')[0]
@@ -340,27 +432,42 @@ def getErrors(predictionEnvelope):
     return magError, anglErr
 
 # clustering functions
+#----------------------------------------------------------------------------------------------------------------------#
+
 def kmeans_clustering(data, nClusters, distanceMetric='correlation'):
     """
-    Perform KMeans clustering with kmeans++ initialization and specified distance metric.
+    Perform KMeans clustering on the given data using the specified distance metric.
 
-    distanceMetric options: ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘cityblock’, ‘correlation’, ‘cosine’, ‘dice’, ‘euclidean’, ‘hamming’, ‘jaccard’, ‘jensenshannon’, ‘kulczynski1’, ‘mahalanobis’, ‘matching’, ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalmichener’, ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
-    data: m x n numpy array, m measurements, n dimensions
+    Args:
+        data (np.ndarray): The data to cluster, shape (m,n) where n is the number of dimensions and m is the number of
+                           measurements, n dimensions.
+        nClusters (int): The number of clusters.
+        distanceMetric (str): The distance metric to use for clustering. Default is 'correlation'.
+                              ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘cityblock’, ‘correlation’, ‘cosine’, ‘dice’,
+                              ‘euclidean’, ‘hamming’, ‘jaccard’, ‘jensenshannon’, ‘kulczynski1’, ‘mahalanobis’,
+                              ‘matching’, ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalmichener’,
+                              ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
+
+    Returns:
+        np.ndarray: The cluster labels.
+
+    Functions called:
+        - None
     """
 
-    # Transpose the data to shape (m, n) for KMeans
+    # transpose the data to shape (m, n) for KMeans
     data = data.T
 
-    # Initialize KMeans with kmeans++ initialization
+    # initialize KMeans with kmeans++ initialization
     kmeans = skl.KMeans(n_clusters=nClusters, init='k-means++', random_state=0, n_init=20)
 
-    # Fit the model
+    # fit the model
     kmeans.fit(data)
 
-    # Compute the distance matrix using the specified distance metric
+    # compute the distance matrix using the specified distance metric
     distance_matrix = cdist(data, kmeans.cluster_centers_, metric=distanceMetric)
 
-    # Assign labels based on the minimum distance
+    # assign labels based on the minimum distance
     labels = np.argmin(distance_matrix, axis=1)
 
     return labels
@@ -375,6 +482,9 @@ def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
         distance_metric (str): The distance metric to use ('euclidean', 'cityblock', 'cosine', etc.).
 
     distanceMetric options: ‘cityblock’, ‘cosine’, ‘euclidean’, ‘l1’, ‘l2’, ‘manhattan’, ‘braycurtis’, ‘canberra’, ‘chebyshev’, ‘correlation’, ‘dice’, ‘hamming’, ‘jaccard’, ‘kulsinski’, ‘mahalanobis’, ‘minkowski’, ‘rogerstanimoto’, ‘russellrao’, ‘seuclidean’, ‘sokalmichener’, ‘sokalsneath’, ‘sqeuclidean’, ‘yule’
+
+    Functions called:
+        - None
 
     Returns:
         np.ndarray: The cluster labels.
@@ -396,6 +506,26 @@ def hierarchical_clustering(data, nClusters, distanceMetric='seuclidean'):
     return labels
 
 def calcNumberOfClusters(data,distanceMetric,manualNClusters=False, mean_window = 5, sensitivity=False):
+    """
+    Calculate the optimal number of clusters for the given data using the specified distance metric. Code is adapted
+    from the original Matlab tool.
+
+    Args:
+        data (np.ndarray): The data to cluster, shape (n, m) where n is the number of dimensions and m is the number of measurements.
+        distanceMetric (str): The distance metric to use for clustering.
+        manualNClusters (int, optional): The manually specified number of clusters. Defaults to False.
+        mean_window (int, optional): The window size for calculating the mean linkage. Defaults to 5.
+        sensitivity (float, optional): The sensitivity threshold for determining the optimal number of clusters. Defaults to False.
+
+    Returns:
+        tuple: A tuple containing the optimal number of clusters and the plotly figure object.
+
+    Functions called:
+        - None
+
+    Raises:
+        ValueError: If the distance metric is not supported.
+    """
 
     # Compute the distance matrix using the specified distance metric
     distance_matrix = pdist(data.T, metric=distanceMetric)
