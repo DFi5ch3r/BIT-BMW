@@ -65,9 +65,13 @@ class main(mainTemplate):
 
     with Notification("Generating Database..."):
 
-      # create database
-      anvil.server.call('create_database',globals.input_customPath)
+      dbLoaded = anvil.server.call('load_database')
+
+      if not dbLoaded:
+          # create database
+          anvil.server.call('create_database',globals.input_customPath)
       #anvil.server.call('create_databaseTEST',globals.input_customPath)
+
       globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
 
       # load CoG data
@@ -90,8 +94,11 @@ class main(mainTemplate):
     anvil.server.call('filter_database', key = 'Baustufe', values = list(globals.selected_buildstage), sourceFullDB = False)
     # filter by Baureihe and year
     anvil.server.call('filter_database', key = 'Baureihe', secondKey = 'Jahr', values = list(globals.selected_BaureiheYears), sourceFullDB = False)
-    globals.dataLoaded = True
+
+    if globals.settings_excludeMotor:
+        anvil.server.call('excludeMotor')
     self.content_panel.raise_event_on_children('x-updateDropDowns')
+    globals.dataLoaded = True
 
     with Notification("Reading data ...",):
         anvil.server.call('readData', selectedData=True)

@@ -5,8 +5,10 @@ import os
 import numpy as np
 import pandas as pd
 import chardet
+import time
 import plotly.graph_objects as go
 import shapely.geometry
+import pickle
 from . import serverGlobals
 from . import dataAnalysis
 
@@ -132,6 +134,22 @@ def create_databaseTEST(read_path):
   #return testDB
   serverGlobals.DB = testDB
   #print(serverGlobals.DB)
+
+@anvil.server.callable
+def load_database(specificPath = False):
+
+    if specificPath:
+        path = specificPath
+    else:
+        path = 'cacheDB.pkl'
+
+    if os.path.exists(path):
+        with open(path, 'rb') as file:
+            serverGlobals.DB = pickle.load(file)
+        return True
+    else:
+        return False
+
 
 @anvil.server.callable
 def create_database(read_path):
@@ -297,6 +315,19 @@ def filter_database(key, values, sourceFullDB = True, secondKey = False, returnD
     else:
         serverGlobals.selectedData = filtered_database
 
+
+@anvil.server.callable
+def excludeMotor():
+    """
+    Filters the global database to exclude entries with 'Motor' in the 'Bauteil' field.
+
+    Updates:
+        serverGlobals.selectedData: The filtered database entries.
+    """
+    database = serverGlobals.selectedData
+    filtered_database = [entry for entry in database if 'Motor' not in entry['Bauteil']]
+    serverGlobals.selectedData = filtered_database
+
 @anvil.server.callable
 def get_baureihe_and_years():
     """
@@ -331,15 +362,16 @@ def get_baureihe_and_years():
 @anvil.server.callable
 def get_unique_values(key, sourceSelectedData=False, prefixes = False):
     """
-    Retrieves unique values for a specified key from the database.
+    Retrieve unique values for a specified key from the database.
 
     Args:
-        key (str): The key for which unique values are to be found.
+        key (str): The key to retrieve unique values for.
         sourceSelectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData.
                                              If False, use the full database from serverGlobals.DB. Defaults to False.
+        prefixes (bool, optional): If True, return unique prefixes of the values. Defaults to False.
 
     Returns:
-        list: A sorted list of unique values for the specified key.
+        list: A sorted list of unique values or prefixes.
     """
     unique_values = set()
 
@@ -531,9 +563,10 @@ def addCoGdataToDB():
 
 
 
-
 @anvil.server.callable
 def readData(selectedData = True):
+
+    start_time = time.time()
 
     if selectedData:
         db = serverGlobals.selectedData
@@ -544,13 +577,22 @@ def readData(selectedData = True):
     progress_interval = max(1, total_entries // 10)  # Print progress every 10% or at least once
 
     for i, entry in enumerate(db):
-        filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
-        # filePath = filePath.replace(' ', '\\ ')
+        # Check if the entry already has 'data'
+        if 'data' in entry:
+            continue
 
-        if (not "Kopie" in filePath):
+        filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
+
+        if not "Kopie" in filePath:
             data = np.loadtxt(filePath)
             if len(data) == 800:
                 entry['data'] = data
+
+                # Find the corresponding element in serverGlobals.DB and update it
+                for db_entry in serverGlobals.DB:
+                    if all(db_entry[key] == entry[key] for key in ['Jahr', 'Baureihe', 'Bauteil', 'Baustufe', 'Richtung', 'Last', 'Gang']):
+                        db_entry['data'] = data
+                        break
             else:
                 print(f"Skipped {entry['Dateiname']}, since Data length is {len(data)}")
         else:
@@ -560,8 +602,9 @@ def readData(selectedData = True):
         if (i + 1) % progress_interval == 0 or (i + 1) == total_entries:
             print(f"Progress: {i + 1}/{total_entries} entries processed")
 
+    print(f"Data reading completed in {time.time() - start_time:.2f} seconds")
 
-
+    pickle.dump(serverGlobals.DB, open("cacheDB.pkl", "wb"))
 
 def detect_encoding(file_path):
     """
