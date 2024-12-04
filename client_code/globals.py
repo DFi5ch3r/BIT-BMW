@@ -34,7 +34,7 @@ settings_excludeMotor = False
 
 input_inputMethod = 'directory'
 #input_customPath = '/home/dfischer/12-Projects/09-BMW-BIT/01-originalMatlabTool/BMW_BIT_TUB/BMW_Phase2_txtonly_BackUp'
-input_customPath = 'home/anvil/dataDir/'
+input_customPath = '/home/anvil/dataDir/'
 input_fileName ='fileName'
 
 plots_component = []
