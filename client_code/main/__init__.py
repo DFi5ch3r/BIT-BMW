@@ -225,11 +225,6 @@ class main(mainTemplate):
   def button_displaySettings_click(self, **event_args):
     self.show_globals()
 
-  def button_test_click(self, **event_args):
-    anvil.server.call('test')
-    #self.show_globals()
-    #self.content_panel.raise_event_on_children('x-updateResults')
-
   def link_reset_click(self, **event_args):
     """
     Reload the current page.
@@ -238,6 +233,10 @@ class main(mainTemplate):
     """
     anvil.js.window.location.reload(True)
 
+    def button_export_click(self, **event_args):
+    """This method is called when the link is clicked"""
+    pass
+  
 ###########################################################################################################
 # auxiliary functions
 ###########################################################################################################
@@ -280,6 +279,8 @@ class main(mainTemplate):
       `dataLoaded` flag to False in the global variables.
       """
       self.button_clusterData.foreground = '#D64D47'
+
+
 
 
 

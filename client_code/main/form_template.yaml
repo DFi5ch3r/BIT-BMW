@@ -27,11 +27,11 @@ components:
     name: button_displaySettings
     properties: {foreground: '', icon: 'fa:table', role: null, text: display settings}
     type: Link
-  - event_bindings: {click: button_test_click}
-    layout_properties: {grid_position: 'AQMKUE,XPHBZG'}
-    name: button_test
-    properties: {role: outlined-button, text: test}
-    type: Button
+  - event_bindings: {click: button_export_click}
+    layout_properties: {grid_position: 'HTBHYX,FTZFPD'}
+    name: button_export
+    properties: {foreground: '', icon: 'fa:upload', role: null, text: export}
+    type: Link
   - event_bindings: {click: link_reset_click}
     layout_properties: {grid_position: 'BBSVUN,VYIURL'}
     name: link_reset
