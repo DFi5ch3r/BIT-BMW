@@ -233,7 +233,7 @@ class main(mainTemplate):
     """
     anvil.js.window.location.reload(True)
 
-    def button_export_click(self, **event_args):
+  def button_export_click(self, **event_args):
     """This method is called when the link is clicked"""
     pass
   
