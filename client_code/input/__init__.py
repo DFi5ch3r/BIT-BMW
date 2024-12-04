@@ -35,5 +35,9 @@ class input(inputTemplate):
 
   def text_box_fileName_change(self, **event_args):
     globals.input_fileName = self.text_box_fileName.text
+
+  def file_loader_1_change(self, file, **event_args):
+    """This method is called when a new file is loaded into this FileLoader"""
+    pass
     
 
