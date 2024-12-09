@@ -280,6 +280,10 @@ def create_database(read_path):
     database = sorted(database, key=lambda x: x['Baureihe'])
     #return database
     serverGlobals.DB = database
+    if serverGlobals.DB:
+        return True
+    else:
+        return False
 
 @anvil.server.callable
 def filter_database(key, values, sourceFullDB = True, secondKey = False, returnDB = False):

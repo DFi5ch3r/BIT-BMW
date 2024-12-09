@@ -91,13 +91,19 @@ class main(mainTemplate):
             dbLoaded = False
 
           # Create database from files
+          dbRead = False
           if not dbLoaded:
-              anvil.server.call('create_database',globals.input_customPath)
+              dbRead = anvil.server.call('create_database',globals.input_customPath)
               #anvil.server.call('create_databaseTEST',globals.input_customPath)
 
-          # load CoG data
-          anvil.server.call('loadCoGdata',globals.input_customPath)
-          anvil.server.call('addCoGdataToDB')
+          if dbRead:
+              # load CoG data
+              anvil.server.call('loadCoGdata',globals.input_customPath)
+              anvil.server.call('addCoGdataToDB')
+          else:
+                Notification("No data found in the selected directory!", style="danger").show()
+                if not dbLoaded:
+                    return
 
       # load data from previously generated database
       #----------------------------------------------------------#
