@@ -16,6 +16,11 @@ components:
     name: button_loadSelectedData
     properties: {foreground: 'theme:Error', icon: 'fa:download', role: null, text: load data}
     type: Link
+  - event_bindings: {change: file_loader_database_change}
+    layout_properties: {grid_position: 'VSBIOB,IIRXMG'}
+    name: file_loader_database
+    properties: {align: left, background: '', bold: false, icon_align: left, text: upload database, underline: false}
+    type: FileLoader
   - event_bindings: {click: button_clusterData_click}
     layout_properties: {grid_position: 'UPNEEV,PLVKPP'}
     name: button_clusterData

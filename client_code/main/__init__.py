@@ -294,6 +294,10 @@ class main(mainTemplate):
       """
       self.button_clusterData.foreground = '#D64D47'
 
+  def file_loader_database_change(self, file, **event_args):
+    """This method is called when a new file is loaded into this FileLoader"""
+    pass
+
 
 
 
