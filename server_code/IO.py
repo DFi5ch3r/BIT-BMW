@@ -1,4 +1,5 @@
 import anvil.server
+import anvil.media
 
 import random
 import re
@@ -1022,3 +1023,16 @@ def getComparisonDataEnvelope():
         - None
     """
     return serverGlobals.comparisonEnvelope
+
+###########################################################################################################
+# export
+###########################################################################################################
+
+@anvil.server.callable
+def exportDB():
+    tmpDB = serverGlobals.DB
+    for entry in tmpDB:
+        if not 'data' in entry:
+            del entry
+
+    return anvil.BlobMedia("application/octet-stream", pickle.dumps(serverGlobals.DB), name="exportDB.pkls")

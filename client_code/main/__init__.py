@@ -1,6 +1,7 @@
 from ._anvil_designer import mainTemplate
 from anvil import *
 import anvil.server
+import anvil.media
 
 from ..input import input
 from ..settings import settings
@@ -101,6 +102,7 @@ class main(mainTemplate):
               anvil.server.call('loadCoGdata',globals.input_customPath)
               anvil.server.call('addCoGdataToDB')
           else:
+              if not dbLoaded:
                 Notification("No data found in the selected directory!", style="danger").show()
                 if not dbLoaded:
                     return
@@ -240,10 +242,17 @@ class main(mainTemplate):
     anvil.js.window.location.reload(True)
 
   def button_export_click(self, **event_args):
-    """This method is called when the link is clicked"""
-    pass
-  
-###########################################################################################################
+    export = alert('Download:', title='Export data',
+                      buttons=[('database', 'DB'), ('data of clusters', 'clusterData'),('prediction plot', 'predictionPlot')], dismissible=True)
+    if export == 'DB':
+        file = anvil.server.call('exportDB')
+
+    if export:
+        anvil.media.download(file)
+
+
+
+  ###########################################################################################################
 # auxiliary functions
 ###########################################################################################################
   def show_globals(self, **event_args):
@@ -264,7 +273,6 @@ class main(mainTemplate):
         table_string += "{:<60} {:<200}\n".format(name, str(value))
     # Display the notification window
     anvil.Notification(table_string, title="Global Variables", style="info", timeout=None).show()
-
 
   def dataNotUpToDate(self, **event_args):
     """
