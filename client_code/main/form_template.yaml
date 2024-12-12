@@ -19,7 +19,7 @@ components:
     event_bindings: {click: button_loadSelectedData_click}
     layout_properties: {grid_position: 'ETQWGC,FVGTIP'}
     name: button_loadSelectedData
-    properties: {foreground: 'theme:Error', icon: 'fa:download', role: null, text: load data}
+    properties: {foreground: 'theme:Error', icon: 'fa:download', role: null, text: read data}
     type: Link
   - event_bindings: {click: button_clusterData_click}
     layout_properties: {grid_position: 'UPNEEV,PLVKPP'}

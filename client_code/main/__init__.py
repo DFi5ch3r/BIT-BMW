@@ -10,6 +10,7 @@ from .. import globals
 
 
 
+
 class main(mainTemplate):
   def __init__(self, **properties):
 ###########################################################################################################
@@ -28,6 +29,7 @@ class main(mainTemplate):
     self.deselect_all_links()
     self.link_analysis.role = 'selected'
 
+    # self.file_loader_database.file_types = "application/octet-stream"
 
 ###########################################################################################################
 # links
@@ -81,10 +83,12 @@ class main(mainTemplate):
       #----------------------------------------------------------#
       if globals.input_inputMethod == 'directory':
           # Prompt the user to use the cached database
-          cacheDB = alert('Do you want to use the cached database?', title='Use cached database', buttons=[('Yes', True), ('No', False)], dismissible=False)
+          # cacheDB = alert('Do you want to use the cached database?', title='Use cached database', buttons=[('Yes', True), ('No', False)], dismissible=False)
+          cacheDB = alert('Please select:', buttons=[('use cached database', 'loadCache'), ('re-load from directory', 'reloadDir'),('add data to loaded database','addData')], dismissible=False)
+
 
           # load database from cache
-          if cacheDB:
+          if cacheDB == 'loadCache':
             dbLoaded = anvil.server.call('load_database')
             if not dbLoaded:
                 Notification("No cached database not found, reading from files...", style='warning').show()
@@ -93,14 +97,19 @@ class main(mainTemplate):
 
           # Create database from files
           dbRead = False
-          if not dbLoaded:
+          if cacheDB == 'reloadDir':
               dbRead = anvil.server.call('create_database',globals.input_customPath)
               #anvil.server.call('create_databaseTEST',globals.input_customPath)
+
+          # add data to loaded database
+          elif cacheDB == 'addData':
+              dbRead = anvil.server.call('create_database',globals.input_customPath,addDataToDB=True)
 
           if dbRead:
               # load CoG data
               anvil.server.call('loadCoGdata',globals.input_customPath)
               anvil.server.call('addCoGdataToDB')
+
           else:
               if not dbLoaded:
                 Notification("No data found in the selected directory!", style="danger").show()
@@ -243,14 +252,45 @@ class main(mainTemplate):
 
   def button_export_click(self, **event_args):
     export = alert('Download:', title='Export data',
-                      buttons=[('database', 'DB'), ('data of clusters', 'clusterData'),('prediction plot', 'predictionPlot')], dismissible=True)
+                      buttons=[('database', 'DB'), ('data of clusters', 'clusterData'),
+                               ('plot (.png)', 'plotPNG'),('plot (.pdf)', 'plotPDF'),('plot (.svg)', 'plotSVG')], dismissible=True)
     if export == 'DB':
         file = anvil.server.call('exportDB')
 
+    elif export == 'clusterData':
+        pass
+
+    elif export == 'plotPNG' or export == 'plotSVG' or export == 'plotPDF':
+        if export == 'plotSVG':
+            format = 'svg'
+        elif export == 'plotPNG':
+            format = 'png'
+        elif export == 'plotPDF':
+            format = 'pdf'
+
+        if globals.activePlot == 'overview':
+            file = anvil.server.call('exportPlot', globals.plots_overview, format,'overview')
+        elif globals.activePlot == 'comp':
+            file = anvil.server.call('exportPlot', globals.plots_component, format,'component')
+        elif globals.activePlot == 'freq':
+            file = anvil.server.call('exportPlot', globals.plots_frequency, format,'frequency')
+        elif globals.activePlot == 'pos':
+            file = anvil.server.call('exportPlot', globals.plots_position, format,'position')
+        elif globals.activePlot == 'cog':
+            file = anvil.server.call('exportPlot', globals.plots_cog, format,'cog')
+        elif globals.activePlot == 'link':
+            file = anvil.server.call('exportPlot', globals.plots_link, format,'link')
+        anvil.server.call('cleanupPlots')
+
     if export:
         anvil.media.download(file)
-
-
+  def file_loader_database_change(self, file, **event_args):
+    """This method is called when a new file is loaded into this FileLoader"""
+    anvil.server.call('loadUploadedDatabase', file)
+    globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
+    self.link_analysis_click()
+    self.button_loadDataBase.foreground = '#1EB980'
+    self.button_loadSelectedData.foreground = '#1EB980'
 
   ###########################################################################################################
 # auxiliary functions
@@ -294,9 +334,7 @@ class main(mainTemplate):
       """
       self.button_clusterData.foreground = '#D64D47'
 
-  def file_loader_database_change(self, file, **event_args):
-    """This method is called when a new file is loaded into this FileLoader"""
-    pass
+
 
 
 

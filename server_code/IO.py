@@ -9,6 +9,7 @@ import pandas as pd
 import chardet
 import time
 import plotly.graph_objects as go
+import plotly.io as pio
 import shapely.geometry
 import pickle
 
@@ -156,12 +157,34 @@ def load_database(specificPath = False):
         return False
 
 @anvil.server.callable
-def create_database(read_path):
+def loadUploadedDatabase(mediaObject):
+    """
+    Load the database from an uploaded file.
+
+    Args:
+        file (anvil.BlobMedia): The uploaded file containing the database.
+
+    Returns:
+        bool: True if the database was successfully loaded, False otherwise.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the loaded database.
+    """
+    with anvil.media.TempFile(mediaObject) as fileName:
+        with open(fileName, 'rb') as file:
+            serverGlobals.DB = pickle.load(file)
+
+    # save the updated database to a cache file
+    pickle.dump(serverGlobals.DB, open("cacheDB.pkl", "wb"))
+
+@anvil.server.callable
+def create_database(read_path, addDataToDB = False):
     """
     Create a database from the files in the specified directory path.
 
     Args:
         read_path (str): The path to the directory containing the files to be processed.
+        addDataToDB (bool, optional): If True, append new entries to an existing database. Defaults to False.
 
     Updates:
         serverGlobals.DB: The global variable storing the created database.
@@ -278,9 +301,33 @@ def create_database(read_path):
                 entry[key] = 'Not found'
 
 
+
+
+    # If addDataToDB is True, append new entries to the existing database
+    if addDataToDB:
+        keys = ['Jahr', 'Baureihe', 'Bauteil', 'Baustufe', 'Richtung', 'Last', 'Gang']
+        unique_entries = set()
+        filtered_database = []
+
+        # Add existing entries to the set of unique entries
+        for entry in serverGlobals.DB:
+            key_tuple = tuple(entry[key] for key in keys)
+            if key_tuple not in unique_entries:
+                unique_entries.add(key_tuple)
+        # Add new entries to the filtered database if they are unique
+        for new_entry in database:
+            key_tuple = tuple(new_entry[key] for key in keys)
+            if key_tuple not in unique_entries:
+                unique_entries.add(key_tuple)
+                filtered_database.append(new_entry)
+
+        # Combine the filtered new entries with the existing database
+        database = filtered_database + serverGlobals.DB
+
     database = sorted(database, key=lambda x: x['Baureihe'])
-    #return database
+
     serverGlobals.DB = database
+
     if serverGlobals.DB:
         return True
     else:
@@ -1030,9 +1077,23 @@ def getComparisonDataEnvelope():
 
 @anvil.server.callable
 def exportDB():
-    tmpDB = serverGlobals.DB
-    for entry in tmpDB:
-        if not 'data' in entry:
-            del entry
+    tmpDB = []
+    for entry in serverGlobals.DB:
+        if 'data' in entry:
+            tmpDB.append(entry)
 
-    return anvil.BlobMedia("application/octet-stream", pickle.dumps(serverGlobals.DB), name="exportDB.pkls")
+    return anvil.BlobMedia("application/octet-stream", pickle.dumps(tmpDB), name="exportDB.pkls")
+
+@anvil.server.callable
+def exportPlot(fig, format='png', name="plot"):
+    pio.write_image(fig, name + '.' + format, width=1920, height=1080)
+
+
+    return anvil.media.from_file(name + '.' + format,"image/"+format)
+
+@anvil.server.callable
+def cleanupPlots():
+    os.system("rm *.png")
+    os.system("rm *.pdf")
+    os.system("rm *.svg")
+
