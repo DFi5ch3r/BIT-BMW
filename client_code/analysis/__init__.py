@@ -125,6 +125,7 @@ class analysis(analysisTemplate):
         else:
           globals.positionDataForComponentsExist = False
           self.label_results_stdDev_pos.text = '-'
+          globals.plots_position = None
           Notification("Position data for "+ self.drop_down_component.selected_value + " not available.", style="warning").show()
 
       # Retrieve overview plot

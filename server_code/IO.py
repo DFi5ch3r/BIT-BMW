@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import shapely.geometry
 import pickle
+from scipy.spatial.distance import pdist
 
 from . import serverGlobals
 from . import dataAnalysis
@@ -1085,9 +1086,56 @@ def exportDB():
     return anvil.BlobMedia("application/octet-stream", pickle.dumps(tmpDB), name="exportDB.pkls")
 
 @anvil.server.callable
+def exportClusterData(component,envelopeMethod, clusteringType):
+    # Determine the clusters and envelope color based on the clustering method
+    if clusteringType == 'component':
+        clusters = serverGlobals.clusters_components
+    elif clusteringType == 'frequency':
+        clusters = serverGlobals.clusters_frequencies
+    elif clusteringType == 'position':
+        clusters = serverGlobals.clusters_positions
+
+    clustersWithComponent = []
+    # Collect plot data for the specified component
+    for cluster in clusters:
+        for comp in cluster['components']:
+            if component in comp:
+                clustersWithComponent.append(cluster)
+                break
+
+    superEnvelope = dataAnalysis.generateSuperEnvelope(clustersWithComponent, envelopeMethod, component)
+
+    info = {'Group Number': [],'Number of selected Component in Cluster': [], 'Distance to SuperEnvelope': [], 'Distance Envelope of Comparison Files': []}
+
+    for cluster in clustersWithComponent:
+        info['Group Number'].append(cluster['name'])
+        counter = 0
+        for comp in cluster['components']:
+            if component in comp:
+                counter += 1
+        info['Number of selected Component in Cluster'].append(counter)
+
+        distance = pdist(np.array([cluster['envelope'], superEnvelope['envelope']]))
+        info['Distance to SuperEnvelope'].append(distance[0])
+
+        if serverGlobals.comparisonEnvelope:
+            distance = pdist(np.array([cluster['envelope'], serverGlobals.comparisonEnvelope[1]]))
+            info['Distance Envelope of Comparison Files'].append(distance[0])
+        else:
+            info['Distance Envelope of Comparison Files'].append('No Comparison Data')
+    info = pd.DataFrame(info)
+    #info = pd.DataFrame(info.items())
+
+    with pd.ExcelWriter('ClusterData.xlsx') as writer:
+        info.to_excel(writer, sheet_name='Info', index=False)
+
+    with open('ClusterData.xlsx', 'rb') as file:
+        file_content = file.read()
+    return anvil.BlobMedia("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_content, name="ClusterData" + clusteringType + ".xlsx")
+
+@anvil.server.callable
 def exportPlot(fig, format='png', name="plot"):
     pio.write_image(fig, name + '.' + format, width=1920, height=1080)
-
 
     return anvil.media.from_file(name + '.' + format,"image/"+format)
 

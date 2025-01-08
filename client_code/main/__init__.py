@@ -254,11 +254,13 @@ class main(mainTemplate):
     export = alert('Download:', title='Export data',
                       buttons=[('database', 'DB'), ('data of clusters', 'clusterData'),
                                ('plot (.png)', 'plotPNG'),('plot (.pdf)', 'plotPDF'),('plot (.svg)', 'plotSVG')], dismissible=True)
+    file = []
     if export == 'DB':
-        file = anvil.server.call('exportDB')
+        file.append(anvil.server.call('exportDB'))
 
     elif export == 'clusterData':
-        pass
+        for clustering in globals.selected_clustering:
+            file.append(anvil.server.call('exportClusterData',globals.selected_component, globals.selected_envelopeMethods[0], clustering))
 
     elif export == 'plotPNG' or export == 'plotSVG' or export == 'plotPDF':
         if export == 'plotSVG':
@@ -281,9 +283,11 @@ class main(mainTemplate):
         elif globals.activePlot == 'link':
             file = anvil.server.call('exportPlot', globals.plots_link, format,'link')
         anvil.server.call('cleanupPlots')
+        file = [file]
 
     if export:
-        anvil.media.download(file)
+        for f in file:
+            anvil.media.download(f)
   def file_loader_database_change(self, file, **event_args):
     """This method is called when a new file is loaded into this FileLoader"""
     anvil.server.call('loadUploadedDatabase', file)

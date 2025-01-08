@@ -25,56 +25,56 @@ db2 = serverGlobals.selectedData
 DA.clusterPositions(6,[72,2000],True)
 #DA.clusterFrequencies(False,[72,2000],True,'seuclidean')
 clustersPos = serverGlobals.clusters_positions
-clustersFreq = serverGlobals.clusters_frequencies
+#clustersFreq = serverGlobals.clusters_frequencies
 
 #DA.generateEnvelopes(clusters, envelopGenerationMethods[2])
 
 
+cl = IO.exportClusterData('Blinker', 'position')
 
 
 
-
-import numpy as np
-import plotly.graph_objects as go
-
-
-
-
-############################################
-
-
-
-#fig = IO.getCogPlot()
-#fig.show()
-def plot_cluster(cluster):
-    """
-    Plots all amplitude rows over frequencies in black and the envelope over frequencies in red.
-
-    Args:
-        cluster (dict): A dictionary containing 'frequencies', 'amplitudes', and 'envelope' arrays.
-    """
-    frequencies = cluster['frequencies']
-    amplitudes = cluster['amplitudes']
-    envelope = cluster['envelope']
-
-    # Create a Plotly figure
-    fig = go.Figure()
-
-    # Plot all amplitude rows in black
-    for i in range(amplitudes.shape[1]):
-        fig.add_trace(go.Scatter(x=frequencies, y=amplitudes[:, i], mode='lines', line=dict(color='black', width=1), opacity=0.5))
-
-    # Plot the envelope in red
-    fig.add_trace(go.Scatter(x=frequencies, y=envelope, mode='lines', line=dict(color='red', width=2)))
-
-    # Add labels and title
-    fig.update_layout(
-        title=cluster['name'],
-        xaxis_title='Frequencies',
-        yaxis_title='Amplitudes'
-    )
-
-    # Show the plot
-    fig.show()
-
-#plot_cluster(clusters[0])
+# import numpy as np
+# import plotly.graph_objects as go
+#
+#
+#
+#
+# ############################################
+#
+#
+#
+# #fig = IO.getCogPlot()
+# #fig.show()
+# def plot_cluster(cluster):
+#     """
+#     Plots all amplitude rows over frequencies in black and the envelope over frequencies in red.
+#
+#     Args:
+#         cluster (dict): A dictionary containing 'frequencies', 'amplitudes', and 'envelope' arrays.
+#     """
+#     frequencies = cluster['frequencies']
+#     amplitudes = cluster['amplitudes']
+#     envelope = cluster['envelope']
+#
+#     # Create a Plotly figure
+#     fig = go.Figure()
+#
+#     # Plot all amplitude rows in black
+#     for i in range(amplitudes.shape[1]):
+#         fig.add_trace(go.Scatter(x=frequencies, y=amplitudes[:, i], mode='lines', line=dict(color='black', width=1), opacity=0.5))
+#
+#     # Plot the envelope in red
+#     fig.add_trace(go.Scatter(x=frequencies, y=envelope, mode='lines', line=dict(color='red', width=2)))
+#
+#     # Add labels and title
+#     fig.update_layout(
+#         title=cluster['name'],
+#         xaxis_title='Frequencies',
+#         yaxis_title='Amplitudes'
+#     )
+#
+#     # Show the plot
+#     fig.show()
+#
+# #plot_cluster(clusters[0])
