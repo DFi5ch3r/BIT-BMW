@@ -23,9 +23,11 @@ IO.addCoGdataToDB()
 db2 = serverGlobals.selectedData
 
 DA.clusterPositions(6,[72,2000],True)
+DA.clusterComponents([72,2000])
 #DA.clusterFrequencies(False,[72,2000],True,'seuclidean')
 clustersPos = serverGlobals.clusters_positions
-#clustersFreq = serverGlobals.clusters_frequencies
+clustersComp = serverGlobals.clusters_components
+clustersFreq = serverGlobals.clusters_frequencies
 
 #DA.generateEnvelopes(clusters, envelopGenerationMethods[2])
 

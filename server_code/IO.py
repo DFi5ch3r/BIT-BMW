@@ -1086,7 +1086,7 @@ def exportDB():
     return anvil.BlobMedia("application/octet-stream", pickle.dumps(tmpDB), name="exportDB.pkls")
 
 @anvil.server.callable
-def exportClusterData(component,envelopeMethod, clusteringType):
+def exportClusterData(component,envelopeMethod, clusteringType, compare):
     # Determine the clusters and envelope color based on the clustering method
     if clusteringType == 'component':
         clusters = serverGlobals.clusters_components
@@ -1105,15 +1105,15 @@ def exportClusterData(component,envelopeMethod, clusteringType):
 
     superEnvelope = dataAnalysis.generateSuperEnvelope(clustersWithComponent, envelopeMethod, component)
 
-    info = {'Group Number': [],'Number of selected Component in Cluster': [], 'Distance to SuperEnvelope': [], 'Distance Envelope of Comparison Files': []}
-
+    # info sheet
+    info = {'Group': [],'Number of selected Component in Cluster': [], 'Distance to SuperEnvelope': [], 'Distance Envelope of Comparison Files': []}
     for cluster in clustersWithComponent:
-        info['Group Number'].append(cluster['name'])
-        counter = 0
-        for comp in cluster['components']:
-            if component in comp:
-                counter += 1
-        info['Number of selected Component in Cluster'].append(counter)
+        info['Group'].append(cluster['name'])
+        if len(cluster['amplitudes'].shape) < 2:
+            nComponent = 1
+        else:
+            nComponent = cluster['amplitudes'].shape[1]
+        info['Number of selected Component in Cluster'].append(nComponent)
 
         distance = pdist(np.array([cluster['envelope'], superEnvelope['envelope']]))
         info['Distance to SuperEnvelope'].append(distance[0])
@@ -1124,14 +1124,36 @@ def exportClusterData(component,envelopeMethod, clusteringType):
         else:
             info['Distance Envelope of Comparison Files'].append('No Comparison Data')
     info = pd.DataFrame(info)
-    #info = pd.DataFrame(info.items())
 
+    # Components Sheet
+    components = {'Group': [], 'Components in Group': []}
+    for cluster in clustersWithComponent:
+        components['Group'].append(cluster['name'])
+        components['Components in Group'].append(pd.DataFrame(cluster['components']))
+    components = pd.DataFrame(components)
+
+    # Envelopes Sheet
+    envelopes = {'Frequency [Hz]': superEnvelope['frequencies'], 'Super Envelope': superEnvelope['envelope']}
+    if serverGlobals.comparisonEnvelope and compare:
+        envelopes['Comparison Envelope'] = serverGlobals.comparisonEnvelope[1]
+    for cluster in clustersWithComponent:
+        envelopes[cluster['name']] = cluster['envelope']
+    envelopes = pd.DataFrame(envelopes)
+
+    # write data to .xlsx file
     with pd.ExcelWriter('ClusterData.xlsx') as writer:
         info.to_excel(writer, sheet_name='Info', index=False)
 
+        components.transpose().to_excel(writer, sheet_name='Components', index=True, header=False)
+        for i in range(0,components.shape[0]):
+            components['Components in Group'][i].to_excel(writer, sheet_name='Components', index=False, header=False, startrow=1,startcol=i+1)
+
+        envelopes.transpose().to_excel(writer, sheet_name='Envelopes', header=False, index=True)
+
+
     with open('ClusterData.xlsx', 'rb') as file:
         file_content = file.read()
-    return anvil.BlobMedia("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_content, name="ClusterData" + clusteringType + ".xlsx")
+    return anvil.BlobMedia("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_content, name="ClusterData-" + clusteringType + ".xlsx")
 
 @anvil.server.callable
 def exportPlot(fig, format='png', name="plot"):

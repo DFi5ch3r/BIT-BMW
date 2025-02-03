@@ -252,7 +252,7 @@ class main(mainTemplate):
 
   def button_export_click(self, **event_args):
     export = alert('Download:', title='Export data',
-                      buttons=[('database', 'DB'), ('data of clusters', 'clusterData'),
+                      buttons=[('database', 'DB'), ('data of clusters (.xlsx)', 'clusterData'),
                                ('plot (.png)', 'plotPNG'),('plot (.pdf)', 'plotPDF'),('plot (.svg)', 'plotSVG')], dismissible=True)
     file = []
     if export == 'DB':
@@ -260,7 +260,9 @@ class main(mainTemplate):
 
     elif export == 'clusterData':
         for clustering in globals.selected_clustering:
-            file.append(anvil.server.call('exportClusterData',globals.selected_component, globals.selected_envelopeMethods[0], clustering))
+            if clustering == 'position' and not globals.positionDataForComponentsExist:
+                continue
+            file.append(anvil.server.call('exportClusterData',globals.selected_component, globals.selected_envelopeMethods[0], clustering, globals.selected_compare))
 
     elif export == 'plotPNG' or export == 'plotSVG' or export == 'plotPDF':
         if export == 'plotSVG':
