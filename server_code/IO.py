@@ -1078,6 +1078,15 @@ def getComparisonDataEnvelope():
 
 @anvil.server.callable
 def exportDB():
+    """
+    Export the database entries that contain 'data' to a pickle file.
+
+    This function filters the global database (`serverGlobals.DB`) to include only entries that have the 'data' field.
+    It then serializes these entries into a pickle file and returns it as an `anvil.BlobMedia` object.
+
+    Returns:
+        anvil.BlobMedia: A blob media object containing the serialized database entries with 'data' field.
+    """
     tmpDB = []
     for entry in serverGlobals.DB:
         if 'data' in entry:
@@ -1087,6 +1096,24 @@ def exportDB():
 
 @anvil.server.callable
 def exportClusterData(component,envelopeMethod, clusteringType, compare):
+    """
+    Export cluster data to an Excel file.
+
+    This function generates and exports cluster data, including information, components, envelopes, and members,
+    to an Excel file based on the specified component, envelope method, clustering type, and comparison flag.
+
+    Args:
+        component (str): The component to be analyzed and exported.
+        envelopeMethod (str): The method used to generate the envelope.
+        clusteringType (str): The type of clustering ('component', 'frequency', 'position').
+        compare (bool): If True, include comparison data in the export.
+
+    Returns:
+        anvil.BlobMedia: A blob media object containing the exported Excel file.
+
+    Functions called:
+        - dataAnalysis.generateSuperEnvelope
+    """
     # Determine the clusters and envelope color based on the clustering method
     if clusteringType == 'component':
         clusters = serverGlobals.clusters_components
@@ -1102,7 +1129,6 @@ def exportClusterData(component,envelopeMethod, clusteringType, compare):
             if component in comp:
                 clustersWithComponent.append(cluster)
                 break
-
     superEnvelope = dataAnalysis.generateSuperEnvelope(clustersWithComponent, envelopeMethod, component)
 
     # info sheet
@@ -1171,12 +1197,38 @@ def exportClusterData(component,envelopeMethod, clusteringType, compare):
 
 @anvil.server.callable
 def exportPlot(fig, format='png', name="plot"):
+    """
+    Export a Plotly figure to an image file.
+
+    This function saves a given Plotly figure to an image file in the specified format and with the specified name.
+
+    Args:
+        fig (plotly.graph_objects.Figure): The Plotly figure to be exported.
+        format (str, optional): The format of the output image file (e.g., 'png', 'pdf', 'svg'). Defaults to 'png'.
+        name (str, optional): The base name of the output image file. Defaults to 'plot'.
+
+    Returns:
+        anvil.BlobMedia: A blob media object containing the exported image file.
+
+    Functions called:
+        - plotly.io.write_image
+        - anvil.media.from_file
+    """
     pio.write_image(fig, name + '.' + format, width=1920, height=1080)
 
     return anvil.media.from_file(name + '.' + format,"image/"+format)
 
 @anvil.server.callable
 def cleanupPlots():
+    """
+    Remove all image files with extensions 'png', 'pdf', and 'svg' from the current directory.
+
+    This function uses the `os.system` command to execute shell commands that delete all files
+    with the specified extensions in the current directory.
+
+    Functions called:
+        - os.system
+    """
     os.system("rm *.png")
     os.system("rm *.pdf")
     os.system("rm *.svg")
