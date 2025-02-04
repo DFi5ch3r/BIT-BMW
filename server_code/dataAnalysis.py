@@ -192,6 +192,7 @@ def assembleData(key, db = None):
         cluster =  {}
         cluster['name'] = tempKey
         cluster['components'] = set()
+        cluster['fileName'] = set()
         cluster['data'] = []
         cluster['cogs'] = []
         # collect data for each cluster
@@ -200,6 +201,7 @@ def assembleData(key, db = None):
                 if (entry[key] == tempKey) and ('data' in entry):
                     cluster['data'].append(entry['data'])
                     cluster['components'].add(entry['Bauteil'])
+                    cluster['fileName'].add(entry['Dateiname'])
                     if 'cog' in entry:
                         cluster['cogs'].append(entry['cog'])
         # stack the data arrays for each cluster

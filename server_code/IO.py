@@ -1140,15 +1140,29 @@ def exportClusterData(component,envelopeMethod, clusteringType, compare):
         envelopes[cluster['name']] = cluster['envelope']
     envelopes = pd.DataFrame(envelopes)
 
+    # Members Sheet
+    members = {'Group': [], 'Files in Group': []}
+    for cluster in clustersWithComponent:
+        members['Group'].append(cluster['name'])
+        members['Files in Group'].append(pd.DataFrame(cluster['fileName']))
+    members = pd.DataFrame(members)
+
     # write data to .xlsx file
     with pd.ExcelWriter('ClusterData.xlsx') as writer:
+        # info sheet
         info.to_excel(writer, sheet_name='Info', index=False)
-
+        # members sheet
+        members.transpose().to_excel(writer, sheet_name='Members', index=True, header=False)
+        for i in range(0,components.shape[0]):
+            members['Files in Group'][i].to_excel(writer, sheet_name='Members', index=False, header=False, startrow=1,startcol=i+1)
+        # envelopes sheet
+        envelopes.transpose().to_excel(writer, sheet_name='Envelopes', header=False, index=True)
+        # components sheet
         components.transpose().to_excel(writer, sheet_name='Components', index=True, header=False)
         for i in range(0,components.shape[0]):
             components['Components in Group'][i].to_excel(writer, sheet_name='Components', index=False, header=False, startrow=1,startcol=i+1)
 
-        envelopes.transpose().to_excel(writer, sheet_name='Envelopes', header=False, index=True)
+
 
 
     with open('ClusterData.xlsx', 'rb') as file:
