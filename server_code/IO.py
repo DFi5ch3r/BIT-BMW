@@ -14,6 +14,10 @@ import shapely.geometry
 import pickle
 from scipy.spatial.distance import pdist
 
+import openpyxl
+import kaleido
+
+
 from . import serverGlobals
 from . import dataAnalysis
 

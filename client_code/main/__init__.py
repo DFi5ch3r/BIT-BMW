@@ -97,7 +97,7 @@ class main(mainTemplate):
 
           # Create database from files
           dbRead = False
-          if cacheDB == 'reloadDir':
+          if cacheDB == 'reloadDir' or not dbLoaded:
               dbRead = anvil.server.call('create_database',globals.input_customPath)
               #anvil.server.call('create_databaseTEST',globals.input_customPath)
 
