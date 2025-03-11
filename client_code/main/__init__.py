@@ -297,7 +297,7 @@ class main(mainTemplate):
         for f in file:
             anvil.media.download(f)
   def file_loader_database_change(self, file, **event_args):
-        """
+    """
     Handle the event when a new file is loaded into the FileLoader.
 
     This method is called when a new file is loaded into the FileLoader. It processes the uploaded file by calling the
