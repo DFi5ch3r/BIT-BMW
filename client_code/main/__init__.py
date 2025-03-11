@@ -240,6 +240,12 @@ class main(mainTemplate):
     self.button_clusterData.foreground = '#1EB980'
 
   def button_displaySettings_click(self, **event_args):
+    """
+    Display the global settings.
+
+    This method is called when the display settings button is clicked. It triggers the `show_globals` method to display
+    the current global settings in a notification window.
+    """
     self.show_globals()
 
   def link_reset_click(self, **event_args):
@@ -291,7 +297,16 @@ class main(mainTemplate):
         for f in file:
             anvil.media.download(f)
   def file_loader_database_change(self, file, **event_args):
-    """This method is called when a new file is loaded into this FileLoader"""
+        """
+    Handle the event when a new file is loaded into the FileLoader.
+
+    This method is called when a new file is loaded into the FileLoader. It processes the uploaded file by calling the
+    `loadUploadedDatabase` function on the server, updates the global `baureihe_years` variable, and triggers the
+    `link_analysis_click` method to update the UI.
+
+    Args:
+        file: The file object that was loaded into the FileLoader.
+    """
     anvil.server.call('loadUploadedDatabase', file)
     globals.baureihe_years = anvil.server.call('get_baureihe_and_years')
     self.link_analysis_click()

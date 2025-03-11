@@ -61,6 +61,11 @@ class analysis(analysisTemplate):
     globals.selected_component = self.drop_down_component.selected_value
 
   def updateResults(self, **event_args):
+    """
+    Update the results based on the current state.
+
+    This method triggers the `updatePlots` method to refresh the plots displayed in the UI.
+    """
     self.updatePlots()
   
   def saveBoxes(self, card, globalSet):
