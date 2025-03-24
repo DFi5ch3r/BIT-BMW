@@ -785,8 +785,10 @@ def readData(selectedData = True, readFromJson = False):
     """
     Read data from files and update the database entries with the data.
 
-    Args:
-        selectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData. If False, use the full database from serverGlobals.DB. Defaults to True.
+   Args:
+    selectedData (bool, optional): If True, use the selected data from serverGlobals.selectedData.
+                                   If False, use the full database from serverGlobals.DB. Defaults to True.
+    readFromJson (bool, optional): If True, read data from JSON files. If False, read data from text files. Defaults to False.
 
     Updates:
         serverGlobals.DB: The global variable storing the database entries with added data.
