@@ -24,6 +24,11 @@ class input(inputTemplate):
       self.text_box_fileName.visible = False
       self.label_4.visible = False
       globals.input_inputMethod = self.dropDown_inputMethod.selected_value
+    if self.dropDown_inputMethod.selected_value == 'JSON':
+      self.label_3.text = 'Custom path'
+      self.text_box_fileName.visible = False
+      self.label_4.visible = False
+      globals.input_inputMethod = self.dropDown_inputMethod.selected_value
     if self.dropDown_inputMethod.selected_value == 'previously generated database':
       self.label_3.text = 'Custom path'
       self.text_box_fileName.visible = True

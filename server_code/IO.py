@@ -14,6 +14,8 @@ import shapely.geometry
 import pickle
 from scipy.spatial.distance import pdist
 
+import json
+
 import openpyxl
 import kaleido
 
@@ -305,8 +307,116 @@ def create_database(read_path, addDataToDB = False):
             if not entry[key]:
                 entry[key] = 'Not found'
 
+    # If addDataToDB is True, append new entries to the existing database
+    if addDataToDB:
+        keys = ['Jahr', 'Baureihe', 'Bauteil', 'Baustufe', 'Richtung', 'Last', 'Gang']
+        unique_entries = set()
+        filtered_database = []
 
+        # Add existing entries to the set of unique entries
+        for entry in serverGlobals.DB:
+            key_tuple = tuple(entry[key] for key in keys)
+            if key_tuple not in unique_entries:
+                unique_entries.add(key_tuple)
+        # Add new entries to the filtered database if they are unique
+        for new_entry in database:
+            key_tuple = tuple(new_entry[key] for key in keys)
+            if key_tuple not in unique_entries:
+                unique_entries.add(key_tuple)
+                filtered_database.append(new_entry)
 
+        # Combine the filtered new entries with the existing database
+        database = filtered_database + serverGlobals.DB
+
+    database = sorted(database, key=lambda x: x['Baureihe'])
+
+    serverGlobals.DB = database
+
+    if serverGlobals.DB:
+        return True
+    else:
+        return False
+
+@anvil.server.callable
+def create_databaseJSON(read_path, addDataToDB = False):
+    """
+    Create a database from the json files in the specified directory path.
+
+    Args:
+        read_path (str): The path to the directory containing the files to be processed.
+        addDataToDB (bool, optional): If True, append new entries to an existing database. Defaults to False.
+
+    Updates:
+        serverGlobals.DB: The global variable storing the created database.
+
+    Database format:
+        [
+            {
+                'ID': int,
+                'Dateiname': str,
+                'Pfad': str,
+                'Unterpfad': str,
+                'Jahr': str,
+                'Baureihe': str,
+                'Nummer': str,
+                'Bauteil': str,
+                'Baustufe': str,
+                'Richtung': str,
+                'Last': str,
+                'Gang': str
+            },
+            ...
+        ]
+    """
+    json_files = []
+    for root, dirs, files in os.walk(read_path):
+        for file in files:
+            if file.endswith('.json'):
+                json_files.append(os.path.join(root, file))
+
+    # Calculate the total number of valid files
+    total_files = len(json_files)
+
+    # Initialize the database with the required fields
+    database = [{
+        'ID': 0,
+        'Dateiname': '',
+        'Pfad': '',
+        'Unterpfad': '',
+        'Jahr': '',
+        'Baureihe': '',
+        'Nummer': '',
+        'Bauteil': '',
+        'Baustufe': '',
+        'Richtung': '',
+        'Last': '',
+        'Gang': ''
+    } for _ in range(total_files)]
+
+    current_pos = 0
+    for file in json_files:
+        with open(file, 'r') as f:
+            data = json.load(f)
+            data = data['folder_info']
+            database[current_pos]['ID'] = current_pos+1
+            database[current_pos]['Dateiname'] = file
+            database[current_pos]['Pfad'] = read_path
+            database[current_pos]['Unterpfad'] = '/'
+            database[current_pos]['Jahr'] = re.findall(r'\d+', data['Year'])[0]
+            database[current_pos]['Baureihe'] = data['Model']
+            database[current_pos]['Nummer'] = data['V_number']
+            database[current_pos]['Bauteil'] = data['Bauteil']
+            database[current_pos]['Baustufe'] = data['Bauphase']
+            database[current_pos]['Richtung'] = data['Axis']
+            database[current_pos]['Last'] = data['Last']
+            database[current_pos]['Gang'] = data['Gang']
+        current_pos += 1
+
+    # Replace empty entries with "Not found"
+    for entry in database:
+        for key in entry:
+            if not entry[key]:
+                entry[key] = 'Not found'
 
     # If addDataToDB is True, append new entries to the existing database
     if addDataToDB:
@@ -527,6 +637,10 @@ def loadCoGdata(rootPath):
     # Filter out directories from the list of files
     cog_files = [file for file in cog_files if not os.path.isdir(file)]
 
+    if len(cog_files) == 0:
+        print("No cog files found in the specified directory.")
+        return
+
     # Process each CSV file
     for file in cog_files:
         encoding = detect_encoding(file)
@@ -667,7 +781,7 @@ def addCoGdataToDB():
                             break
 
 @anvil.server.callable
-def readData(selectedData = True):
+def readData(selectedData = True, readFromJson = False):
     """
     Read data from files and update the database entries with the data.
 
@@ -697,12 +811,26 @@ def readData(selectedData = True):
         # check if the entry already has 'data'
         if 'data' in entry:
             continue
-        # construct the file path for the entry
-        filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
 
+        filePath = os.path.join(entry['Pfad'], entry['Unterpfad'], entry['Dateiname'])
         if not "Kopie" in filePath:
             # load the data from the file
-            data = np.loadtxt(filePath)
+            if readFromJson:
+                filePath = os.path.join(entry['Pfad'], entry['Dateiname'])
+                input = json.load(open(filePath, 'r'))
+                input = input['content'].split(';')
+                input.pop(0)
+                input.pop(0)
+                input.pop(-1)
+                input.pop(-1)
+                try:
+                    data = np.array( [list(map(float, item.split(','))) for item in input] )
+                except:
+                    print(f"Skipped {entry['Dateiname']}, since Data could not be read")
+                    continue
+            else:
+                data = np.loadtxt(filePath)
+
             # check if the data length is 800
             if len(data) == 800:
                 # update the entry with the loaded data

@@ -12,7 +12,7 @@ components:
     layout_properties: {col_xs: 4, row: XSMUUM, width_xs: 4}
     name: dropDown_inputMethod
     properties:
-      items: [directory, previously generated database, external database]
+      items: [directory, JSON, previously generated database, external database]
     type: DropDown
   - data_bindings: []
     event_bindings: {}

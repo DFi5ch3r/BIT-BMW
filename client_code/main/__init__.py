@@ -66,7 +66,7 @@ class main(mainTemplate):
 # ------------------------------------------------------------------------------------------------------- #
   def button_loadDataBase_click(self, **event_args):
     """
-    Load the database based on the selected input method.
+    Load the database based with the selected input method.
 
     This method handles loading the database from different sources such as a directory, a previously generated
     database, or an external database. It also updates the global variables and UI elements accordingly.
@@ -81,7 +81,7 @@ class main(mainTemplate):
     with (Notification("Generating Database...")):
       # load data from directories
       #----------------------------------------------------------#
-      if globals.input_inputMethod == 'directory':
+      if globals.input_inputMethod == 'directory' or 'JSON':
           # Prompt the user to use the cached database
           # cacheDB = alert('Do you want to use the cached database?', title='Use cached database', buttons=[('Yes', True), ('No', False)], dismissible=False)
           cacheDB = alert('Please select:', buttons=[('use cached database', 'loadCache'), ('re-load from directory', 'reloadDir'),('add data to loaded database','addData')], dismissible=False)
@@ -98,7 +98,10 @@ class main(mainTemplate):
           # Create database from files
           dbRead = False
           if cacheDB == 'reloadDir' or not dbLoaded:
-              dbRead = anvil.server.call('create_database',globals.input_customPath)
+              if globals.input_inputMethod == 'JSON':
+                    dbRead = anvil.server.call('create_databaseJSON',globals.input_customPath)
+              else:
+                    dbRead = anvil.server.call('create_database',globals.input_customPath)
               #anvil.server.call('create_databaseTEST',globals.input_customPath)
 
           # add data to loaded database
@@ -176,7 +179,10 @@ class main(mainTemplate):
 
     # Read the data
     with Notification("Reading data ...",):
-        anvil.server.call('readData', selectedData=True)
+        if globals.input_inputMethod == 'JSON':
+            anvil.server.call('readData', selectedData=True, readFromJson=True)
+        else:
+            anvil.server.call('readData', selectedData=True, readFromJson=False)
     Notification("...done loading data.", style="success").show()
 
     # Update the button color to indicate success
